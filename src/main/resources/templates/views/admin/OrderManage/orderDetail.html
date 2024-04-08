@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    /* CSS để giới hạn chiều rộng của cột 'Product Name' */
+    .product-name {
+      max-width: 100px;
+      /* Đặt giới hạn chiều rộng, ví dụ 200px */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="sellerLTELogo" height="60" width="60" />
+    </div>
+
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Chi tiết hóa đơn</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Hóa đơn</li>
+                <li class="breadcrumb-item active">Chi tiết hóa đơn</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+
+      <section class="content" ng-controller="details">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- <div class="callout callout-info">
+								<h5>
+									<i class="fas fa-info"></i> Note:
+								</h5>
+								This page has been enhanced for printing. Click the print button
+								at the bottom of the invoice to test.
+							</div> -->
+
+              <!-- Main content -->
+              <div class="invoice p-3 mb-3" th:fragment="adminOrderPrintFragment">
+                <!-- title row -->
+                <div class="row">
+                  <div class="col-12">
+                    <h4>
+                      <label style="font-weight: 400" class="">Đơn hàng được tạo vào ngày:
+                      </label>
+                      <b class="" th:text="${#dates.format(order.createdDay, 'dd/MM/yyyy')}"></b>
+                    </h4>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- info row -->
+                <div class="row invoice-info">
+                  <div class="col-sm-4 invoice-col">
+                    Từ
+                    <address>
+                      <img src="/img/banner/LogoDUAn.png" class="img-fluid" style="width: 4rem" />
+                      <span>DEVEX EXPRESS</span>
+                      <label style="font-weight: 400">Địa chỉ: QTSC 9 Building, Tô Ký, Tân Chánh Hiệp, Quận 12, Thành
+                        phố Hồ Chí Minh, Việt Nam</label>
+                    </address>
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 invoice-col">
+                    Đến
+                    <address>
+                      <strong th:text="${order.customerOrder.fullname}"></strong><br />
+                      <label style="font-weight: 400"
+                        th:text="'Địa chỉ: ' + ${order.customerOrder.address}"></label><br />
+                      <label style="font-weight: 400" th:text="'Phone: ' + ${order.customerOrder.phoneAddress}"></label>
+                    </address>
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-sm-4 invoice-col">
+                    <b>Mã vận đơn: E145CMS58</b><br />
+                    <b>Mã đơn hàng: </b><label style="font-weight: 400" th:text="${order.id}"></label><br />
+                    <b>Thanh toán: </b><label style="font-weight: 400" th:text="${order.payment.name}"></label><br />
+                    <b>Trạng thái: </b><label style="font-weight: 400" th:text="${order.orderStatus.name}"></label>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+                <!-- Table row -->
+                <div class="row">
+                  <div class="col-12 table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Mã SP</th>
+                          <th>Hình ảnh</th>
+                          <th>Tên sản phẩm</th>
+                          <th>Số lượng</th>
+                          <th>Giá</th>
+                          <th>Trạng thái</th>
+                          <th class="text-center">Shop bán</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="od : ${orderDetails}">
+                          <td th:text="${od.productVariant.product.id}"></td>
+                          <td>
+                            <img alt=""
+                              th:src="@{|/img/product/${od.productVariant.product.sellerProduct.username}/${od.productVariant.product.id}/${od.productVariant.product.imageProducts[0].name}|}"
+                              width="60px" />
+                          </td>
+                          <td class="product-name" th:text="${od.productVariant.product.name}"></td>
+                          <td class="text-center" th:text="${od.quantity}"></td>
+                          <td th:text="${#numbers.formatDecimal(od.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                          <td th:if="${od.status.name == 'Đã huỷ'}" th:text="${od.status.name}" class="text-danger">
+                          </td>
+                          <td th:if="${od.status.name == 'Chờ xác nhận'}" th:text="${od.status.name}"
+                            class="text-danger"></td>
+                          <td th:if="${od.status.name == 'Đã xác nhận'}" th:text="${od.status.name}"
+                            class="text-success"></td>
+                          <td th:if="${od.status.name == 'Vận chuyển'}" th:text="${od.status.name}"
+                            class="text-success"></td>
+                          <td th:if="${od.status.name == 'Hoàn thành'}" th:text="${od.status.name}"
+                            class="text-success"></td>
+                          <td class="text-center" th:if="${od.productVariant.product.sellerProduct.username == u}">
+                            Shop của bạn
+                          </td>
+                          <td class="text-center" th:unless="${od.productVariant.product.sellerProduct.username == u}"
+                            th:text="${od.productVariant.product.sellerProduct.shopName}"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+                <div class="row">
+                  <!-- accepted payments column -->
+                  <div class="col-6">
+                    <p class="lead">Phương thức thanh toán:</p>
+                    <img src="/admin/dist/img/credit/paypal2.png" alt="Paypal" />
+                    <span class="btn border border-info rounded p-1 pl-3 pr-3">
+                      <b class="text-info">Dwallet</b>
+                    </span>
+                    <span class="btn border border-info rounded p-1 pl-3 pr-3">
+                      <b class="text-primary">VNPay</b>
+                    </span>
+                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px">
+                      Vui lòng kiểm tra kỹ hóa đơn trước khi tiến hành thanh
+                      toán, sửa đổi hoặc in ấn. DEVEX xin cảm ơn
+                    </p>
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-6">
+                    <div class="table-responsive">
+                      <table class="table">
+                        <tr>
+                          <th style="width: 50%">Giá:</th>
+                          <td th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                        <tr>
+                          <th>Vận chuyển:</th>
+                          <td th:text="${#numbers.formatDecimal(order.totalShip, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                        <tr>
+                          <th>Tổng giá:</th>
+                          <td th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')}"></td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+
+                <!-- this row will not appear when printing -->
+                <div class="row no-print">
+                  <div class="col-12">
+                    <form th:action="@{/ad/update/orderstatus/__${order.id}__}" method="post">
+                      <div class="form-group">
+                        <a th:href="@{/order/orderPrint(id=${idPrint})}" rel="noopener" target="_blank"
+                          class="btn btn-default col-form-label" style="margin-bottom: 5px;">
+                          <i class="fas fa-print"></i>Print
+                        </a>
+                        <label class="font-weight-normal">Tình Trạng đơn hàng: </label>
+                        <select class="form-control col-4 col-sm-2" style="display: inline-block;" name="statusId">
+                          <option th:each="status : ${listStatus}" th:value="${status.id}" th:text="${status.name}"
+                            th:selected="${status.id == order.orderStatus.id}"></option>
+                        </select>
+                        <button type="submit" class="btn btn-success" style="margin-bottom: 5px;">Lưu</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!-- /.invoice -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+</body>
+<script type="text/javascript"></script>
+<script src="/admin/dist/js/handMade.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+<script src="/js/admin/orderDetails.js"></script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>
+
+</html>

@@ -1,0 +1,30 @@
+<div th:fragment="userFooterFragment">
+  <!-- Main Footer -->
+  <footer
+    class="position-relative text-sm"
+    style="
+      font-size: 1rem;
+      color: white !important ;
+      background: linear-gradient(
+        90deg,
+        rgba(25, 38, 186, 1) 0%,
+        rgba(57, 151, 184, 1) 54%,
+        rgba(0, 212, 255, 1) 100%
+      );
+    "
+  >
+    <strong style="font-size: 0.8rem; color: white !important"
+      >ThieuNu Team &copy; 2023
+      <a href="https://github.com/haoireal/DEVEX.git">Github Resp</a>.</strong
+    >
+  </footer>
+  <script>
+    function addToCartAndNavigateHome() {
+      // Thực hiện thêm sản phẩm vào giỏ hàng
+
+      // Thay đổi lịch sử duyệt web để ghi đè trang hiện tại
+      // và điều hướng trình duyệt về trang chủ
+      history.replaceState({}, '', '/home'); // Điều hướng về trang chủ
+    }
+  </script>
+</div>

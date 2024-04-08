@@ -1,0 +1,373 @@
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-light-primary bg-light elevation-4 text-sm" th:fragment="adminMainSidebarFragment">
+  <!-- Brand Logo -->
+  <a href="/ad/home" class="brand-link font-weight-bold">
+    <img src="/img/banner/LogoDUAn.png" alt="AdminLTE Logo" class="brand-image ml-0" />
+    <span class="brand-text font-weight-bold ml-2">DEVELOP EXPRESS</span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <a href="/ad/profile">
+          <img th:src="@{/img/account/__${session.user.avatar}__}" class="img-circle elevation-2 img-fluid h-100"
+            alt="User Image" />
+        </a>
+      </div>
+      <div class="info">
+        <a href="/ad/profile" class="d-block col-9 pe-0 text-decoration-none font-weight-bold"
+          th:text="${session.user == null ? 'Sign In' : session.user.fullname}"></a>
+      </div>
+    </div>
+    <div ng-controller="DWalletAdmin_Controller" class="user-panel row mb-2">
+      <div class="row mb-2">
+        <div class="col-4"><strong>Số Dư:</strong></div>
+        <div class="col-8 text-end p-0 text-danger">
+          <span class="fw-semibold fs-6"><strong>{{wallet.loadDWalletAdmin.balance | currency: '':0}}</strong>
+            VNĐ</span>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-6"><strong>Ví:</strong></div>
+        <div class="col-6 text-end p-0">
+          <button class="btn_view border-0 badge rounded-pill" style="background-color: rgba(7, 25, 212, 1)"
+            data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <span class="fs-6">Chi tiết</span>
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <!-- ghi đè .modal-backdrop ở seller Head-->
+          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel" style="
+                      background: -webkit-linear-gradient(
+                        #ce0909,
+                        rgb(8, 49, 138)
+                      );
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                    ">
+                    DEVEX Mark
+                  </h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="text-start col-sm-12 col-lg-6" style="overflow: hidden; text-overflow: ellipsis">
+                      <strong class="me-2">Địa chỉ ví:</strong>
+                      <span id="idWallet">{{wallet.loadDWalletAdmin.id}}</span>
+                    </div>
+
+                    <div class="text-start">
+                      <span class="text-start"> <strong>Số Dư: </strong> </span>
+                      <strong class="fs-6 ms-2" style="color: #ff0821bb; font-weight: 600">
+                        {{wallet.loadDWalletAdmin.balance | currency: '':0}} VND
+                      </strong>
+                    </div>
+                    <div class="text-start mt-3 d-flex align-items-center">
+                      <div class="col-6">
+                        <h3>Lịch sử giao dịch</h3>
+                      </div>
+                      <div class="col-6">
+                        <select class="form-select form-select-sm" aria-label="Small select example" id="filterColumn2">
+                          <option selected value="1">Tất Cả</option>
+                          <option value="2">Biến động tăng</option>
+                          <option value="3">Biến động giảm</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <table id="wallet" class="table">
+                        <thead>
+                          <tr class="text-center">
+                            <th scope="col">ID</th>
+                            <th style="width: 10.3rem" scope="col">
+                              Người Gửi
+                            </th>
+                            <th style="width: 10.3rem" scope="col">
+                              Người Nhận
+                            </th>
+                            <th style="width: 10.3rem" scope="col">
+                              Thời Gian
+                            </th>
+                            <th style="width: 10.3rem" scope="col">
+                              Biến Động
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end modal -->
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-6"><strong>Nạp Tiền:</strong></div>
+        <div class="col-6 text-end p-0">
+          <button class="btn_view border-0 badge rounded-pill" style="background-color: rgba(7, 25, 212, 1)"
+            data-bs-toggle="modal" data-bs-target="#exampleModal1">
+            <span class="fs-6">VnPay</span>
+
+          </button>
+          <!-- ghi đè .modal-backdrop ở seller Head-->
+          <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel" style="
+                      background: -webkit-linear-gradient(
+                        #ce0909,
+                        rgb(8, 49, 138)
+                      );
+                      -webkit-background-clip: text;
+                      -webkit-text-fill-color: transparent;
+                    ">
+                    DEVEX Mark
+                  </h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="/sumbitRecharge" method="post">
+                    <div class="row">
+                      <div class="col-md-5 mb-3">
+                        <div class="input-group align-items-center">
+                          <label for="amount" class="form-label">Số Tiền:</label>
+                          <input type="number" class="ms-2 form-control" id="amount" name="amount"
+                            placeholder="Nhập số tiền" oninput="formatCurrency(this)">
+                          <div class="input-group-append">
+                            <span class="input-group-text">VND</span>
+                          </div>
+                        </div>
+                        <span id="formattedAmount" class="text-muted" style="color: red"></span>
+                      </div>
+
+                      <!-- Add more input fields if needed -->
+
+                      <div class="col-md-6 mb-3">
+                        <label for="submitBtn" class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary form-control" id="submitBtn">Nạp Tiền</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- end modal -->
+        </div>
+      </div>
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <div class="input-group" data-widget="sidebar-search">
+          <input class="form-control form-control-sidebar" type="search" placeholder="Tìm kiếm" aria-label="Search" />
+          <div class="input-group-append">
+            <button class="btn btn-sidebar">
+              <i class="fas fa-search fa-fw"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <!--TIÊU ĐỀ MANAGER-->
+          <li class="nav-header">
+            <h5 class="brand-text">Quản lí</h5>
+          </li>
+          <!--END TIÊU ĐỀ MANAGER -->
+          <!-- Menu-1 -->
+          <li class="nav-item">
+            <a href="/devex/user" class="nav-link text-white" style="
+              background: linear-gradient(
+                90deg,
+                rgba(25, 38, 186, 1) 0%,
+                rgba(57, 151, 184, 1) 54%,
+                rgba(0, 212, 255, 1) 100%
+              );
+            ">
+              <i class="nav-icon fa-solid fa-user"></i>
+              <p>Người dùng <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important">
+              <li class="nav-item border-bottom">
+                <a href="/ad/userManage" class="nav-link">
+                  <p>Danh sách người dùng</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="#" class="nav-link">
+                  <p>Đang phát triển...</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!--END Menu-1 -->
+          <!-- Menu-2 -->
+          <li class="nav-item"><a href="#" class="nav-link text-white"
+              style="background: linear-gradient(90deg, rgba(25, 38, 186, 1) 0%, rgba(57, 151, 184, 1) 54%, rgba(0, 212, 255, 1) 100%);">
+              <i class="nav-icon fa-solid fa-user-tie"></i>
+              <p>
+                Nhà phân phối <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important;">
+              <li class="nav-item border-bottom"><a href="/ad/list/distributor" class="nav-link">
+
+                  <p>Danh sách nhà phân phối</p>
+                </a></li>
+              <li class="nav-item border-bottom"><a href="#" class="nav-link">
+                  <p>Đang phát triển...</p>
+                </a></li>
+
+            </ul>
+          </li>
+          <!--END Menu-2 -->
+          <!-- Menu-3 -->
+          <!-- Menu-4 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" style="
+              background: linear-gradient(
+                90deg,
+                rgba(25, 38, 186, 1) 0%,
+                rgba(57, 151, 184, 1) 54%,
+                rgba(0, 212, 255, 1) 100%
+              );
+            ">
+              <i class="nav-icon fas fa-solid fa-hourglass-half"></i>
+              <p>Chương Trình <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important">
+              <li class="nav-item border-bottom">
+                <a href="/ad/flashSales" class="nav-link">
+                  <p>Flash Sales</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="/ad/voucher/form" class="nav-link">
+                  <p>Khuyến mãi Devex</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="/ad/voucher/formShip" class="nav-link">
+                  <p>Khuyến mãi Ship</p>
+                </a>
+              </li>
+
+              <li class="nav-item border-bottom">
+                <a href="/ad/voucher/manage" class="nav-link">
+                  <p>Kho mã khuyến mãi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!--END Menu-4 -->
+          <!-- Menu-4 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" style="
+              background: linear-gradient(
+                90deg,
+                rgba(25, 38, 186, 1) 0%,
+                rgba(57, 151, 184, 1) 54%,
+                rgba(0, 212, 255, 1) 100%
+              );
+            ">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Sản phẩm <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important">
+              <li class="nav-item border-bottom">
+                <a href="/ad/categorymanage" class="nav-link">
+                  <p>Quản lý danh mục</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="/ad/productmanage" class="nav-link">
+                  <p>Quản lý sản phẩm</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="/ad/requestproduct" class="nav-link">
+                  <p>Danh sách duyệt bán</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!--END Menu-4 -->
+          <!-- Menu-5 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" style="
+              background: linear-gradient(
+                90deg,
+                rgba(25, 38, 186, 1) 0%,
+                rgba(57, 151, 184, 1) 54%,
+                rgba(0, 212, 255, 1) 100%
+              );
+            ">
+              <i class="nav-icon fa-solid fa-cart-flatbed"></i>
+              <p>Quản lí đơn hàng <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important">
+              <li class="nav-item border-bottom">
+                <a href="/ad/order" class="nav-link">
+                  <p>Danh sách đơn hàng</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="/ad/refund" class="nav-link">
+                  <p>Trả hàng/Hoàn tiền</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!--END Menu-5 -->
+          <!-- Menu-9 -->
+          <li class="nav-item">
+            <a href="#" class="nav-link text-white" style="
+              background: linear-gradient(
+                90deg,
+                rgba(25, 38, 186, 1) 0%,
+                rgba(57, 151, 184, 1) 54%,
+                rgba(0, 212, 255, 1) 100%
+              );
+            ">
+              <i class="nav-icon fa-solid fa-hashtag"></i>
+              <p>Khác <i class="right fas fa-angle-left"></i></p>
+            </a>
+            <ul class="nav nav-treeview bg-light" style="background-color: rgba(57, 151, 184, 0.2) !important">
+              <li class="nav-item border-bottom">
+                <a href="./index.html" class="nav-link">
+                  <p>Đang phát triển ...</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="./index2.html" class="nav-link">
+                  <p>Đang phát triển ...</p>
+                </a>
+              </li>
+              <li class="nav-item border-bottom">
+                <a href="./index3.html" class="nav-link">
+                  <p>Đang phát triển ...</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!--END Menu-9 -->
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

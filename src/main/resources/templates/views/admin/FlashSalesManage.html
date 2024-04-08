@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <!-- <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css"
+      />
+
+      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script> -->
+  <style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      padding: 0 !important;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="myController">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+
+    <!-- <div
+          th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"
+        ></div> -->
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0" th:text="${titleType}"></h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Flash Sales</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.container-fluid -->
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row" style="
+                  border: 1px solid rgb(0, 0, 0, 0.2);
+                  border-radius: 24px;
+                  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+                  background-color: rgb(255, 255, 255, 0.5);
+                ">
+            <!--modal validate-->
+            <div class="modal fade" id="modalValidate" role="dialog">
+              <div class="modal-dialog">
+                <div class="modal-content" style="margin-top: 20%">
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    <div class="text-left mt-2" style="margin-bottom: 60px">
+                      <h5 id="message-validation"></h5>
+                    </div>
+                    <div class="text-center mb-2">
+                      <button class="btn btn-danger w-100" data-dismiss="modal">
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--modal validate-->
+            <form class="mt-3" name="form">
+              <div class="date d-flex justify-content-evenly align-items-center">
+                <div class="mt-1">
+                  <label for="date" class="form-label">Ngày Tháng:</label>
+                  <input class="rounded-pill" type="date" id="date" name="date" ng-model="formData.date" required />
+                  <div ng-show="form.formData.date.$dirty && form.formData.date.$error.$invalid">
+                    tháng!
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <label for="firstTime" class="form-label">Thời Gian Bắt Đầu:
+                  </label>
+                  <input class="rounded-pill" type="time" id="firstTime" name="firstTime" ng-model="formData.firstTime"
+                    required />
+                </div>
+                <div class="mt-1">
+                  <label for="lastTime" class="form-label">Thời Gian kết Thúc:
+                  </label>
+                  <input class="rounded-pill" type="time" id="lastTime" name="lastTime" ng-model="formData.lastTime"
+                    required />
+                </div>
+                <button type="submit" class="btn btn-primary" ng-click="saveData()">
+                  Lưu
+                </button>
+              </div>
+            </form>
+            <div class="row mt-3">
+              <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="form-label">Flash Sales <i class="fa-solid fa-bolt"></i></h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <!-- TABLE USER LIST -->
+                    <table id="FlashTime" class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Thời Gian Bắt Đầu</th>
+                          <th>Thời Gian Kết Thúc</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table-body">
+                        <!-- <div>
+													<div>
+														<tr ng-repeat="time in data">
+														
+															<td >{{time.firstTime }}  </td>
+															<td >{{time.firstTime }}</td>
+
+														</tr>
+		
+													</div>
+	
+												</div> -->
+                      </tbody>
+                    </table>
+                    <!-- ..END TABLE USER LIST.. -->
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+
+  <!-- <script src="/admin/dist/js/handMade.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script> -->
+  <script th:src="@{/js/FlashSalesTime.js}"></script>
+  <script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+</body>
+
+</html>
+
+</html>

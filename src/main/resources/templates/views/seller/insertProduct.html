@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+	<!-- daterange picker -->
+	<link rel="stylesheet" href="/admin/plugins/daterangepicker/daterangepicker.css">
+	<!-- iCheck for checkboxes and radio inputs -->
+	<link rel="stylesheet" href="/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- Bootstrap Color Picker -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+	<!-- Tempusdominus Bootstrap 4 -->
+	<link rel="stylesheet" href="/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+	<!-- Bootstrap4 Duallistbox -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+	<!-- BS Stepper -->
+	<link rel="stylesheet" href="/admin/plugins/bs-stepper/css/bs-stepper.min.css">
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+		<div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0">Thêm sản phẩm</h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/seller/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active" th:text="${titleType}"></li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content" ng-controller="sellerproduct">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<h5>Thông tin sản phẩm</h5>
+							<!-- Thông tin sản phẩm -->
+							<form method="post" name="myForm" enctype="multipart/form-data">
+								<div class="row">
+									<div class="card">
+										<label class="p-0">Hình ảnh</label>
+										<!-- Hình ảnh -->
+										<div class="row">
+											<div id="imgProduct">
+
+											</div>
+											<div class="">
+												<!-- Chọn file -->
+												<input id="fileInput" style="display: none;" type="file"
+													multiple="multiple" name="files"
+													onchange="angular.element(this).scope().uploadimg(this.files)"
+													ng-model="files">
+												<button class="btn btn-primary mb-2"
+													ng-click="openFilePicker()">Thêm</button>
+												<div class="text-danger" ng-show="files.length === 0">Vui lòng tải lên
+													ít nhất một hình ảnh</div>
+												<!-- END chọn file -->
+											</div>
+											<!-- END Hiển thị hình ảnh -->
+										</div>
+										<!-- END Hình ảnh -->
+									</div>
+								</div>
+
+								<!-- Thông tin sản phẩm -->
+								<div class="row">
+									<div class="card p-3">
+										<!-- Tên sản phẩm -->
+										<div class="form-group">
+											<label>Tên sản phẩm</label>
+											<input class="form-control" ng-model="form.name"
+												placeholder="Nhập tên sản phẩm" name="productName" ng-required="true">
+											<div class="text-danger"
+												ng-show="myForm.productName.$dirty && myForm.productName.$error.required">
+												Vui lòng nhập tên sản phẩm</div>
+										</div>
+										<!-- END Tên sản phẩm -->
+
+										<!-- COMBOBOX AND SEARCH -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Thương hiệu sản phẩm</label>
+												<select id="brands" class="form-control select2" style="width: 100%;" ng-model="selectedbrand"
+													ng-options="brand.id as brand.name for brand in brands">
+												</select>
+											</div>
+										</div>
+										<!-- END COMBOBOX SEARCH -->
+										<!-- Loại sản phẩm -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Loại sản phẩm</label>
+												<select id="categorys" class="form-control select2" style="width: 100%;"
+													ng-change="getCategoryDetails()" ng-model="selectedCategory"
+													ng-options="category.id as category.name for category in categorys">
+												</select>
+											</div>
+											<div class="form-group col-6">
+												<label>Loại chi tiết</label>
+												<select id="categorydt" class="form-control select2"
+													style="width: 100%;" ng-model="selectedCategoryDetail"
+													ng-options="catedt.id as catedt.name for catedt in categorydetail">
+												</select>
+											</div>
+										</div>
+										<!-- END Loại sản phẩm -->
+										<div class="form-group">
+											<label for="exampleFormControlTextarea1">Mô tả sản phẩm</label>
+											<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+												ng-model="form.description"></textarea>
+										</div>
+										<table class="table table-bordered text-center" id="data-table">
+											<thead>
+												<tr>
+													<th style="width: 10px">Kích cỡ</th>
+													<th>Màu sắc</th>
+													<th>Giá tiền</th>
+													<th style="width: 40px">Số lượng hàng</th>
+												</tr>
+											</thead>
+											<tbody id="table-body" ng-repeat="item in variant" ng-form="itemForm">
+												<tr>
+													<td><input type="text" ng-model="item.size"
+															placeholder="Kích thước sản phẩm"></td>
+													<td>
+														<input type="text" ng-model="item.color" name="color"
+															ng-required="true" placeholder="Màu sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.color.$dirty && itemForm.color.$error.required">
+															Vui lòng nhập màu sắc</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.price" name="productPrice"
+															min="1000" ng-min="1000" ng-required="true"
+															placeholder="Giá sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.min">
+															Giá tiền không được thấp hơn 1000</div>
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.required">
+															Vui lòng nhập giá tiền</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.quantity"
+															name="productQuantity" min="1" ng-min="1" ng-required="true"
+															placeholder="Số lượng sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.min">
+															Số lượng không được thấp hơn 1</div>
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.required">
+															Vui lòng nhập số lượng</div>
+													</td>
+													<td>
+														<button class="btn btn-danger"
+															ng-click="deleteproductvariant(item.id)"
+															ng-disabled="checkdeletepv === true">
+															<i class="fa-regular fa-trash-can"></i>
+														</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<button id="add-row-btn" class="btn btn-primary mt-2" ng-click="addRow()">
+											Thêm chi tiết sản phẩm</button>
+									</div>
+								</div>
+							</form>
+							<!-- END Thông tin sản phẩm -->
+
+							<div class="text-center mb-3">
+								<button class="btn btn-primary" ng-click="save()"
+									ng-disabled="myForm.$invalid || files.length === 0">Thêm sản phẩm</button>
+							</div>
+
+							<!-- Model success save -->
+							<button id="ss" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"
+												ng-click="chuyentrang()">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Thêm sản phẩm thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="chuyentrang()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success save -->
+
+							<!-- Model false save -->
+							<button id="fs" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Thêm sản phẩm thất bại, Vui lòng kiểm tra lại dữ liệu của bạn!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false save -->
+
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+		<!-- Select2 -->
+		<script src="/admin/plugins/select2/js/select2.full.min.js"></script>
+		<!-- Bootstrap4 Duallistbox -->
+		<script src="/admin/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+		<!-- InputMask -->
+		<script src="/admin/plugins/moment/moment.min.js"></script>
+		<script src="/admin/plugins/inputmask/jquery.inputmask.min.js"></script>
+		<!-- dropzonejs -->
+		<script src="/admin/plugins/dropzone/min/dropzone.min.js"></script>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-resource.js"></script>
+
+	<!-- <script src="app.js"></script> -->
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<script src="/js/seller/insertProduct.js"></script>
+	<script src="/js/seller/Dwallet.js"></script>
+</body>
+
+</html>

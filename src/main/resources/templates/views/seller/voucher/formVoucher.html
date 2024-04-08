@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+  <style>
+    /* CSS để giới hạn chiều rộng của cột 'Product Name' */
+    .product-name {
+      max-width: 100px;
+      /* Đặt giới hạn chiều rộng, ví dụ 200px */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+    <div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+    <div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Tạo mã khuyến mãi</h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                  <a href="/seller/home">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Mã khuyến mãi</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- The Modal -->
+              <div class="modal fade" id="modalValidate" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content" style="margin-top: 20%">
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                      <div class="text-left mt-2" style="margin-bottom: 60px">
+                        <h5 id="message-validation"></h5>
+                      </div>
+                      <div class="text-center mb-2">
+                        <button class="btn btn-danger w-100" data-dismiss="modal">
+                          OK
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <form action="/seller/voucher/create" method="post" id="new-voucher">
+                <!-- /.card -->
+                <div class="card card-default">
+                  <div class="card-header">
+                    <h3 class="card-title">Thông tin cơ bản</h3>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="form-group row">
+                          <div class="col-sm-7">
+                            <label for="inputName" class="col-form-label">Tên Voucher</label>
+                            <input type="text" class="form-control" id="inputName" placeholder="Tên của mã khuyến mãi"
+                              name="name" />
+                          </div>
+
+                          <div class="col-sm-5">
+                            <label for="inputCode" class="col-form-label">Mã</label>
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="shop-id" th:text="${code}"></span>
+                              </div>
+                              <input type="hidden" id="inputCode" name="code" />
+                              <input type="text" class="form-control" style="text-transform: uppercase" maxlength="10"
+                                oninput="blockVietnameseInput(this)" />
+                              <div class="input-group-append">
+                                <span class="input-group-text"><span id="charCount">0</span>/10</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="inputQuantity" class="col-3 col-sm-1 col-form-label">Số lượng</label>
+                          <input type="number" style="display: inline-block" class="form-control col-4 col-sm-2"
+                            max="50" min="1" id="inputQuantity" name="quantity" />
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-7" style="display: inherit">
+                            <div>
+                              <button type="button" style="
+                                      border-top-right-radius: 0;
+                                      border-bottom-right-radius: 0;
+                                    " class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+                                Action
+                              </button>
+                              <ul class="dropdown-menu" id="menu-type-sale">
+                                <li class="dropdown-item" id="by-price">
+                                  Theo số tiền
+                                </li>
+                                <li class="dropdown-item" id="by-percent">
+                                  Theo phần trăm
+                                </li>
+                              </ul>
+                            </div>
+                            <!-- /btn-group -->
+                            <input name="rangePriceSale" id="rate-sale" pattern="[0-9]*" maxlength="13"
+                              oninput="this.value = this.value.replace(/[^0-9]/g, '');" type="text"
+                              placeholder="Mức giảm ít nhất 1000đ" class="form-control" style="
+                                    border-top-left-radius: 0;
+                                    border-bottom-left-radius: 0;
+                                  " />
+                          </div>
+                          <div class="col-sm-5">
+                            <input name="minPriceSale" pattern="[0-9]*" type="text"
+                              oninput="this.value = this.value.replace(/[^0-9]/g, ''); validateMinPrice(this);"
+                              class="form-control" id="inputMinPrice"
+                              placeholder="Số tiền tối thiểu ít nhất là 1000đ" />
+                          </div>
+                        </div>
+
+                        <!-- Date and time range -->
+                        <div class="form-group">
+                          <label>Thời gian</label>
+
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"><i class="far fa-clock"></i></span>
+                            </div>
+                            <input type="text" class="form-control float-right" id="reservationtime" name="time" />
+                          </div>
+                          <!-- /.input group -->
+                        </div>
+
+                        <div class="form-group">
+                          <label for="inputDescription">Mô tả chi tiết</label>
+                          <textarea class="form-control" rows="5" id="inputDescription"
+                            placeholder="Chi tiết về mã khuyến mãi" name="description"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                          <label>Sản phẩm áp dụng</label>
+                          <select class="duallistbox" multiple="multiple" name="products" id="inputProds">
+                            <option th:each="option : ${listProd}" th:value="${option.id}" th:text="${option.name}">
+                            </option>
+                          </select>
+                        </div>
+
+                        <!-- /.form-group -->
+                      </div>
+                      <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                  </div>
+                  <!-- /.card-body -->
+                  <div class="card-footer">
+                    <span class="btn btn-success float-right" id="btn-create-voucher" onclick="submitFormVoucher()">
+                      Xác nhận
+                    </span>
+                  </div>
+                </div>
+              </form>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+    <div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+  </div>
+</body>
+<script src="/admin/dist/js/handMade.js"></script>
+<script>
+  var allVoucher = [];
+  // Gửi yêu cầu sử dụng fetch
+  fetch("http://localhost:8888/rest/seller/voucher/list")
+    .then(response => {
+      // Kiểm tra xem yêu cầu có thành công không
+      if (!response.ok) {
+        throw new Error("Yêu cầu không thành công. Mã lỗi: " + response.status);
+      }
+      // Chuyển đổi dữ liệu nhận được sang JSON
+      return response.json();
+    })
+    .then(data => {
+      // Xử lý dữ liệu ở đây
+      allVoucher = data;
+      console.log(allVoucher);
+    })
+    .catch(error => {
+      // Xử lý lỗi ở đây
+      console.error(error);
+    });
+
+  function submitFormVoucher() {
+    let nameVoucher = document.getElementById("inputName");
+    let code = document.getElementById("inputCode");
+    let quantity = document.getElementById("inputQuantity");
+    let rateSale = document.getElementById("rate-sale");
+    let minPrice = document.getElementById("inputMinPrice");
+    let description = document.getElementById("inputDescription");
+    let prods = document.getElementById("inputProds");
+    let form = document.getElementById("new-voucher");
+    let message = document.getElementById("message-validation");
+
+
+
+    if (nameVoucher.value === "") {
+      message.innerText = "Vui lòng cung cấp tên mã khuyến mãi!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (code.value === "" || code.value.length < 15) {
+      message.innerText = "Vui lòng cung cấp đầy đủ code khuyến mãi!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (checkCodeVoucher(code.value)) {
+      message.innerText = "Code khuyến mãi đã tồn tại!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (quantity.value === "") {
+      message.innerText = "Vui lòng cung cấp số lượng!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (rateSale.value === "") {
+      message.innerText = "Vui lòng cung cấp giá giảm!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (minPrice.value === "" || minPrice.value < 1000) {
+      message.innerText = "Vui lòng cung cấp giá tối thiểu khuyến mãi!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (description.value === "") {
+      message.innerText = "Vui lòng cung cấp mô tả!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else if (prods.value.length === 0) {
+      message.innerText = "Vui lòng chọn sản phẩm muốn áp dụng!";
+      $("#modalValidate").modal("show");
+      return false;
+    } else {
+      form.submit();
+    }
+
+
+  }
+  function checkCodeVoucher(code) {
+    return allVoucher.some((voucher) => voucher.code === code);
+  }
+
+
+  const app = angular.module("app", []);
+</script>
+
+<script src="/js/seller/Dwallet.js"></script>
+<script>
+  function blockVietnameseInput(input) {
+    // Lấy giá trị của trường input
+    let text = input.value;
+
+    // Loại bỏ các ký tự tiếng Việt
+    let regex = /[\u00C0-\u1EF9]/g; // Dãy Unicode cho tiếng Việt
+    text = text.replace(regex, "");
+
+    // Cập nhật giá trị của trường input
+    input.value = text;
+    // Đếm độ dài mã
+    const charCountElement = document.getElementById("charCount");
+    const currentLength = input.value.length;
+    charCountElement.textContent = currentLength;
+    // Lấy phần tử có ID "shop-id"
+    var shopIdElement = document.getElementById("shop-id");
+
+    // Lấy nội dung của phần tử
+    var shopIdContent = shopIdElement.textContent;
+    // Cập nhật giá trị của inputCode
+    const inputCodeElement = document.getElementById("inputCode");
+
+    inputCodeElement.value = shopIdContent + input.value.toUpperCase();
+    console.log(inputCodeElement.value);
+  }
+</script>
+<script>
+  // Lấy phần tử dropdown theo ID
+  var dropdown = document.getElementById("menu-type-sale");
+
+  // Lấy các phần tử con là các lựa chọn
+  var options = dropdown.querySelectorAll(".dropdown-item");
+
+  // Thiết lập sự kiện khi một lựa chọn được chọn
+  options.forEach(function (option) {
+    option.addEventListener("click", function () {
+      // Cập nhật nội dung của nút dựa trên lựa chọn
+      document.querySelector(".dropdown-toggle").textContent =
+        option.textContent;
+    });
+  });
+
+  // Thiết lập giá trị mặc định
+  document.querySelector(".dropdown-toggle").textContent =
+    options[0].textContent;
+
+  var rateSaleInput = document.getElementById("rate-sale");
+
+  rateSaleInput.addEventListener("input", function () {
+    var value = parseInt(rateSaleInput.value);
+    if (
+      dropdown.querySelector("#by-percent").classList.contains("active")
+    ) {
+      if (value < 1) {
+        rateSaleInput.value = "1";
+      } else if (value > 100) {
+        rateSaleInput.value = "100";
+      }
+    }
+  });
+
+  dropdown.addEventListener("click", function (e) {
+    if (e.target && e.target.id === "by-percent") {
+      rateSaleInput.setAttribute("placeholder", "Mức giảm ít nhất 1%");
+      rateSaleInput.setAttribute("maxlength", "2");
+      rateSaleInput.value = ""; // Xóa nội dung trong ô input
+    } else {
+      rateSaleInput.setAttribute("placeholder", "Mức giảm ít nhất 1000đ");
+      rateSaleInput.setAttribute("maxlength", "13");
+      rateSaleInput.value = ""; // Xóa nội dung trong ô input
+    }
+  });
+</script>
+
+<script>
+  function validateMinPrice(input) {
+    var value = parseInt(input.value, 10);
+    var confirmButton = document.getElementById("btn-create-voucher");
+
+    if (isNaN(value) || value < 1000) {
+      input.classList.remove("is-valid");
+      input.classList.add("is-invalid");
+      //   confirmButton.disabled = true;
+    } else {
+      input.classList.remove("is-invalid");
+      input.classList.add("is-valid");
+      //   confirmButton.disabled = false;
+
+    }
+  }
+</script>
+
+<script>
+  $(function () {
+    //Bootstrap Duallistbox
+    $(".duallistbox").bootstrapDualListbox();
+    //Date range picker with time picker
+    $("#reservationtime").daterangepicker({
+      timePicker: true,
+      timePickerIncrement: 30,
+      locale: {
+        format: "MM/DD/YYYY hh:mm A",
+      },
+    });
+  });
+</script>
+
+</html>
+
+</html>

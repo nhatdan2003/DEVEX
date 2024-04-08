@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+	<div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+	<!-- Thêm thư viện Angular -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+		integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.js"></script>
+	<style>
+		/* CSS để giới hạn chiều rộng của cột 'Product Name' */
+		.name-prod {
+			overflow: hidden;
+			display: -webkit-box;
+			text-overflow: ellipsis;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+		}
+	</style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="voucher-ctrl">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+		<div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0">Quản lí mã khuyến mãi</h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/seller/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active">Mã khuyến mãi</li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header p-2">
+									<ul class="nav nav-pills">
+										<li class="nav-item"><a class="nav-link active" href="#all"
+												data-toggle="tab">Tất cả</a></li>
+										<li class="nav-item"><a class="nav-link" href="#early" data-toggle="tab">Sắp
+												diễn ra</a></li>
+										<li class="nav-item"><a class="nav-link" href="#doing" data-toggle="tab">Đang
+												diễn ra</a></li>
+										<li class="nav-item"><a class="nav-link" href="#finish" data-toggle="tab">Đã
+												kết thúc</a></li>
+										<li class="nav-item"><a class="nav-link" href="#disabled" data-toggle="tab">Vô
+												hiệu</a></li>
+									</ul>
+								</div>
+								<!-- The Modal -->
+								<div class="modal fade" id="deleteVoucher" role="dialog">
+									<div class="modal-dialog">
+										<div class="modal-content" style="margin-top: 20%;">
+
+											<!-- Modal body -->
+											<div class="modal-body">
+												<div class="text-left mt-2" style="margin-bottom: 60px;">
+													<h5>Bạn chắc chắn vô hiệu Voucher này?</h5>
+												</div>
+												<div class="text-center mb-2 d-flex"
+													style="justify-content: space-around;">
+													<button class="btn btn-success w-25" ng-click="voucher.remove()">
+														Đồng ý</button>
+													<button data-dismiss="modal" class="btn btn-warning w-25">
+														Quay lại</button>
+												</div>
+
+											</div>
+										</div>
+									</div>
+
+								</div>
+								<!-- The Modal -->
+								<div class="modal fade" id="showDetail" style="max-height: 90vh;">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<!-- Modal Header -->
+											<div class="modal-header" style="background: bisque;">
+												<h4 class="modal-title" style="margin: 0 auto;">Thông tin
+													Voucher</h4>
+											</div>
+
+											<!-- Modal body -->
+											<div class="modal-body" style="max-height: 400px; overflow-y: scroll;">
+												<div class="info-voucher">
+													<div class="form-group">
+														<label for="name">Tên
+															Voucher</label>
+														<p>{{ voucher.itemDetail.name }}</p>
+													</div>
+													<div class="form-group">
+														<label for="code">Code:</label>
+														<span> {{ voucher.itemDetail.code }}</span>
+													</div>
+													<div class="form-group">
+														<label for="time">Thời gian sử dụng
+															mã</label>
+														<p>{{ formatDateTimeToDDMMYYYYHHMM(voucher.itemDetail.startDate)
+															}} - {{
+															formatDateTimeToDDMMYYYYHHMM(voucher.itemDetail.endDate) }}
+														</p>
+													</div>
+													<div class="form-group">
+														<label for="discount">Ưu đãi:</label>
+														<span> Giảm
+															<span ng-if="voucher.itemDetail.discount < 1"> {{
+																voucher.itemDetail.discount * 100 }}%</span>
+															<span ng-if="voucher.itemDetail.discount >= 1"> {{
+																formatMoney(voucher.itemDetail.discount) }}<sup
+																	style="font-size: 10px;">đ</sup></span></span>
+													</div>
+													<div class="form-group">
+														<label for="quantity">Số lượng Voucher:</label><span> {{
+															voucher.itemDetail.quantity }}</span>
+													</div>
+													<div class="form-group">
+														<label for="description">Mô tả chi
+															tiết</label>
+														<p>{{ voucher.itemDetail.description }}</p>
+													</div>
+													<div class="form-group"
+														ng-if="voucher.itemDetail.categoryVoucher.id !== 100004">
+														<label for="description">Phân loại: </label>
+														<span>{{ voucher.itemDetail.categoryVoucher.name }}</span>
+													</div>
+
+													<div class="form-group"
+														ng-if="voucher.itemDetail.categoryVoucher.id === 100004">
+														<label>Các sản phẩm áp dụng</label>
+														<select multiple class="custom-select">
+															<option ng-repeat="prod in voucher.prodVoucher">{{
+																prod.product.name }}</option>
+														</select>
+													</div>
+													<!-- <div class="form-group">
+															<label>Các sản phẩm áp dụng</label>
+															<select multiple class="custom-select">
+																<option ng-repeat="prod in voucher.prodVoucher">{{
+																	prod.product.name }}</option>
+															</select>
+														</div> -->
+
+												</div>
+												<hr>
+
+											</div>
+											<div class="text-center modal-footer">
+												<button class="btn btn-success pl-5 pr-5" data-dismiss="modal">
+													OK
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /.card-header -->
+								<div class="card-body">
+									<div class="tab-content">
+										<div class="tab-pane active" id="all">
+											<div class="row">
+												<!-- ./col -->
+												<div class="col-lg-4 col-6" ng-repeat="item in voucher.items">
+													<!-- small card -->
+													<div class="small-box bg-warning">
+														<div class="inner">
+															<h4 class="name-prod" ng-bind="item.name"></h4>
+															<span style="font-size: 14px; font-weight: 500;">Giảm
+																<span ng-if="item.discount < 1">{{ item.discount *
+																	100 }}%</span>
+																<span ng-if="item.discount >= 1">{{
+																	formatMoney(item.discount) }}<sup
+																		style="font-size: 10px;">đ</sup></span></span><br>
+															<span style="font-size: 12px; font-weight: 500;">HSD:
+																<span>{{ formatDateToDDMMYYYY(item.endDate)
+																	}}</span></span>
+														</div>
+														<div class="icon">
+															<i class="fas fa-gift"></i>
+														</div>
+														<a href="#" class="small-box-footer"
+															ng-click="voucher.openModalDetail(item)">
+															Chi tiết <i class="fas fa-arrow-circle-right"></i>
+														</a>
+
+													</div>
+												</div>
+												<!-- ./col -->
+
+											</div>
+										</div>
+										<!-- /.tab-pane -->
+										<div class="tab-pane" id="early">
+											<div class="row">
+												<!-- ./col -->
+												<div class="col-lg-4 col-6" ng-repeat="item in voucher.itemsEarly">
+													<!-- small card -->
+													<div class="small-box bg-warning">
+														<div class="inner">
+															<h4 class="name-prod" ng-bind="item.name"></h4>
+															<span style="font-size: 14px; font-weight: 500;">Giảm
+																<span ng-if="item.discount < 1">{{ item.discount *
+																	100 }}%</span>
+																<span ng-if="item.discount >= 1">{{
+																	formatMoney(item.discount) }}<sup
+																		style="font-size: 10px;">đ</sup></span></span><br>
+															<span style="font-size: 12px; font-weight: 500;">HSD:
+																<span>{{ formatDateToDDMMYYYY(item.endDate)
+																	}}</span></span>
+														</div>
+														<div class="icon">
+															<i class="fas fa-gift"></i>
+														</div>
+														<a href="#" class="small-box-footer"
+															ng-click="voucher.openModalDetail(item)">
+															Chi tiết <i class="fas fa-arrow-circle-right"></i>
+														</a>
+														<a href="#" class="small-box-footer bg-light "
+															ng-click="voucher.openModalRemove(item)">
+															<i class="fas fa-trash text-danger"></i>
+														</a>
+
+
+													</div>
+												</div>
+												<!-- ./col -->
+
+											</div>
+										</div>
+										<!-- /.tab-pane -->
+										<div class="tab-pane" id="doing">
+											<div class="row">
+												<!-- ./col -->
+												<div class="col-lg-4 col-6" ng-repeat="item in voucher.itemsDoing">
+													<!-- small card -->
+													<div class="small-box bg-warning">
+														<div class="inner">
+															<h4 class="name-prod" ng-bind="item.name"></h4>
+															<span style="font-size: 14px; font-weight: 500;">Giảm
+																<span ng-if="item.discount < 1">{{ item.discount *
+																	100 }}%</span>
+																<span ng-if="item.discount >= 1">{{
+																	formatMoney(item.discount) }}<sup
+																		style="font-size: 10px;">đ</sup></span></span><br>
+															<span style="font-size: 12px; font-weight: 500;">HSD:
+																<span>{{ formatDateToDDMMYYYY(item.endDate)
+																	}}</span></span>
+														</div>
+														<div class="icon">
+															<i class="fas fa-gift"></i>
+														</div>
+														<a href="#" class="small-box-footer"
+															ng-click="voucher.openModalDetail(item)">
+															Chi tiết <i class="fas fa-arrow-circle-right"></i>
+														</a>
+														<a href="#" class="small-box-footer bg-light "
+															ng-click="voucher.openModalRemove(item)">
+															<i class="fas fa-trash text-danger"></i>
+														</a>
+
+
+													</div>
+												</div>
+												<!-- ./col -->
+
+											</div>
+										</div>
+										<!-- /.tab-pane -->
+										<div class="tab-pane" id="finish">
+											<div class="row">
+												<!-- ./col -->
+												<div class="col-lg-4 col-6" ng-repeat="item in voucher.itemsFinish">
+													<!-- small card -->
+													<div class="small-box bg-warning">
+														<div class="inner">
+															<h4 class="name-prod" ng-bind="item.name"></h4>
+															<span style="font-size: 14px; font-weight: 500;">Giảm
+																<span ng-if="item.discount < 1">{{ item.discount *
+																	100 }}%</span>
+																<span ng-if="item.discount >= 1">{{
+																	formatMoney(item.discount) }}<sup
+																		style="font-size: 10px;">đ</sup></span></span><br>
+															<span style="font-size: 12px; font-weight: 500;">HSD:
+																<span>{{ formatDateToDDMMYYYY(item.endDate)
+																	}}</span></span>
+														</div>
+														<div class="icon">
+															<i class="fas fa-gift"></i>
+														</div>
+														<a href="#" class="small-box-footer"
+															ng-click="voucher.openModalDetail(item)">
+															Chi tiết <i class="fas fa-arrow-circle-right"></i>
+														</a>
+														<a href="#" class="small-box-footer bg-light "
+															ng-click="voucher.openModalRemove(item)">
+															<i class="fas fa-trash text-danger"></i>
+														</a>
+
+
+													</div>
+												</div>
+												<!-- ./col -->
+
+											</div>
+										</div>
+										<!-- /.tab-pane -->
+										<div class="tab-pane" id="disabled">
+											<div class="row">
+												<!-- ./col -->
+												<div class="col-lg-4 col-6" ng-repeat="item in voucher.itemsDisabled">
+													<!-- small card -->
+													<div class="small-box bg-warning">
+														<div class="inner">
+															<h4 class="name-prod" ng-bind="item.name"></h4>
+															<span style="font-size: 14px; font-weight: 500;">Giảm
+																<span ng-if="item.discount < 1">{{ item.discount *
+																	100 }}%</span>
+																<span ng-if="item.discount >= 1">{{
+																	formatMoney(item.discount) }}<sup
+																		style="font-size: 10px;">đ</sup></span></span><br>
+															<span style="font-size: 12px; font-weight: 500;">HSD:
+																<span>{{ formatDateToDDMMYYYY(item.endDate)
+																	}}</span></span>
+														</div>
+														<div class="icon">
+															<i class="fas fa-gift"></i>
+														</div>
+														<a href="#" class="small-box-footer"
+															ng-click="voucher.openModalDetail(item)">
+															Chi tiết <i class="fas fa-arrow-circle-right"></i>
+														</a>
+
+
+													</div>
+												</div>
+												<!-- ./col -->
+
+											</div>
+										</div>
+										<!-- /.tab-pane -->
+									</div>
+									<!-- /.tab-content -->
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.col -->
+				</div>
+				<!-- /.row -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.container-fluid -->
+
+	</div>
+	<!-- /.content-wrapper -->
+
+	<div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+	<div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+	</div>
+	<script th:src="@{/js/seller/voucher.js}"></script>
+	<script src="/js/seller/Dwallet.js"></script>
+</body>
+
+<script src="/admin/dist/js/handMade.js"></script>
+
+</html>

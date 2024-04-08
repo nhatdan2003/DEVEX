@@ -1,0 +1,98 @@
+body {
+	background-repeat: round;
+	background-image: linear-gradient(rgba(255, 255, 255, 0.291),
+		rgba(255, 255, 255, 0.116)), url(/img/banner/bg-login.jpg);
+	height: 100vh;
+}
+
+.login-top {
+	width: 100vw;
+	height: 70px;
+	background-color: rgba(0, 0, 0, 0);
+	padding: 0px 20px;
+	display: flex;
+	align-items: center;
+}
+
+.login-top a {
+	height: 100%;
+}
+
+.login-top img {
+	height: 100%;
+	padding: 7px
+}
+
+.login-box {
+	background-color: rgb(201, 214, 223, 0.899);
+	width: 430px;
+	border-radius: 5px;
+	padding: 40px 50px;
+	color: rgb(30, 32, 34);
+}
+
+.small-text {
+	font-size: 13px;
+}
+
+.form-control {
+	box-shadow: none !important;
+}
+
+.input-group-addon a, .input-group-addon a:hover {
+	color: #333
+}
+
+p a:hover {
+	color: red !important;
+	text-decoration: none;
+}
+
+mark {
+
+	background-color: transparent;
+	padding: 0;
+	color: #dd0a0a;
+}
+
+
+.otp-input {
+	border: none;
+	border-bottom: 2px solid transparent;
+	border-radius: 0px;
+	font-size: 1.1rem;
+	padding: 5px;
+	outline: none !important;
+	font-weight: 600;
+	text-align: center;
+}
+
+.otp-input:active, .otp-input:focus {
+	outline: 0px !important;
+	box-shadow: none !important;
+	border-bottom: 2px solid red !important;
+	outline: none !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+#OTP_Div {
+	display: grid;
+	grid-template-columns:  auto auto auto auto auto auto;
+	grid-gap: 10px;
+	padding: 5%;
+}
+
+.send-again:hover {
+	background-color: green;
+	transition: 0.5s all;
+}

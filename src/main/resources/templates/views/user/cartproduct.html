@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Giỏ Hàng</title>
+	<link class="devex" rel="icon" href="/img/banner/title-icon.png" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+
+	<!--cnd fontawesome-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- Theme style -->
+	<link rel="stylesheet" href="/css/user/userIndex.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css" />
+
+	<!--slick-->
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+		integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<!-- Thêm thư viện jQuery -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+		integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.js"></script>
+	<style>
+		/* tắt phím tăng giảm của input number */
+		input[type="number"]::-webkit-inner-spin-button,
+		input[type="number"]::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		#cartOrderForm {
+			position: sticky;
+			bottom: 0px;
+			z-index: 9;
+		}
+
+		a {
+			text-decoration: none;
+		}
+
+		:focus {
+			outline: 0;
+			border-color: #2260ff;
+			box-shadow: 0 0 0 4px #b5c9fc;
+		}
+
+		.mydict div {
+			display: flex;
+			flex-wrap: wrap;
+			margin-top: 0.5rem;
+			justify-content: center;
+		}
+
+		.mydict input[type="radio"] {
+			clip: rect(0 0 0 0);
+			clip-path: inset(100%);
+			height: 1px;
+			overflow: hidden;
+			position: absolute;
+			white-space: nowrap;
+			width: 1px;
+		}
+
+		.mydict input[type="radio"]:checked+span,
+		.mydict input[type="radio"]:focus+span,
+		.mydict input[type="radio"]:hover+span {
+			box-shadow: 0 0 0 0.0625em #0043ed;
+			background-color: #dee7ff;
+			z-index: 1;
+			color: #0043ed;
+		}
+
+		label span {
+			display: block;
+			cursor: pointer;
+			background-color: #fff;
+			padding: 0.375em .75em;
+			position: relative;
+			margin-left: .0625em;
+			box-shadow: 0 0 0 0.0625em #b5bfd9;
+			letter-spacing: .05em;
+			color: #3e4963;
+			text-align: center;
+			transition: background-color .5s ease;
+		}
+
+		label:first-child span {
+			border-radius: .375em 0 0 .375em;
+		}
+
+		label:last-child span {
+			border-radius: 0 .375em .375em 0;
+		}
+
+		.custom-dropdown {
+			position: absolute;
+			display: none;
+			border: 1px solid #ccc;
+			max-height: 200px;
+			margin-top: 5px;
+			overflow-y: auto;
+			width: 95%;
+			max-width: 760px;
+			background-color: #fff;
+			z-index: 999;
+			border-radius: 12px;
+		}
+
+		/*Css auto complete*/
+		/* Style for the custom dropdown options */
+		.custom-dropdown div {
+			padding: 4px 12px;
+			/* border-bottom: 1px solid #b4b4b4; */
+			cursor: pointer;
+		}
+
+		.custom-dropdown div:hover {
+			background-color: #f2f2f2;
+		}
+	</style>
+</head>
+
+<body ng-app="app" ng-controller="cart-ctrl">
+	<header>
+		<div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+		<div class="container mt-3">
+			<div class="row">
+				<div class="col-12">
+					<span class="content"><a class="path_content" style="font-weight: 700">Trang Chủ</a></span>
+					<span class="path_arrow">
+						<i class="fa-solid fa-chevron-right"></i></span>
+					<span class="content"><a class="path_content" style="font-weight: 700">Giỏ hàng</a></span>
+				</div>
+			</div>
+		</div>
+	</header>
+	<main>
+		<div class="container">
+			<div class="text-dark content_price" style="margin-top: 10px">
+				<span class="container_main_middle-contten"
+					style="color: #2a62b9; margin-left: -25px; font-size: 20px">Giỏ hàng</span>
+			</div>
+		</div>
+		<div ng-repeat="(idShop, shopData) in cart.shopGroups" class="container container_main_middle bg-white mb-4"
+			style="padding: 20px">
+			<!-- Lặp qua các shop và sản phẩm -->
+			<div>
+				<div class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+					<a href="/pageseller/{{idShop}}"
+						class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent btn"
+						type="button">
+						<div class="">
+							<img alt="Avatar Shop" src="/img/account/{{cart.shopGroups[idShop][0].avatarShop}}"
+								class="rounded-circle img-fluid" style="width: 2.5rem" />
+						</div>
+						<!-- Tên shop -->
+						<p class="d-flex align-items-center m-0 ng-binding">
+							{{cart.shopGroups[idShop][0].nameShop}}
+						</p>
+					</a>
+					<div class="text-center d-flex align-items-center">
+						<input class="form-check-input m-0" type="checkbox" value="" id="checkAllProdOfShop"
+							ng-checked="cart.selectedShopIds.indexOf(idShop) != -1"
+							ng-click="cart.toggleShopSelect(idShop)" />
+						<button class="btn btn-transparents">Chọn tất cả</button> |
+						<button ng-click="cart.removeAllOfShop(idShop)" class="btn btn-transparents text-danger">
+							Xóa
+						</button>
+					</div>
+				</div>
+				<!-- Lặp qua các sản phẩm trong cùng một shop -->
+				<div class="row px-3 pb-3 pt-2">
+					<div class="col-md-12">
+						<!--CART -->
+						<div class="border-0 border-top bg-light" ng-repeat="item in cart.shopGroups[idShop]">
+							<div class="card-body p-2 bg-white">
+								<div class="row d-flex justify-content-between align-items-center">
+									<div
+										class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+										<div class="col-4 pe-0">
+											<input class="form-check-input" type="checkbox" value="" id="flexCheckProd"
+												ng-checked="cart.isItemChecked(item.id)"
+												ng-click="cart.toggleItemOrder(item.id)" />
+										</div>
+										<a class="p-0 col-8" href="/details/{{item.idProduct}}">
+											<img style="height: 8rem"
+												src="/img/product/{{item.idShop}}/{{item.idProduct}}/{{item.img}}"
+												class="img-fluid rounded-3" alt="Cotton T-shirt" />
+										</a>
+									</div>
+									<div class="col-md-3 col-lg-3 col-xl-4">
+										<p class="fw-normal mb-2 card-title tensp ng-binding">
+											{{ item.nameProduct }}
+										</p>
+										<button ng-click="cart.openModal(item)" type="button"
+											class=" btn btn-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+											<div class="m-0 px-3" ng-if="item.size != ''">
+												Size:
+												<span class="text-white ng-binding">{{ item.size }}
+												</span>
+											</div>
+											<div class="m-0 px-3">
+												Màu sắc:
+												<span class="text-white ng-binding">{{ item.color }}</span>
+											</div>
+										</button>
+										<!-- Modal -->
+										<div id="myModal" class="modal fade" role="dialog">
+											<div class="modal-dialog">
+												<!-- Modal content-->
+												<div class="modal-content">
+													<div class="modal-header">
+														<h4 class="modal-title">Chọn size cỡ và màu</h4>
+
+													</div>
+													<div class="modal-body">
+														<p class="modal-title"
+															ng-if="cart.sizes.length === 1 && cart.colors.length === 1">
+															Sản phẩm này không có loại khác</p>
+														<!-- Thêm các trường lựa chọn size và màu ở đây -->
+														<div class="mydict mb-3" ng-if="cart.sizes ">
+															<!-- Lặp qua danh sách sizes -->
+															<label>Size:</label>
+															<label ng-repeat="size in cart.sizes">
+																<input type="radio" class="btn-check" name="size"
+																	ng-model="cart.selectedSize" id="size-{{$index}}"
+																	ng-value="size">
+																<span for="size-{{$index}}"
+																	style="user-select: none;">{{
+																	size }}</span>
+															</label>
+														</div>
+														<div class="mydict" ng-if="cart.colors">
+															<!-- Lặp qua danh sách colors -->
+															<label>Màu sắc:</label>
+															<label ng-repeat="color in cart.colors">
+																<input type="radio" ng-model="cart.selectedColor"
+																	ng-value="color" id="color-{{$index}}" name="color">
+																<span for="color-{{$index}}"
+																	style="user-select: none;">{{
+																	color }}</span>
+															</label>
+														</div>
+
+
+													</div>
+													<div class="modal-footer">
+
+														<button type="button" class="btn btn-primary"
+															ng-if="cart.sizes.length > 1 || cart.colors.length > 1"
+															ng-disabled="!cart.selectedSize || !cart.selectedColor"
+															ng-click="cart.saveSelection()">Lưu
+														</button>
+														<button type="button" class="btn btn-primary"
+															ng-click="cart.hideModal()">Đóng</button>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<s class="col-4 ng-binding">{{formatMoney(item.cost)}} ₫</s>
+											<p class="text-danger fw-bold col-4 ng-binding">
+												{{formatMoney(cart.checkPrice(item))}} ₫
+											</p>
+										</div>
+									</div>
+									<div class="col-md-3 col-lg-3 col-xl-1 d-flex">
+										<button class="btn btn-link px-2 p-0"
+											ng-click="changeQuantity(item, 'decrease')">
+											<i class="fas fa-minus"></i>
+										</button>
+
+										<input id="form1" min="1" max="15" name="quantity" type="number"
+											class="form-control form-control-sm ng-binding pe-none" style="width: 2rem"
+											inputmode="numeric" ng-model="item.quantity" />
+
+										<button class="btn btn-link px-2 p-0"
+											ng-click="changeQuantity(item, 'increase')">
+											<i class="fas fa-plus"></i>
+										</button>
+									</div>
+									<div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+										<h5 class="mb-0 ng-binding">
+											{{formatMoney(item.price * item.quantity)}} VNĐ
+										</h5>
+									</div>
+									<div class="col-md-1 col-lg-1 col-xl-1 text-end">
+										<button ng-click="cart.remove(item.id)" class="text-danger btn btn-light">
+											<i class="fas fa-trash fa-lg"></i>
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--END CART -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- The Modal -->
+		<div class="modal fade" id="ModalOrderMessage" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content" style="margin-top: 20%;">
+
+					<!-- Modal body -->
+					<div class="modal-body">
+						<div class="text-left mt-2" style="margin-bottom: 60px;">
+							<h5 class="ng-binding">{{ message }}</h5>
+						</div>
+						<div class="text-center mb-2">
+							<button class="btn btn-danger w-100" data-bs-dismiss="modal">
+								OK</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="container" id="cartOrderForm" style="
+          background-color: white;
+          box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+          margin-top: 20px;
+          border-radius: 10px;
+          padding: 20px 10px;
+        ">
+			<div class="row">
+				<div class="col-4 chose-all" style="margin: auto 0">
+					<label>
+						<input class="form-check-input" type="checkbox" id="checkAllCart" ng-checked="cart.selectAll"
+							ng-click="cart.toggleSelectAll()" />
+					</label>
+					<button class="btn btn-transparents ng-binding" id="btn-chose-all-product">
+						Chọn Tất Cả (<span id="cart-count-product">{{cart.countItem}}</span>)
+					</button>
+					<button class="btn btn-transparents text-danger" id="btn-delete-all-product"
+						ng-click="cart.clear()">
+						Xoá tất cả
+					</button>
+				</div>
+				<div class="col-5 total-all-product" style="margin: auto 0">
+					<p class="mb-0" style="float: right">
+						Tổng Thanh Toán (<span id="count-prod-order" class="ng-binding">{{cart.countItemOrder}}</span>
+						sản phẩm):
+						<span class="text-danger ng-binding" style="font-weight: 700; font-size: 20px"
+							id="total-price">{{formatMoney(cart.amount)}}</span>
+						VNĐ
+					</p>
+				</div>
+				<div class="col-3 order-product">
+					<input type="hidden" id="userAddress" th:value="${session.user.address}" />
+					<input type="hidden" id="userPhoneAddress" th:value="${session.user.phoneAddress}" />
+
+					<button class="btn btn-primary w-100 p-2" id="btn-order" ng-click="checkAndPerformAction()">
+						Mua Hàng
+					</button>
+
+
+
+				</div>
+			</div>
+		</div>
+		<div class="container container_main_middle mt-3 pb-5 bg-white">
+			<div class="row mt-3">
+				<div class="text-dark content_price">
+					<span class="container_main_middle-contten mt-3" style="color: #2a62b9">Dành Cho Bạn</span>
+				</div>
+			</div>
+
+			<div class="row d-flex justify-content-between align-items-center px-3">
+				<div class="col-6 col-md-4 col-lg-3 col-xl-2 pt-2" th:each="product : ${products}">
+					<a th:href="@{|/details/${product.id}|}" class="text-decoration-none">
+						<div class="card pb-2" style="width: 10.8rem">
+							<div class="icon-sale text-center pl-5 pr-5 p-1">HOT SALE</div>
+							<div class="hot-sale text-center p-1"
+								th:if="${#numbers.formatDecimal(100 - ((product.productVariants[0].priceSale / product.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')} > 0">
+								Giảm
+								<span
+									th:text="${#numbers.formatDecimal(100 - ((product.productVariants[0].priceSale / product.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')}"></span>
+								%
+							</div>
+							<img th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${product.imageProducts[0].name}|}"
+								class="img-fluid w-100 p-0" th:alt="${product.name}" />
+							<div class="card-body" style="padding: 5px">
+								<div class="card-title tensp text-left" style="height: 40px" th:text="${product.name}"
+									th:title="${product.name}"></div>
+								<div id="price-box text-left row">
+									<div class="price col-6 m-0" style="text-decoration: none">
+										<span style="color: #ff0821bb">₫</span><strong class="fs-10"
+											th:text="${#numbers.formatDecimal(product.productVariants[0].priceSale, 0 , 'POINT', 0, 'COMMA')}"
+											style="color: #ff0821bb; font-weight: 600">8,490,000</strong>
+									</div>
+									<div class="price col-6 m-0" style="text-decoration: none">
+										<s class="fs-11"
+											th:text="${#numbers.formatDecimal(product.productVariants[0].price, 0 , 'POINT', 0, 'COMMA')}"
+											style="color: #3f3d3d; font-weight: 100"><span
+												style="color: #3f3d3d">₫</span>8,490,000</s>
+									</div>
+								</div>
+								<div class="icon-star text-left" style="text-decoration: none">
+									<i class="icon-flash text-red"></i>
+									<i class="bi bi-star"></i> <i class="bi bi-star"></i>
+									<i class="bi bi-star"></i> <i class="bi bi-star"></i>
+									<i class="bi bi-star"></i>
+									<p class="text-info m-0">
+										đã bán
+										<i class="text-info m-0" th:text="${product.soldCount}"></i>
+									</p>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</main>
+	<div th:replace="~{flagment/user/userFooter :: userFooterFragment}"></div>
+	<!-- <script>
+  function updateTotalPrice(selectElement) {
+    const productContainer = selectElement.closest(".product-container");
+    const quantity = parseInt(selectElement.value, 10);
+    const priceText = productContainer
+      .querySelector(".product-price")
+      .innerText.trim();
+    const price = parseFloat(priceText.replace(/[^\d.-]/g, ""));
+    const totalPrice = quantity * price;
+    productContainer.querySelector(".totalPriceValue").innerText =
+      totalPrice.toLocaleString("vi-VN");
+    productContainer
+      .querySelector(".totalPriceValue")
+      .setAttribute("data-total-price", totalPrice);
+  }
+</script> -->
+	<script th:src="@{/js/cart-ctrl.js}"></script>
+	<script th:src="@{/js/user/autocomplete.js}"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+		integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+		crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+		integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+		crossorigin="anonymous"></script>
+	<!--slick slide-->
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+	<!-- <script src="/static/admin/dist/js/user/userIndex.js"></script> -->
+</body>
+
+</html>

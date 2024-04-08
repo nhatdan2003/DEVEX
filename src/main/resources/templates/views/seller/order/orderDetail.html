@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <html lang="en">
+    <head>
+      <div
+        th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"
+      ></div>
+      <style>
+        /* CSS để giới hạn chiều rộng của cột 'Product Name' */
+        .product-name {
+          max-width: 100px; /* Đặt giới hạn chiều rộng, ví dụ 200px */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      </style>
+    </head>
+    <body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+      <div class="wrapper">
+        <!-- Preloader -->
+        <div
+          class="preloader flex-column justify-content-center align-items-center"
+        >
+          <img
+            class="animation__wobble"
+            src="/img/banner/logotitle.png"
+            alt="sellerLTELogo"
+            height="60"
+            width="60"
+          />
+        </div>
+
+        <div
+          th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"
+        ></div>
+        <div
+          th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"
+        ></div>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+          <!-- Content Header (Page header) -->
+          <section class="content-header">
+            <div class="container-fluid">
+              <div class="row mb-2">
+                <div class="col-sm-6">
+                  <h1>Chi tiết hóa đơn</h1>
+                </div>
+                <div class="col-sm-6">
+                  <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Hóa đơn</li>
+                    <li class="breadcrumb-item active">Chi tiết hóa đơn</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+            <!-- /.container-fluid -->
+          </section>
+
+          <section class="content">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-12">
+                  <!-- <div class="callout callout-info">
+								<h5>
+									<i class="fas fa-info"></i> Note:
+								</h5>
+								This page has been enhanced for printing. Click the print button
+								at the bottom of the invoice to test.
+							</div> -->
+
+                  <!-- Main content -->
+                  <div
+                    class="invoice p-3 mb-3"
+                    th:fragment="sellerOrderPrintFragment"
+                  >
+                    <!-- title row -->
+                    <div class="row">
+                      <div class="col-12">
+                        <h4>
+                          <img
+                            src="/img/banner/LogoDUAn.png"
+                            class="img-fluid"
+                            style="width: 4rem"
+                          />
+                          <span
+                            th:text="${order.orderDetails[0].productVariant.product.sellerProduct.shopName}"
+                          ></span>
+
+                          <b
+                            class="float-right"
+                            th:text="${#dates.format(order.createdDay, 'dd/MM/yyyy')}"
+                          ></b>
+                          <label style="font-weight: 400" class="float-right"
+                            >Đơn hàng được tạo vào ngày:
+                          </label>
+                        </h4>
+                      </div>
+                      <!-- /.col -->
+                    </div>
+                    <!-- info row -->
+                    <div class="row invoice-info">
+                      <div class="col-sm-4 invoice-col">
+                        From
+                        <address>
+                          <strong
+                            th:text="${order.orderDetails[0].productVariant.product.sellerProduct.shopName}"
+                          ></strong
+                          ><br />
+                          <label
+                            style="font-weight: 400"
+                            th:text="'Địa chỉ: ' + ${order.address}"
+                          ></label
+                          ><br />
+                          <label
+                            style="font-weight: 400"
+                            th:text="'Phone: ' + ${order.orderDetails[0].productVariant.product.sellerProduct.phoneAddress}"
+                          ></label>
+                        </address>
+                      </div>
+                      <!-- /.col -->
+                      <div class="col-sm-4 invoice-col">
+                        To
+                        <address>
+                          <strong
+                            th:text="${order.customerOrder.fullname}"
+                          ></strong
+                          ><br />
+                          <label
+                            style="font-weight: 400"
+                            th:text="'Địa chỉ: ' + ${order.customerOrder.address}"
+                          ></label
+                          ><br />
+                          <label
+                            style="font-weight: 400"
+                            th:text="'Phone: ' + ${order.customerOrder.phoneAddress}"
+                          ></label>
+                        </address>
+                      </div>
+                      <!-- /.col -->
+                      <div class="col-sm-4 invoice-col">
+                        <b>Mã vận đơn: E145CMS58</b><br />
+                        <b>Mã đơn hàng: </b
+                        ><label
+                          style="font-weight: 400"
+                          th:text="${order.id}"
+                        ></label
+                        ><br />
+                        <b>Thanh toán: </b
+                        ><label
+                          style="font-weight: 400"
+                          th:text="${order.payment.name}"
+                        ></label
+                        ><br />
+                        <b>Trạng thái: </b
+                        ><label
+                          style="font-weight: 400"
+                          th:text="${order.orderStatus.name}"
+                        ></label>
+                      </div>
+                      <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- Table row -->
+                    <div class="row">
+                      <div class="col-12 table-responsive">
+                        <table class="table table-hover">
+                          <thead>
+                            <tr>
+                              <th>Mã SP</th>
+                              <th>Hình ảnh</th>
+                              <th>Tên sản phẩm</th>
+                              <th>Số lượng</th>
+                              <th>Giá</th>
+                              <th>Trạng thái</th>
+                              <th class="text-center">Shop bán</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr th:each="od : ${orderDetails}">
+                              <td
+                                th:text="${od.productVariant.product.id}"
+                              ></td>
+                              <td>
+                                <img
+                                  alt=""
+                                  th:src="@{|/img/product/${od.productVariant.product.sellerProduct.username}/${od.productVariant.product.id}/${od.productVariant.product.imageProducts[0].name}|}"
+                                  width="60px"
+                                />
+                              </td>
+                              <td
+                                class="product-name"
+                                th:text="${od.productVariant.product.name}"
+                              ></td>
+                              <td
+                                class="text-center"
+                                th:text="${od.quantity}"
+                              ></td>
+                              <td
+                                th:text="${#numbers.formatDecimal(od.price, 0, 'COMMA', 0, 'POINT')}"
+                              ></td>
+                              <td
+                                th:if="${od.status.name == 'Đã huỷ'}"
+                                th:text="${od.status.name}"
+                                class="text-danger"
+                              ></td>
+                              <td
+                                th:if="${od.status.name == 'Chờ xác nhận'}"
+                                th:text="${od.status.name}"
+                                class="text-danger"
+                              ></td>
+                              <td
+                                th:if="${od.status.name == 'Đã xác nhận'}"
+                                th:text="${od.status.name}"
+                                class="text-success"
+                              ></td>
+                              <td
+                                th:if="${od.status.name == 'Vận chuyển'}"
+                                th:text="${od.status.name}"
+                                class="text-success"
+                              ></td>
+                              <td
+                                th:if="${od.status.name == 'Hoàn thành'}"
+                                th:text="${od.status.name}"
+                                class="text-success"
+                              ></td>
+                              <td
+                                class="text-center"
+                                th:if="${od.productVariant.product.sellerProduct.username == u}"
+                              >
+                                Shop của bạn
+                              </td>
+                              <td
+                                class="text-center"
+                                th:unless="${od.productVariant.product.sellerProduct.username == u}"
+                                th:text="${od.productVariant.product.sellerProduct.shopName}"
+                              ></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <div class="row">
+                      <!-- accepted payments column -->
+                      <div class="col-6">
+                        <p class="lead">Phương thức thanh toán:</p>
+                        <img
+                          src="/admin/dist/img/credit/paypal2.png"
+                          alt="Paypal"
+                        />
+                        <span
+                          class="btn border border-info rounded p-1 pl-3 pr-3"
+                          ><b>COD</b></span
+                        >
+                        <p
+                          class="text-muted well well-sm shadow-none"
+                          style="margin-top: 10px"
+                        >
+                          Vui lòng kiểm tra kỹ hóa đơn trước khi tiến hành thanh
+                          toán, sửa đổi hoặc in ấn. DEVEX xin cảm ơn
+                        </p>
+                      </div>
+                      <!-- /.col -->
+                      <div class="col-6">
+                        <div class="table-responsive">
+                          <table class="table">
+                            <tr>
+                              <th>Tổng giá (Thực nhận):</th>
+                              <td
+                                th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}"
+                              ></td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                      <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- this row will not appear when printing -->
+                    <div class="row no-print">
+                      <div class="col-12">
+                        <a
+                          th:href="@{/seller/orderPrint(id=${idPrint})}"
+                          rel="noopener"
+                          target="_blank"
+                          class="btn btn-default"
+                        >
+                          <i class="fas fa-print"></i>Print
+                        </a>
+                        <label class="ml-5">Tình Trạng đơn hàng: </label>
+                        <a
+                          th:href="@{/seller/order/xacnhan(id=${idPrint})}"
+                          class="btn btn-success"
+                          th:if="${check == 'Chờ xác nhận'}"
+                          >Xác Nhận đơn hàng</a
+                        >
+                        <a
+                          class="btn btn-secondary"
+                          th:if="${odFirst.Status.name == 'Vận chuyển'}"
+                          disabled="disabled"
+                          >Đang vận chuyển</a
+                        >
+                        <a
+                          class="btn btn-secondary"
+                          th:if="${odFirst.Status.name == 'Đã xác nhận'}"
+                          disabled="disabled"
+                          >Shop đang chuẩn bị hàng</a
+                        >
+                        <a
+                          th:href="@{/seller/order/vanchuyen(id=${idPrint})}"
+                          class="btn btn-success"
+                          th:if="${odFirst.Status.name == 'Đã xác nhận'}"
+                          >Chuyển cho đơn vị vận chuyển
+                        </a>
+                        <a
+                          th:href="@{/seller/order/hoanthanh(id=${idPrint})}"
+                          class="btn btn-success"
+                          th:if="${odFirst.Status.name == 'Nhận hàng'}"
+                          >Đã nhận hàng</a
+                        >
+                        <a
+                          class="btn btn-secondary"
+                          th:if="${odFirst.Status.name == 'Hoàn thành'}"
+                          disabled="disabled"
+                          >Hoàn thành</a
+                        >
+                        <a
+                          class="btn btn-secondary"
+                          th:if="${check == 'Đã huỷ' and odFirst.Status.name == 'Chờ xác nhận'}"
+                          disabled="disabled"
+                          >Bạn đã hủy đơn</a
+                        >
+                        <a
+                          class="btn btn-secondary"
+                          th:if="${odFirst.Status.name == 'Đã huỷ'}"
+                          disabled="disabled"
+                          >Đã hủy</a
+                        >
+                        <!--<a
+                          th:href="@{/seller/order/hoanthanh(id=${idPrint})}"
+                          class="btn btn-success"
+                          th:if="${odFirst.Status.name == 'Vận chuyển'}"
+                          >Xác nhận thành công</a
+                        >-->
+                        <a
+                          th:href="@{/seller/order/huy(id=${idPrint})}"
+                          class="btn btn-danger"
+                          th:if="${check != 'Đã huỷ' and check != 'Đã xác nhận'and !checko}"
+                          >Hủy đơn hàng</a
+                        >
+                        <button
+                          th:if="${checko}"
+                          type="button"
+                          class="btn btn-success float-right"
+                        >
+                          <i class="far fa-credit-card"></i> Submit Payment
+                        </button>
+                        <a
+                          class="btn btn-primary float-right"
+                          th:href="@{/seller/orderPrint(id=${idPrint})}"
+                          style="margin-right: 5px"
+                        >
+                          <i class="fas fa-download"></i> Generate PDF
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.invoice -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+          </section>
+          <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <div
+          th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"
+        ></div>
+        <div
+          th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"
+        ></div>
+      </div>
+    </body>
+    <script type="text/javascript"></script>
+    ]
+    <script src="/admin/dist/js/handMade.js"></script>
+    <script>
+      const app = angular.module("app", []);
+    </script>
+
+    <script src="/js/seller/Dwallet.js"></script>
+  </html>
+</html>

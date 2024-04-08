@@ -1,0 +1,367 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <div th:replace="~{flagment/account/head :: headFragment}"></div>
+    <title>Chi tiết hoá đơn</title>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/admin/dist/css/adminlte.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/user/userIndex.css"/>
+    </script>
+    <script th:src="@{/js/cart-ctrl.js}"></script>
+    <script th:src="@{/js/user/autocomplete.js}"></script>
+</head>
+<style>
+    .fixed-picture {
+        position: relative;
+        width: 100px;
+        /* Đặt kích thước khung theo ý muốn */
+        height: 100px;
+        /* Đặt kích thước khung theo ý muốn */
+        overflow: hidden;
+        left: 50%;
+        /* Di chuyển container sang trái 50% */
+        transform: translateX(-50%);
+        /* Di chuyển lại 50% theo chiều X */
+    }
+
+    .fixed-picture img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<style>
+    body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    /*header top*/
+    header a.nav-link {
+        color: white;
+        font-weight: 270;
+        padding: 0 0 0 20px !important;
+        font-size: 13px;
+    }
+
+    header a.nav-link:hover {
+        color: white;
+        font-weight: 600 !important;
+    }
+
+    .header-inf:hover {
+        transition: 10s all;
+        height: 35px;
+        background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%,
+        rgba(57, 151, 184, 1) 36%, rgba(25, 38, 186, 1) 62%);
+    }
+
+    .header-inf {
+        height: 35px;
+        background: linear-gradient(90deg, rgba(25, 38, 186, 1) 0%,
+        rgba(57, 151, 184, 1) 54%, rgba(0, 212, 255, 1) 100%);
+    }
+
+    .header-inf * {
+        background-color: transparent;
+        color: white;
+        font-weight: 400 !important;
+    }
+
+    .header-inf a {
+        color: white;
+    }
+
+    /* header>.container-fluid:hover {} */
+    /*header mid*/
+    .container_mid {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    .img_logo {
+        width: 7.5rem;
+        height: 3.4375rem;
+        margin-left: 40px;
+        margin-top: 5px;
+    }
+
+    .list_type ul {
+        max-height: 360px;
+        min-height: 360px;
+        overflow-y: scroll;
+        position: relative;
+        top: -2rem;
+    }
+
+    .list_type ul li {
+        max-width: 7.5rem;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: black;
+    }
+
+    /* Tùy chỉnh thanh cuộn trên Chrome, Edge, và Safari */
+    *::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: white;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: rgb(90, 89, 89);
+        border-radius: 20px;
+        border: 3px solid white;
+    }
+</style>
+
+<body ng-app="app">
+<header>
+    <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+</header>
+<div class="container">
+    <div class="wall-header-offset p-1"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="m-0">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="text-secondary">Đơn hàng đã mua</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- <div class="callout callout-info">
+                            <h5>
+                                <i class="fas fa-info"></i> Note:
+                            </h5>
+                            This page has been enhanced for printing. Click the print button
+                            at the bottom of the invoice to test.
+                        </div> -->
+
+
+                        <!-- Main content -->
+                        <div class="invoice p-3 mb-3" th:fragment="userOrderPrintFragment">
+                            <!-- title row -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <h4>
+                                        <img src="/img/banner/LogoDUAn.png" class="img-fluid"
+                                             style="width: 4rem;"/> <span
+                                            th:text="${order.orderDetails[0].productVariant.product.sellerProduct.shopName}"></span>
+
+                                        <b class="float-right"
+                                           th:text="${#dates.format(order.createdDay, 'dd/MM/yyyy')}"></b>
+                                        <label style="font-weight: 400;" class="float-right">Đơn hàng được tạo vào
+                                            ngày: </label>
+                                    </h4>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- info row -->
+                            <div class="row invoice-info">
+                                <div class="col-sm-4 invoice-col">
+                                    Từ
+                                    <address>
+                                        <img src="/img/banner/LogoDUAn.png" class="img-fluid" style="width: 4rem"/>
+                                        <span>DEVEX EXPRESS</span>
+                                        <label style="font-weight: 400">Địa chỉ: QTSC 9 Building, Tô Ký, Tân Chánh Hiệp,
+                                            Quận 12, Thành phố Hồ Chí Minh, Việt Nam</label>
+                                    </address>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    Đến
+                                    <address>
+                                        <strong th:text="${user.fullname}"></strong><br>
+                                        <label style="font-weight: 400;"
+                                               th:text="'Địa chỉ: ' + ${user.address}"></label><br>
+                                        <label style="font-weight: 400;"
+                                               th:text="'Phone: ' + ${user.phoneAddress}"></label>
+                                    </address>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-sm-4 invoice-col">
+                                    <b>Mã vận đơn: E145CMS58</b><br>
+                                    <b>Mã đơn hàng: </b><label style="font-weight: 400;"
+                                                               th:text="${order.id}"></label><br>
+                                    <b>Thanh toán: </b><label style="font-weight: 400;"
+                                                               th:text="${order.payment.name}"></label><br>
+                                    <b>Trạng thái: </b><label style="font-weight: 400;"
+                                                                th:text="${order.orderStatus.name}"></label>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <!-- Table row -->
+                            <div class="row">
+                                <div class="col-12 table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>Mã SP</th>
+                                            <th>Hình ảnh</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Số lượng</th>
+                                            <th>Giá</th>
+                                            <th>Trạng thái</th>
+                                            <th class="text-center">Shop bán</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="od : ${orderDetails}">
+                                            <td th:text="${od.productVariant.product.id}"></td>
+                                            <td>
+                                                <img alt=""
+                                                     th:src="@{|/img/product/${od.productVariant.product.sellerProduct.username}/${od.productVariant.product.id}/${od.productVariant.product.imageProducts[0].name}|}"
+                                                     width="60px">
+                                            </td>
+                                            <td class="product-name" th:text="${od.productVariant.product.name}"></td>
+                                            <td class="text-center" th:text="${od.quantity}"></td>
+                                            <td th:text="${#numbers.formatDecimal(od.price, 0, 'COMMA', 0, 'POINT')}"></td>
+                                            <td th:if="${od.status.name == 'Đã huỷ' || od.status.name == 'Trả hàng/Hoàn tiền' || od.status.name == 'Chờ xác nhận'}"
+                                                th:text="${od.status.name}" class="text-danger"></td>
+                                            <td th:if="${od.status.name == 'Vận chuyển' || od.status.name == 'Đang giao'}"
+                                                th:text="${od.status.name}" class="text-primary"></td>
+                                            <td th:if="${od.status.name == 'Đã xác nhận' || od.status.name =='Hoàn thành'}"
+                                                th:text="${od.status.name}" class="text-success"></td>
+                                            <td class="text-center"
+                                                th:if="${od.productVariant.product.sellerProduct.username == u}">Shop
+                                                của bạn
+                                            </td>
+                                            <td class="text-center"
+                                                th:unless="${od.productVariant.product.sellerProduct.username == u}"
+                                                th:text="${od.productVariant.product.sellerProduct.shopName}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row">
+                                <!-- accepted payments column -->
+                                <div class="col-6">
+                                    <p class="lead">Phương thức thanh toán:</p>
+                                    <img src="/admin/dist/img/credit/paypal2.png" alt="Paypal"/>
+                                    <span class="btn border border-info rounded p-1 pl-3 pr-3">
+                          <b class="text-info">Dwallet</b>
+                        </span>
+                                    <span class="btn border border-info rounded p-1 pl-3 pr-3">
+                          <b class="text-primary">VNPay</b>
+                        </span>
+                                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px">
+                                        Vui lòng kiểm tra kỹ hóa đơn trước khi tiến hành thanh
+                                        toán, sửa đổi hoặc in ấn. DEVEX xin cảm ơn
+                                    </p>
+                                </div>
+                                <!-- /.col -->
+                                <div class="col-6">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tr>
+                                                <th style="width: 50%">Giá:</th>
+                                                <td th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Vận chuyển:</th>
+                                                <td th:text="${#numbers.formatDecimal(order.totalShip, 0, 'COMMA', 0, 'POINT')}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tổng giá:</th>
+                                                <td th:text="${#numbers.formatDecimal(order.total + order.totalShip, 0, 'COMMA', 0, 'POINT')}"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <!-- this row will not appear when printing -->
+                            <div class="row no-print">
+                               
+                            </div>
+                        </div>
+                        <!-- /.invoice -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- END CONTENT-MEN-SHOES -->
+
+</div>
+
+
+<footer class="mt-3">
+    <!-- place footer here -->
+    <div th:replace="~{flagment/user/userFooter :: userFooterFragment}"></div>
+</footer>
+
+
+<script>
+    // Khi người dùng chọn ảnh, xử lý sự kiện change của input file
+    document.getElementById("avatarInput").addEventListener(
+        "change",
+        function (event) {
+            const file = event.target.files[0]; // Lấy file ảnh từ input
+
+            if (file) {
+                // Gắn tên tệp vào input ẩn có id="avatar-hide"
+                document.getElementById("avatar-hide").setAttribute(
+                    "value", file.name);
+
+                // (Tùy chọn) Hiển thị ảnh đã chọn lên trang web (nếu muốn)
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const imageDataURL = reader.result;
+                    document.getElementById("avatar").setAttribute(
+                        "src", imageDataURL);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+</script>
+<script
+        src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+<!-- 	<div th:replace="~{flagment/account/footLink :: footLinkFragment}"></div> -->
+<script src="/js/userIndex.js"></script>
+</body>
+
+</html>

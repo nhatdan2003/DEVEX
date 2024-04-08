@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    .entitybutton {
+      background: linear-gradient(to right, #808080 50%, transparent 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
+    }
+
+    .entitybutton:hover {
+      background-position: left bottom;
+      color: white;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Quản lý sản phẩm</h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                  <a href="/ad/home">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Tổng quan</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+      <!-- Main content -->
+      <section class="content" ng-controller="product">
+        <div class="container-fluid">
+          <!-- Chọn sản phẩm -->
+          <div class="row">
+            <div class="col-4">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="text-center">List Seller</h5>
+                </div>
+                <div class="input-group mt-2 mb-1 mr-2">
+                  <input ng-enter="searchSeller()" ng-model="shopname" type="text" class="form-control"
+                    placeholder="Nhập shop name" aria-label="Nhập shop name" aria-describedby="basic-addon2" />
+                  <div class="input-group-append">
+                    <button ng-click="searchSeller()" class="input-group-text btn btn-success" id="basic-addon2">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                  </div>
+                </div>
+                <hr style="margin-top: 5px; margin-bottom: 5px" />
+                <div class="card-body" style="overflow-y: scroll; height: 400px">
+                  <div ng-repeat="seller in listSeller">
+                    <div class="btn-group w-100" role="group" aria-label="Basic example">
+                      <button ng-click="showProduct(seller.username)"
+                        class="btn btn-white w-100 entitybutton text-left">
+                        {{seller.shopName}}
+                      </button>
+                    </div>
+                    <hr />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card">
+                <div class="card-header">
+                  <h5 class="text-center">Sản phẩm của shop</h5>
+                </div>
+                <div class="card-body">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Brand</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="Product in listProduct.listInfoProduct">
+                        <td>{{Product.id}}</td>
+                        <td>{{Product.name}}</td>
+                        <td>{{Product.price}}</td>
+                        <td>{{listProduct.listNameCategory[$index]}}</td>
+                        <td>
+                          {{listProduct.listNameProductBrand[$index]}}
+                        </td>
+                        <td>
+                          <a href="/ad/showproduct/{{Product.id}}">
+                            <i class="fa-regular fa-eye"></i>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+</body>
+<!-- <script src="/admin/dist/js/handMade.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script> -->
+<script>
+  const app = angular.module("app", []);
+  app.controller("product", function ($scope, $http, $location, $window) {
+    $scope.listSeller = [];
+    $scope.listProduct = [];
+
+    // get all Seller
+    $scope.getAllSeller = function () {
+      $http.get("/api/getlistseller").then(
+        function (response) {
+          $scope.listSeller = response.data;
+          if ($scope.listSeller.length > 0) {
+            $scope.firstSeller = $scope.listSeller[0];
+            $scope.showProduct($scope.firstSeller.username);
+          }
+        },
+        function (error) {
+          console.error("Error:", error);
+        }
+      );
+    };
+
+    // search
+    $scope.searchSeller = function () {
+      $http.get("/api/search/seller?shopname=" + $scope.shopname).then(
+        function (response) {
+          $scope.listSeller = response.data;
+        },
+        function (error) {
+          console.error("Error:", error);
+        }
+      );
+    };
+
+    // show product shop
+    $scope.showProduct = function (username) {
+      $http.get("/api/getlistproduct?username=" + username).then(
+        function (response) {
+          $scope.listProduct = response.data;
+        },
+        function (error) {
+          console.error("Error:", error);
+        }
+      );
+    };
+
+    $scope.getAllSeller();
+  });
+
+  // định nghĩa sự kiện nhấn enter input
+  app.directive("ngEnter", function () {
+    return function (scope, element, attrs) {
+      element.bind("keydown keypress", function (event) {
+        if (event.which === 13) {
+          scope.$apply(function () {
+            scope.$eval(attrs.ngEnter, { event: event });
+          });
+
+          event.preventDefault();
+        }
+      });
+    };
+  });
+</script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>
+
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+<div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div
+			class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png"
+				alt="AdminLTELogo" height="60" width="60">
+		</div>
+
+		<div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+		<div
+			th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0" th:text="${titleType}"></h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/devex/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active" th:text="${titleType}"></li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<!-- /.card -->
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title" th:switch="${listName}" >Quản lí <span th:text="${titleType}"></span></h3>
+								</div>
+								<!-- /.card-header -->
+								<div class="card-body" th:switch="${listName}">
+								<!-- TABLE USER LIST -->
+									<table id="example1" class="table table-bordered table-striped" th:case="'user'">
+										<thead>
+											<tr>
+												<th>Id</th>
+												<th>Fullname</th>
+												<th>Email</th>
+												<th>Password</th>
+												<th>Gender</th>
+												<th>Birthday</th>
+												<th>Address</th>
+												<th>Role</th>
+												<th>Active</th>
+											</tr>
+											
+										</thead>
+										<tbody>
+
+											<!--DATA -->
+											<div>
+												<tr data-widget="expandable-table" aria-expanded="false">
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+
+												</tr>
+
+											</div>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Id</th>
+												<th>Fullname</th>
+												<th>Email</th>
+												<th>Password</th>
+												<th>Gender</th>
+												<th>Birthday</th>
+												<th>Address</th>
+												<th>Role</th>
+												<th>Active</th>
+											</tr>
+										</tfoot>
+									</table>
+									<!-- ..END TABLE USER LIST.. -->
+									<!-- TABLE SELLER LIST -->
+									<table id="example1" class="table table-bordered table-striped" th:case="'seller'">
+										<thead>
+											<tr>
+												<th>Birthday</th>
+												<th>Address</th>
+												<th>Role</th>
+												<th>Active</th>
+											</tr>
+											
+										</thead>
+										<tbody>
+
+											<!--DATA -->
+											<div>
+												<tr data-widget="expandable-table" aria-expanded="false">
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+													<td value="xx">xx</td>
+
+												</tr>
+
+											</div>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Id</th>
+												<th>Fullname</th>
+												<th>Password</th>
+												<th>Gender</th>
+											</tr>
+										</tfoot>
+									</table>
+									<!-- ..END TABLE SELLER LIST.. -->
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+		<div
+			th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+	</div>
+
+</body>
+<script src="/admin/dist/js/handMade.js"></script>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+	<div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+	<style>
+		/* CSS để giới hạn chiều rộng của cột 'Product Name' */
+		.product-name {
+			max-width: 100px;
+			/* Đặt giới hạn chiều rộng, ví dụ 200px */
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	</style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+		<div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0" th:text="${titleType}"></h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/seller/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active" th:text="${titleType}"></li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<!-- /.card -->
+							<div class="card">
+								<div class="card-header">
+									<h3 class="card-title" th:switch="${listName}">
+										Quản lí <span th:text="${titleType}"></span>
+									</h3>
+								</div>
+								<!-- /.card-header -->
+								<div class="card-body" th:switch="${listName}">
+									<!-- TABLE product LIST -->
+									<table id="example1" class="table table-hover" th:case="'products'">
+										<thead>
+											<tr>
+												<th>Mã sản phẩm</th>
+												<th>Hình ảnh</th>
+												<th>Tên sản phẩm</th>
+												<th>Thương hiệu</th>
+												<th>Loại</th>
+												<th>Mô tả</th>
+												<th>Giá</th>
+												<th>Ngày tạo</th>
+												<th>Trạng thái</th>
+												<th class="text-center">Edit</th>
+											</tr>
+
+										</thead>
+										<tbody>
+
+											<!--DATA -->
+											<tr th:each="product : ${products}">
+												<td class="product-name" th:text="${product.id}"></td>
+												<td>
+													<img alt=""
+														th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${product.imageProducts[0].name}|}"
+														width="60px">
+												</td>
+												<td class="product-name" th:text="${product.name}"></td>
+												<td th:text="${product.productbrand.name}"></td>
+												<td th:text="${product.categoryDetails.name}"></td>
+												<td class="product-name" th:text="${product.description}"></td>
+												<td
+													th:text="${#numbers.formatDecimal(product.productVariants[0].price, 0, 'COMMA', 0, 'POINT')}">
+												</td>
+												<td th:text="${#dates.format(product.createdDay, 'yyyy/MM/dd')}"></td>
+												<td th:text="${product.active ? 'Đang bán' : 'Không bán'}"></td>
+
+												<td class="text-center">
+													<div class="btn-group btn-group-sm">
+														<a th:href="@{|/seller/product/edit/${product.id}|}"
+															class="btn btn-info"><i class="fas fa-eye"></i></a>
+														<a th:href="@{|/seller/product/delete/${product.id}|}"
+															class="btn btn-danger"><i
+																class="fa-regular fa-trash-can"></i></a>
+													</div>
+												</td>
+
+											</tr>
+
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Mã</th>
+												<th>Tên sản phẩm</th>
+												<th>Hình ảnh</th>
+												<th>Thương hiệu</th>
+												<th>Loại</th>
+												<th>Mô tả</th>
+												<th>Giá</th>
+												<th>Ngày tạo</th>
+												<th>Trạng thái</th>
+												<th class="text-center">Edit</th>
+											</tr>
+
+										</tfoot>
+									</table>
+									<!-- ..END TABLE product LIST.. -->
+									<!-- TABLE order LIST -->
+									<table id="example1" class="table table-hover" th:case="'orders'">
+										<thead>
+											<tr>
+												<th>Mã hóa đơn</th>
+												<th>Tổng giá</th>
+												<th>Ngày tạo</th>
+												<th>Địa chỉ</th>
+												<th>Người đặt</th>
+												<th>Phương thức thanh toán</th>
+												<th>Edit</th>
+											</tr>
+
+										</thead>
+										<tbody>
+
+											<!--DATA -->
+											<div>
+												<tr th:each="order : ${orders}">
+													<td th:text="${order.id}"></td>
+													<td
+														th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 0, 'POINT')}">
+													</td>
+													<td th:text="${#dates.format(order.createdDay, 'yyyy/MM/dd')}"></td>
+													<td class="product-name" th:text="${order.address}"></td>
+													<td th:text="${order.customerOrder.fullname}"></td>
+													<td th:text="${order.payment.name}"></td>
+													<td class="text-center">
+														<div class="btn-group btn-group-sm">
+															<a th:href="@{|/seller/orderDetail/${order.id}|}"
+																class="btn btn-info">
+																<i class="fas fa-eye"></i>
+															</a>
+														</div>
+													</td>
+												</tr>
+											</div>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Mã hóa đơn</th>
+												<th>Tổng giá</th>
+												<th>Ngày tạo</th>
+												<th>Địa chỉ</th>
+												<th>Người đặt</th>
+												<th>Phương thức thanh toán</th>
+												<th>Edit</th>
+											</tr>
+										</tfoot>
+									</table>
+									<!-- ..END TABLE order LIST.. -->
+									<!-- TABLE restore LIST -->
+									<table id="example1" class="table table-hover" th:case="'restore'">
+										<thead>
+											<tr>
+												<th>Mã sản phẩm</th>
+												<th>Hình ảnh</th>
+												<th>Tên sản phẩm</th>
+												<th>Thương hiệu</th>
+												<th>Loại</th>
+												<th>Mô tả</th>
+												<th>Giá</th>
+												<th>Ngày tạo</th>
+												<th>Edit</th>
+											</tr>
+
+										</thead>
+										<tbody>
+
+											<!--DATA -->
+											<tr th:each="product : ${restore}">
+												<td class="product-name" th:text="${product.id}"></td>
+												<td>
+													<img alt=""
+														th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${product.imageProducts[0].name}|}"
+														width="60px">
+												</td>
+												<td class="product-name" th:text="${product.name}"></td>
+												<td th:text="${product.productbrand.name}"></td>
+												<td th:text="${product.categoryDetails.name}"></td>
+												<td class="product-name" th:text="${product.description}"></td>
+												<td
+													th:text="${#numbers.formatDecimal(product.productVariants[0].price, 0, 'COMMA', 0, 'POINT')}">
+												</td>
+												<td th:text="${#dates.format(product.createdDay, 'yyyy/MM/dd')}"></td>
+												<td class="text-center">
+													<div class="btn-group btn-group-sm">
+														<a th:href="@{|/seller/product/edit/${product.id}|}"
+															class="btn btn-info"><i class="fas fa-eye"></i></a>
+														<a th:href="@{|/seller/product/restore/${product.id}|}"
+															class="btn btn-danger"><i
+																class="fa-solid fa-rotate-right"></i></i></a>
+													</div>
+												</td>
+
+											</tr>
+										</tbody>
+										<tfoot>
+											<tr>
+												<th>Mã sản phẩm</th>
+												<th>Hình ảnh</th>
+												<th>Tên sản phẩm</th>
+												<th>thương hiệu</th>
+												<th>Loại</th>
+												<th>Mô tả</th>
+												<th>Giá</th>
+												<th>Ngày tạo</th>
+												<th>Edit</th>
+											</tr>
+										</tfoot>
+									</table>
+									<!-- ..END TABLE restore LIST.. -->
+
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+	</div>
+	<script>
+		const app = angular.module("app", []);
+	</script>
+
+	<script src="/js/seller/Dwallet.js"></script>
+</body>
+<script src="/admin/dist/js/handMade.js"></script>
+
+</html>

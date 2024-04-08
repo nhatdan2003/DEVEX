@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+	<!-- daterange picker -->
+	<link rel="stylesheet" href="/admin/plugins/daterangepicker/daterangepicker.css">
+	<!-- iCheck for checkboxes and radio inputs -->
+	<link rel="stylesheet" href="/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- Bootstrap Color Picker -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+	<!-- Tempusdominus Bootstrap 4 -->
+	<link rel="stylesheet" href="/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+	<!-- Bootstrap4 Duallistbox -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+	<!-- BS Stepper -->
+	<link rel="stylesheet" href="/admin/plugins/bs-stepper/css/bs-stepper.min.css">
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="sellerproduct">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+		<div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0" th:text="${titleType}"></h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/seller/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active" th:text="${titleType}"></li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<h1>Thông tin sản phẩm</h1>
+							<!-- Thông tin sản phẩm -->
+
+							<!-- Hình ảnh -->
+							<div class="card form-group px-3">
+								<label class="p-0">Hình ảnh</label>
+								<!-- Hiển thị hình ảnh -->
+								<div class="row">
+									<div id="imgProduct">
+										<label class="col-1" title="Click vào hình ảnh 2 lần để xóa"
+											ng-repeat="fileObj in files">
+											<img alt="" class="img-fluid" style="height: 100px;"
+												src="{{fileObj.dataURL}}" ng-dblclick="deleteimg(fileObj)"
+												ng-show="checkSell === false">
+											<img alt="x" class="img-fluid" style="height: 100px;"
+												src="{{fileObj.dataURL}}" ng-show="checkSell === true">
+										</label>
+									</div>
+									<div class="">
+										<!-- Chọn file -->
+										<input id="fileInput" style="display: none;" type="file" multiple="multiple"
+											onchange="angular.element(this).scope().uploadimg(this.files)"
+											ng-disabled="checkSell === true">
+										<button class="btn btn-primary mb-2" onclick="openFilePicker()"
+											ng-disabled="checkSell === true || form.isdelete == true">Thêm</button>
+										<div class="text-danger" ng-show="files.length === 0">Vui lòng chọn ít nhất 1
+											hình ảnh</div>
+										<!-- END chọn file -->
+									</div>
+									<!-- END Hiển thị hình ảnh -->
+
+								</div>
+							</div>
+							<!-- END Hình ảnh -->
+							<!-- Thông tin sản phẩm -->
+							<div>
+								<form method="post" name="myForm">
+									<div class="card p-3">
+										<!-- Tên sản phẩm -->
+										<div class="form-group">
+											<label>Tên sản phẩm</label>
+											<input class="form-control" ng-model="form.name"
+												placeholder="Nhập tên sản phẩm" name="productName" ng-required="true"
+												ng-disabled="checkSell === true">
+											<div class="text-danger"
+												ng-show="myForm.productName.$dirty && myForm.productName.$error.required">
+												Vui lòng nhập tên sản phẩm</div>
+										</div>
+										<!-- END Tên sản phẩm -->
+
+										<!-- COMBOBOX AND SEARCH -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Thương hiệu sản phẩm</label>
+												<select id="brands" class="form-control select2" style="width: 100%;"
+													ng-change="getbrand()" ng-model="selectedbrand"
+													ng-options="brand.id as brand.name for brand in brands"
+													ng-disabled="checkSell === true">
+												</select>
+											</div>
+										</div>
+										<!-- END COMBOBOX SEARCH -->
+										<!-- Loại sản phẩm -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Loại sản phẩm</label>
+												<select id="categorys" class="form-control select2" style="width: 100%;"
+													ng-change="getCategoryDetails()" ng-model="selectedCategory"
+													ng-options="category.id as category.name for category in categorys"
+													ng-disabled="checkSell === true">
+												</select>
+											</div>
+											<div class="form-group col-6">
+												<label>Loại chi tiết</label>
+												<select id="categorydt" class="form-control select2"
+													style="width: 100%;" ng-model="selectedCategoryDetail"
+													ng-options="catedt.id as catedt.name for catedt in categorydetail"
+													ng-disabled="checkSell === true">
+												</select>
+											</div>
+										</div>
+										<!-- END Loại sản phẩm -->
+										<div class="form-group">
+											<label for="exampleFormControlTextarea1">Mô tả sản phẩm</label>
+											<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+												ng-model="form.description" ng-disabled="checkSell === true"></textarea>
+										</div>
+										<div class="form-check form-switch mb-3">
+											<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+												ng-model="form.active" ng-checked="form.active" disabled>
+											<label class="form-check-label" for="flexSwitchCheckDefault">Trạng thái
+												bán</label>
+										</div>
+										<table class="table table-bordered text-center" id="data-table">
+											<thead>
+												<tr>
+													<th style="width: 10px">Kích cỡ</th>
+													<th>Màu sắc</th>
+													<th>Giá tiền</th>
+													<th style="width: 40px">Số lượng hàng</th>
+												</tr>
+											</thead>
+											<tbody id="table-body" ng-repeat="item in variant" ng-form="itemForm">
+												<tr>
+													<td><input type="text" ng-model="item.size"
+															placeholder="Kích thước sản phẩm"
+															ng-disabled="checkSell === true"></td>
+													<td>
+														<input type="text" ng-model="item.color" name="color"
+															ng-required="true" placeholder="Màu sản phẩm"
+															ng-disabled="checkSell === true">
+														<div class="text-danger"
+															ng-show="itemForm.color.$dirty && itemForm.color.$error.required">
+															Vui lòng nhập màu sắc</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.price" name="productPrice"
+															min="1000" ng-min="1000" ng-required="true"
+															placeholder="Giá sản phẩm" ng-disabled="checkSell === true">
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.min">
+															Giá tiền không được thấp hơn 1000</div>
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.required">
+															Vui lòng nhập giá tiền</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.quantity"
+															name="productQuantity" min="1" ng-min="1" ng-required="true"
+															placeholder="Số lượng sản phẩm"
+															ng-disabled="checkSell === true">
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.min">
+															Số lượng không được thấp hơn 1</div>
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.required">
+															Vui lòng nhập số lượng</div>
+													</td>
+													<td>
+
+														<button class="btn btn-danger" ng-click="deleteproductvariant(item.id)" ng-disabled="checkSell === true || checkDeleteVariant === true || form.isdelete == true">
+
+															<i class="fa-regular fa-trash-can"></i>
+														</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<button id="add-row-btn" class="btn btn-primary mt-2" ng-click="addRow()"
+											ng-disabled="checkSell === true || form.isdelete === true">
+											Thêm chi tiết sản phẩm</button>
+									</div>
+								</form>
+							</div>
+							<!-- END Thông tin sản phẩm -->
+
+							<div class="text-center mb-3">
+								<button class="btn btn-primary" ng-click="save()"
+									ng-disabled="myForm.$invalid || files.length === 0" ng-hide="checkSell === true || form.isdelete == true">Cập
+									nhật</button>
+								<button class="btn btn-danger" ng-click="deleteProduc()" ng-hide="form.isdelete == true">Đưa vào thùng rác</button>
+								<button class="btn btn-danger" ng-if="checkRequest === true"
+									ng-click="cancelRequest()" ng-hide="form.isdelete == true">Hủy yêu cầu</button>
+								<button class="btn btn-success" ng-if="checkRequest === false && checkSell === false"
+									ng-click="sendRequest()" ng-hide="form.isdelete == true">Gửi yêu cầu bán sản phẩm</button>
+								<button class="btn btn-success" ng-if="checkRequest === false && checkSell === true"
+									ng-click="sendRequestActiveFalse()" ng-hide="form.isdelete == true">Gửi yêu cầu hủy bán sản phẩm</button>
+								<button class="btn btn-success" ng-click="retoreProduct()" ng-show="form.isdelete == true">Khôi phục sản phẩm</button>
+							</div>
+
+							<!-- <div class="text-center">
+								<button id="successbtn" hidden>Lưu</button>
+								<button id="failsebtn" hidden>Xóa</button>
+							</div>
+
+							<div id="successModal" class="modal">
+								<div class="modal-content">
+									<span class="close">&times;</span>
+									<iframe
+										src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+									<span id="content" class="text-success fs-3">Thêm thành công</span>
+								</div>
+							</div>
+
+							<div id="failseModal" class="modal">
+								<div class="modal-content">
+									<span class="close">&times;</span>
+									<iframe
+										src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+									<span id="contentfalse" class="text-danger fs-3">Thêm thất bại</span>
+								</div>
+							</div> -->
+
+							<!-- Model sent content true -->
+							<button id="sendcontenttrue" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#sendContentt" hidden>
+								send
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="sendContentt" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<div class="form-group">
+												<label for="exampleFormControlTextarea1">Bạn có thể điền nội dung để
+													tăng tỉ lệ được chấp nhận yêu cầu!</label>
+												<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+													ng-model="contenttrue"
+													placeholder="Bạn có thể không nhập thông tin này"></textarea>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="acceptModel()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End sent content true -->
+
+							<!-- Model sent content false -->
+							<button id="sendcontentfalse" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#sendContentf" hidden>
+								send
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="sendContentf" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<div class="form-group">
+												<label for="exampleFormControlTextarea1">Bạn có thể điền nội dung để
+													tăng tỉ lệ được chấp nhận yêu cầu!</label>
+												<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+													ng-model="contentfalse"
+													placeholder="Bạn có thể không nhập thông tin này"></textarea>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<button class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="acceptModelFalse()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End sent content true -->
+
+							<!-- Model success save -->
+							<button id="ss" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Cập nhật thông tin sản phẩm thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success save -->
+
+							<!-- Model false save -->
+							<button id="fs" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Cập nhật thông tin sản phẩm thất bại, Vui lòng kiểm tra lại dữ liệu của
+												bạn!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false save -->
+
+							<!-- Model success delete -->
+							<button id="sd" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successDelete" hidden>
+								delete
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Chuyển sản phẩm vào thùng rác thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="chuyentrang()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success delete -->
+
+							<!-- Model false delete -->
+							<button id="fd" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseDelete" hidden>
+								delete
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseDelete" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Chuyển sản phẩm vào thùng rác thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false delete -->
+
+							<!-- Model success send request -->
+							<button id="ssr" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successsendrequest" hidden>
+								send rq
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successsendrequest" tabindex="-1" role="dialog"
+								aria-labelledby="" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Gửi yêu cầu thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success send request -->
+
+							<!-- Model false send request -->
+							<button id="fsr" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falsesendrequest" hidden>
+								send request
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falsesendrequest" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Gửi yêu cầu thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false send request -->
+
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+		<div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+		<!-- Select2 -->
+		<script src="/admin/plugins/select2/js/select2.full.min.js"></script>
+		<!-- Bootstrap4 Duallistbox -->
+		<script src="/admin/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+		<!-- InputMask -->
+		<script src="/admin/plugins/moment/moment.min.js"></script>
+		<script src="/admin/plugins/inputmask/jquery.inputmask.min.js"></script>
+		<!-- dropzonejs -->
+		<script src="/admin/plugins/dropzone/min/dropzone.min.js"></script>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+	<!-- <script src="app.js"></script> -->
+	<script>
+		$(function () {
+			//Initialize Select2 Elements
+			$('.select2').select2()
+
+			//Initialize Select2 Elements
+			$('.select2bs4').select2({
+				theme: 'bootstrap4'
+			})
+
+			//Datemask dd/mm/yyyy
+			$('#datemask').inputmask('dd/mm/yyyy', {
+				'placeholder': 'dd/mm/yyyy'
+			})
+			//Datemask2 mm/dd/yyyy
+			$('#datemask2').inputmask('mm/dd/yyyy', {
+				'placeholder': 'mm/dd/yyyy'
+			})
+			//Money Euro
+			$('[data-mask]').inputmask()
+
+			//Date picker
+			$('#reservationdate').datetimepicker({
+				format: 'L'
+			});
+
+			//Date and time picker
+			$('#reservationdatetime').datetimepicker({
+				icons: {
+					time: 'far fa-clock'
+				}
+			});
+
+			//Date range picker
+			$('#reservation').daterangepicker()
+			//Date range picker with time picker
+			$('#reservationtime').daterangepicker({
+				timePicker: true,
+				timePickerIncrement: 30,
+				locale: {
+					format: 'MM/DD/YYYY hh:mm A'
+				}
+			})
+			//Date range as a button
+			$('#daterange-btn').daterangepicker({
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+						'month').endOf('month')]
+				},
+				startDate: moment().subtract(29, 'days'),
+				endDate: moment()
+			},
+				function (start, end) {
+					$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+				}
+			)
+
+			//Timepicker
+			$('#timepicker').datetimepicker({
+				format: 'LT'
+			})
+
+			//Bootstrap Duallistbox
+			$('.duallistbox').bootstrapDualListbox()
+
+			//Colorpicker
+			$('.my-colorpicker1').colorpicker()
+			//color picker with addon
+			$('.my-colorpicker2').colorpicker()
+
+			$('.my-colorpicker2').on('colorpickerChange', function (event) {
+				$('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+			})
+		})
+		// BS-Stepper Init
+		document.addEventListener('DOMContentLoaded', function () {
+			window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+		})
+
+		// DropzoneJS Demo Code Start
+		Dropzone.autoDiscover = false
+
+		// Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+		var previewNode = document.querySelector("#template")
+		previewNode.id = ""
+		var previewTemplate = previewNode.parentNode.innerHTML
+		previewNode.parentNode.removeChild(previewNode)
+
+		var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+			url: "/target-url", // Set the url
+			thumbnailWidth: 80,
+			thumbnailHeight: 80,
+			parallelUploads: 20,
+			previewTemplate: previewTemplate,
+			autoQueue: false, // Make sure the files aren't queued until manually added
+			previewsContainer: "#previews", // Define the container to display the previews
+			clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+		})
+
+		myDropzone.on("addedfile", function (file) {
+			// Hookup the start button
+			file.previewElement.querySelector(".start").onclick = function () {
+				myDropzone.enqueueFile(file)
+			}
+		})
+
+		// Update the total progress bar
+		myDropzone.on("totaluploadprogress", function (progress) {
+			document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+		})
+
+		myDropzone.on("sending", function (file) {
+			// Show the total progress bar when upload starts
+			document.querySelector("#total-progress").style.opacity = "1"
+			// And disable the start button
+			file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+		})
+
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropzone.on("queuecomplete", function (progress) {
+			document.querySelector("#total-progress").style.opacity = "0"
+		})
+
+		// Setup the buttons for all transfers
+		// The "add files" button doesn't need to be setup because the config
+		// `clickable` has already been specified.
+		document.querySelector("#actions .start").onclick = function () {
+			myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
+		}
+		document.querySelector("#actions .cancel").onclick = function () {
+			myDropzone.removeAllFiles(true)
+		}
+		// DropzoneJS Demo Code End
+	</script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<!-- <script>
+		var addRowButton = document.getElementById('add-row-btn');
+		var tableBody = document.getElementById('table-body');
+		var rowCount = 1;
+
+		addRowButton.addEventListener('click', function () {
+			var newRow = document.createElement('tr');
+
+			// Tạo các cột mới và input tương ứng
+			var columns = ['Size', 'Color', 'Price', 'Quantity'];
+			for (var column of columns) {
+				var columnName = column.toLowerCase();
+				var dataCell = document.createElement('td');
+				var dataInput = document.createElement('input');
+				var inputClassName = columnName + rowCount;
+
+				dataInput.type = 'text';
+				dataInput.className = inputClassName;
+				dataInput.name = inputClassName;
+
+				dataCell.appendChild(dataInput);
+				newRow.appendChild(dataCell);
+			}
+
+			tableBody.appendChild(newRow);
+			rowCount++;
+		});
+	</script> -->
+	<!-- script click button thêm hình ảnh -->
+	<script>
+		function openFilePicker() {
+			// Khi người dùng nhấp vào button, ta kích hoạt sự kiện nhấn vào thẻ input type="file".
+			document.getElementById('fileInput').click();
+		}
+	</script>
+	<!-- END script click button thêm hình ảnh -->
+	<!-- script xử lý hình ảnh -->
+	<script>
+		app = angular.module("app", []);
+		app.controller("sellerproduct", function ($scope, $http, $window) {
+			var urlimg = '/img/product';
+			var content = document.getElementById('content');
+			var contentfalse = document.getElementById('contentfalse');
+			$scope.files = [];
+			let idCounter = 0;
+			/* $scope.url = function(filename) {
+				console.log(filename);
+			};  */
+
+			$scope.listimg = function () {
+				$http.get(urlimg)
+					.then(resp => {
+						resp.data.forEach(filename => {
+							// Tải xuống file từ URL
+							fetch(filename)
+								.then(res => {
+									// Chuyển đổi phản hồi thành Blob
+									return res.blob();
+								})
+								.then(blob => {
+									// Tạo một đối tượng File từ Blob
+									var file = new File([blob], filename);
+									var fileObj = {
+										id: idCounter++,
+										file: file,
+										dataURL: filename
+									};
+									// Thêm đối tượng File vào $scope.files
+									$scope.$apply(function () {
+										$scope.files.push(fileObj);
+									});
+									console.log($scope.files);
+
+								});
+						});
+					})
+					.catch(error => {
+						console.log("errors", error);
+					});
+			};
+
+			$scope.deleteimg = function (fileObj) {
+				// $scope.listimg();
+				var index = $scope.files.indexOf(fileObj);
+				if (index !== -1) {
+					$scope.files.splice(index, 1);
+				}
+				console.log(index);
+				console.log($scope.files);
+			};
+
+			// $scope.deleteimg = function (filename) {
+			// 	$http.delete(filename).then(resp => {
+			// 		// $scope.listimg();
+			// 		let i = $scope.filenames.findIndex(name => name == filename);
+			// 		$scope.filenames.splice(i, 1);
+			// 		console.log(filename);
+			// 	}).catch(error => {
+			// 		console.log("errors", error);
+			// 	});
+			// };
+
+			// $scope.uploadimg = function (files) {
+			// 	var form = new FormData();
+			// 	for (var i = 0; i < files.length; i++) {
+			// 		form.append('files', files[i]);
+			// 		console.log(files[i]);
+			// 	}
+			// 	$http.post(urlimg, form, {
+			// 		transformRequest: angular.identity,
+			// 		headers: {
+			// 			'Content-Type': undefined
+			// 		}
+			// 	}).then(resp => {
+			// 		$scope.filenames.push(...resp.data);
+			// 		$scope.listimg();
+			// 	}).catch(error => {
+			// 		console.log("errors", error);
+			// 	})
+			// };
+
+			$scope.uploadimg = function (files) {
+				console.log(files);
+				for (var i = 0; i < files.length; i++) {
+					(function () {
+						var file = files[i];
+
+						var reader = new FileReader();
+						reader.onloadend = function () {
+							var fileObj = {
+								id: idCounter++,
+								file: file,
+								dataURL: reader.result
+							};
+
+							$scope.$apply(function () {
+								$scope.files.push(fileObj);
+							});
+						};
+						reader.readAsDataURL(file);
+						console.log($scope.files);
+					})();
+				}
+			};
+
+			$scope.listimg();
+
+			var url = '/api/product';
+			$scope.id = '';
+			$scope.selectedCategoryId = '';
+			$scope.checkRequest = false;
+			$scope.checkSell = false;
+
+			$scope.infoproduct = function () {
+				$http.get(url).then(resp => {
+					$scope.form = resp.data.product;
+					$scope.checkRequest = resp.data.checkRequest;
+					$scope.checkSell = resp.data.product.active;
+					console.log(resp.data.product.active);
+				}).catch(error => {
+					console.log("errors", error);
+				})
+			};
+
+			$scope.getCategoryDetails = function () {
+				$http.get('/categoryDetails/' + $scope.selectedCategory)
+					.then(function (resp) {
+						$scope.categorydetail = resp.data;
+						$scope.selectedCategoryDetail = $scope.categorydetail[0].id;
+					});
+			};
+
+			$scope.getidcategoryDetails = function () {
+				$http.get('/idCategoryDetails').then(resp => {
+					$scope.id = resp.data;
+					$scope.selectedCategoryDetail = $scope.id;
+				})
+			};
+
+			$scope.getidcategory = function () {
+				$http.get('/idcategory').then(resp => {
+					$scope.id = resp.data;
+					$scope.selectedCategory = $scope.id;
+					$scope.getCategoryDetails();
+					$scope.getidcategoryDetails();
+				})
+			};
+
+			$scope.getcategory = function () {
+				$http.get('/category').then(resp => {
+					$scope.categorys = resp.data;
+				})
+			}
+
+			$scope.getbrand = function () {
+				$http.get('/brand').then(resp => {
+					$scope.brands = resp.data;
+				})
+			}
+
+			$scope.getidbrand = function () {
+				$http.get('/idbrand').then(resp => {
+					$scope.id = resp.data;
+					$scope.selectedbrand = $scope.id;
+				})
+			}
+
+			$scope.getcategory();
+			$scope.getidcategory();
+			$scope.infoproduct();
+			$scope.getbrand();
+			$scope.getidbrand();
+
+			var url = 'http://localhost:8888/api/productvariant';
+			var id = 0;
+			$scope.checkDeleteVariant = false;
+			$scope.addRow = function () {
+				id++;
+				$scope.variant.push({
+					id,
+					size: '',
+					color: '',
+					price: '',
+					quantity: ''
+				});
+				console.log(id);
+				if($scope.variant.length === 1){
+					$scope.checkDeleteVariant = true;
+				}else{
+					$scope.checkDeleteVariant = false;
+				}
+			}
+
+			$scope.lista = function () {
+				$http.get(url).then(resp => {
+					$scope.variant = resp.data;
+					if($scope.variant.length === 1){
+						$scope.checkDeleteVariant = true;
+					}else{
+						$scope.checkDeleteVariant = false;
+					}
+				}).catch(error => {
+					console.log("errors", error);
+				})
+			};
+
+			$scope.save = function () {
+
+				$scope.form.idCategoryDetails = $scope.selectedCategoryDetail;
+				$scope.form.listvariant = $scope.variant;
+				$scope.form.brand = $scope.selectedbrand;
+				$http.put("/info/product", $scope.form).then(resp => {
+					$scope.checkRequest = resp.data.checkRequest;
+					$scope.checkSell = $scope.form.active;
+					$scope.updateImg();
+					document.getElementById('ss').click();
+				}).catch(error => {
+					console.log("errors", error);
+					document.getElementById('fs').click();
+				})
+			};
+
+			$scope.deleteProduc = function () {
+				// Gửi dữ liệu đến REST controller
+				$http.delete('/delete/product/' + $scope.form.id)
+					.then(function (response) {
+						// Xử lý kết quả trả về từ REST controller
+						document.getElementById('sd').click();
+					}).catch(error => {
+						console.log("errors", error);
+						document.getElementById('fd').click();
+					});
+
+				// Chuyển hướng đến URL mới
+				// console.log('/delete/product/'+$scope.form.id);
+
+			};
+
+			$scope.chuyentrang = function () {
+				$window.location.href = '/seller/list/products';
+			};
+
+			$scope.lista();
+
+			window.onbeforeunload = function (event) {
+				
+				var data = $scope.form.id;
+				if ($scope.files.length === 0) {
+					navigator.sendBeacon('/addimageproduct/' + $scope.form.id, JSON.stringify(data));
+				}
+			}
+
+			$scope.deleteproductvariant = function (id) {
+				$http.delete('/productvariant/delete/' + id).then(resp => {
+					let i = $scope.variant.findIndex(item => item == id);
+					$scope.variant.splice(i, 1);
+					if($scope.variant.length === 1){
+						$scope.checkDeleteVariant = true;
+					}else{
+						$scope.checkDeleteVariant = false;
+					}
+				}).catch(error => {
+					console.log("errors", error);
+				});
+			}
+
+			$scope.sendRequest = function () {
+				document.getElementById('sendcontentfalse').click();
+			};
+
+			$scope.acceptModelFalse = function () {
+				$http.post('/seller/sendRequest?id=' + $scope.form.id + '&content=' + $scope.contentfalse).then(resp => {
+					$scope.checkRequest = true;
+					document.getElementById('ssr').click();
+				}).catch(error => {
+					console.log("errors", error);
+					document.getElementById('fsr').click();
+					$scope.checkRequest = false;
+				})
+			};
+
+			$scope.cancelRequest = function () {
+				$http.delete('/seller/cancelRequest?id=' + $scope.form.id).then(resp => {
+					$scope.checkRequest = false;
+				}).catch(error => {
+					console.log("errors", error);
+				})
+			};
+
+			$scope.sendRequestActiveFalse = function () {
+				document.getElementById('sendcontenttrue').click();
+			};
+
+			$scope.acceptModel = function () {
+				$http.post('/seller/sendrequestactive?id=' + $scope.form.id + '&content=' + $scope.contenttrue).then(resp => {
+					$scope.checkRequest = true;
+					document.getElementById('ssr').click();
+				}).catch(error => {
+					console.log("errors", error);
+					document.getElementById('fsr').click();
+					$scope.checkRequest = false;
+				})
+			};
+
+			$scope.updateImg = function () {
+				var form = new FormData();
+				for (var i = 0; i < $scope.files.length; i++) {
+					form.append('files', $scope.files[i].file);
+					console.log($scope.files[i].file);
+				}
+				$http.put('/update/image/product', form, {
+					transformRequest: angular.identity,
+					headers: {
+						'Content-Type': undefined
+					}
+				}).then(resp => {
+				}).catch(error => {
+					console.log("errors", error);
+				})
+			};
+
+			$scope.retoreProduct = function(product) {
+				$http.put('/seller/product/restore/' + $scope.form.id ).then(resp => {
+					$window.location.href = '/seller/list/restore';
+				}).catch(error => {
+					console.log("errors", error);
+				})
+			};
+
+		});
+	</script>
+	<!-- END script xử lý hình ảnh -->
+	<!-- Script xử lý product -->
+
+	<!-- END Script xử lý product -->
+	<!-- <script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var successbtn = document.getElementById('successbtn');
+			var failsebtn = document.getElementById('failsebtn');
+			var successModal = document.getElementById('successModal');
+			var failseModal = document.getElementById('failseModal');
+			var closeButtons = document.getElementsByClassName('close');
+
+			successbtn.addEventListener('click', function () {
+				successModal.style.display = 'block';
+			});
+
+			failsebtn.addEventListener('click', function () {
+				failseModal.style.display = 'block';
+			});
+
+			for (var i = 0; i < closeButtons.length; i++) {
+				closeButtons[i].addEventListener('click', function () {
+					successModal.style.display = 'none';
+					failseModal.style.display = 'none';
+				});
+			}
+
+			window.addEventListener('click', function (event) {
+				if (event.target === greenModal || event.target === failseModal) {
+					successModal.style.display = 'none';
+					failseModal.style.display = 'none';
+				}
+			});
+		});
+	</script> -->
+	<script src="/js/seller/Dwallet.js"></script>
+</body>
+
+</html>

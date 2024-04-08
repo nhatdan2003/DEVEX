@@ -1,0 +1,451 @@
+<!-- Navbar -->
+
+<div th:fragment="userHeaderHomePageFragment" ng-controller="cart-ctrl">
+  <div class="container-fluid header-inf bg-white">
+    <div class="container">
+      <div class="row">
+        <div class="menu-bar" style="color: #fff; margin: 0; padding: 0">
+          <nav class="navbar float-end navbar-expand-lg navbar-light" style="height: 35px">
+            <div class="collapse navbar-collapse text-end" id="navbarNavDropdown">
+              <ul class="text-end navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link" href="/ad/home" th:if="${admin}">Admin Page</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/message">Tin nhắn</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/seller/home" th:if="${seller}">Kênh người bán</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link" href="/history">Sản phẩm đã xem</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/order">Tra cứu đơn hàng</a>
+                </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="far fa-bell fs-5"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      id="amountNotifications"></span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+                    style="overflow-y: scroll; height: 400px; left: inherit; right: 0;" id="Notifications"></div>
+                </li>
+                <li class="nav-item">
+                  <a style="color: #fff" th:if="${session.user == null}" class="nav-link" href="/signin">Đăng nhập</a>
+                  <a th:if="${session.user != null}" class="nav-link text-danger fw-bold" href="/logout">Đăng xuất</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <!-- hết thanh vav -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container container_mid mt-3 bg-white" style="height: 500px">
+    <div class="row mt-2 mb-2 col-12">
+      <div class="col-md-2 col-3 text-center">
+        <a href="/home">
+          <img class="img-fluid img_logo m-0 mt-1" src=" /img/banner/logoDUAN.png" alt />
+        </a>
+      </div>
+
+      <div class="col-md-9 col-7 mt-2" style="position: relative" ng-controller="autoComplete">
+        <div class="search-box order-4 order-xl-3">
+          <form action="/product/search">
+            <div class="input-group no-shadow">
+              <input type="text" class="form-control" th:name="search" tabindex="1" autocomplete="off"
+                onPropertyChange="TextChange(this)"
+                th:placeholder="${session.keywordsSearch != null ? session.keywordsSearch : 'Bạn cần tìm gì hôm nay ?' }  "
+                name="keyword" [(ngModel)]="keyword" ng-keyup="" id="search" style="
+                  height: 40px;
+                  border-radius: 15px;
+                  font-weight: bold;
+                  font-size: 13px;
+                  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                  border: 2px gray;
+                " />
+
+              <span class="position-relative" style="
+                  right: 2.5rem;
+                  z-index: 100;
+                  margin-top: -2px;
+                  width: 0px;
+                ">
+                <a href="#" style="color: #fff; font-size: 12px" class="mt-1">
+                  <i class="fa-solid fa-magnifying-glass fs-4 mt-2 pt-1 text-dark"></i>
+                </a>
+              </span>
+            </div>
+
+          </form>
+          <div class="custom-dropdown" id="custom-dropdown"></div>
+        </div>
+      </div>
+      <div class="col-md-1 col-2 mt-2">
+        <div class="row">
+          <div class="col-6 pt-1">
+            <a href="/cart" style="position: relative">
+              <i class="bi bi-cart3 fs-4 text-dark fw-bold"></i>
+              <i class="d-flex rounded-circle px-1" style="
+                  font-size: 0.8rem;
+                  background-color: #2550b9ab;
+                  color: white;
+                  position: absolute;
+                  top: -1rem;
+                  right: -0.15rem;
+                  text-decoration: none;
+                " ng-bind="cart.countItem"></i>
+            </a>
+          </div>
+          <div class="col-6 pt-1 col">
+            <th:block
+              th:with="urlPath=${(admin == true) ? '/ad/profile' : (seller == true) ? '/seller/profile' : '/profile'}">
+              <a style="position: relative; display: flex; justify-content: center" th:href="${urlPath}">
+                <i class="bi bi-person-circle fs-4 text-dark fw-bold"></i>
+                <i th:if="${session.user != null}" style="
+                      font-size: 1rem;
+                      background-color: #2550b9ab;
+                      color: white;
+                      position: absolute;
+                      top: 2rem;
+                      text-decoration: none;
+                    " th:text="${session.user.username}"></i>
+              </a>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="height: 360px">
+      <div
+        class="col-md-2 d-md-none d-lg-flex list_type mt-4 text-center overflow-auto d-flex justify-content-center navbar navbar-expand-lg">
+        <ul class="list-group list-group-flush text-center collapse navbar-collapse">
+          <li class="list-group-item text-center" th:each="category : ${category}">
+            <a class="list_type_product rounded" th:href="@{|/category/${category.id}}" th:text="${category.name}"></a>
+          </li>
+        </ul>
+      </div>
+      <!--banners advertisement ( slide show)-->
+      <div class="col-12 col-lg-10 mt-4 slideShow">
+        <div class="image-slider">
+          <div class="image-item">
+            <div class="image">
+              <img class="img-fluid"
+                src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/07/25/1200x382-zfoldzflip5-250723.jpg" alt />
+            </div>
+          </div>
+          <div class="image-item">
+            <div class="image">
+              <img class="img-fluid"
+                src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/02/sua1reno-10-1200x375-26072023.jpg" alt />
+            </div>
+          </div>
+          <div class="image-item">
+            <div class="image">
+              <img class="img-fluid" src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/01/web-1200x382.jpg"
+                alt />
+            </div>
+          </div>
+          <div class="image-item">
+            <div class="image">
+              <img class="img-fluid"
+                src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/04/realme-11-1200-png.png" alt />
+            </div>
+          </div>
+          <div class="image-item">
+            <div class="image">
+              <img class="img-fluid" src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/03/1200x382.jpg" alt />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .lds-ellipsis {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+
+    .lds-ellipsis div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #fff;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+
+    .lds-ellipsis div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(0);
+      }
+    }
+
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(24px, 0);
+      }
+    }
+  </style>
+</div>
+<!-- /.navbar -->
+
+<header th:fragment="userHeaderFragment" ng-controller="cart-ctrl">
+  <div class="container-fluid header-inf">
+    <div class="container">
+      <div class="row-12">
+        <div class="menu-bar" style="color: #fff; margin: 0; padding: 0">
+          <nav class="navbar float-end navbar-expand-lg" style="height: 35px">
+            <div class="collapse navbar-collapse text-end text-white" id="navbarNavDropdown">
+              <ul class="text-end navbar-nav ml-auto">
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/ad/home" th:if="${admin}">Admin Page</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/message">Tin nhắn</a>
+
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/seller/home" th:if="${seller}">Kênh người bán</a>
+                </li>
+
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/history">Sản phẩm đã xem</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white" href="/order">Tra cứu đơn hàng</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="dropdown" href="#" data-target="#Notifications1">
+                    <i class="far fa-bell fs-4"></i>
+                    <span class="badge badge-warning position-absolute top-0 translate-middle rounded-pill mt-2 ms-1"
+                      id="amountNotifications1"></span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right"
+                    style="overflow-y: scroll; height: 400px; left: inherit; right: 0;" id="Notifications1">
+                    <span class="dropdown-item dropdown-header">15 Notifications</span>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">
+                      <i class="fas fa-envelope mr-2"></i> 4 new messages
+                      <span class="float-right text-muted text-sm">3 mins</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">
+                      <i class="fas fa-users mr-2"></i> 8 friend requests
+                      <span class="float-right text-muted text-sm">12 hours</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">
+                      <i class="fas fa-file mr-2"></i> 3 new reports
+                      <span class="float-right text-muted text-sm">2 days</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a style="color: #fff" th:if="${session.user == null}" class="nav-link" href="/signin">Đăng nhập</a>
+                  <a th:if="${session.user != null}" class="nav-link text-danger fw-bold font-weight-bold"
+                    href="/logout">Đăng xuất</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <!-- hết thanh vav -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container container_mid mt-3 bg-white pb-3" style="background-color: white">
+    <div class="row mt-2 mb-2 col-12">
+      <div class="col-md-2 col-3 text-center">
+        <a href="/home">
+          <img class="img-fluid img_logo m-0 mt-1" src=" /img/banner/logoDUAN.png" alt />
+        </a>
+      </div>
+
+      <div class="col-md-9 col-7 mt-2" ng-controller="autoComplete">
+        <div class="search-box order-4 order-xl-3">
+          <form action="/product/search">
+            <div class="input-group no-shadow">
+              <input type="text" class="form-control" id="search" th:name="search" onPropertyChange="TextChange(this)"
+                autocomplete="off"
+                th:placeholder="${session.keywordsSearch != null ? session.keywordsSearch : 'Bạn cần tìm gì hôm nay ?' }  "
+                name="keyword" style="
+                  height: 40px;
+                  border-radius: 15px;
+                  font-weight: bold;
+                  font-size: 13px;
+                  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                  border: 2px gray;
+                " />
+
+              <span class="position-relative" style="
+                  right: 2.5rem;
+                  z-index: 100;
+                  margin-top: -2px;
+                  width: 0px;
+                ">
+                <a href="#" style="color: #fff; font-size: 12px" class="mt-1">
+                  <i class="fa-solid fa-magnifying-glass fs-4 mt-2 pt-1 text-dark"></i>
+                </a>
+              </span>
+            </div>
+          </form>
+          <div class="custom-dropdown mt-2" id="custom-dropdown"></div>
+        </div>
+      </div>
+      <div class="col-md-1 col-2 mt-2">
+        <div class="row">
+          <div class="col-6 pt-1">
+            <a href="/cart" style="position: relative">
+              <i class="bi bi-cart3 fs-4 text-dark fw-bold"></i>
+              <i class="d-flex rounded-circle px-1" style="
+                  font-size: 0.8rem;
+                  background-color: #2550b9ab;
+                  color: white;
+                  position: absolute;
+                  top: -1rem;
+                  right: -0.15rem;
+                  text-decoration: none;
+                " ng-bind="cart.countItem"></i>
+            </a>
+          </div>
+          <div class="col-6 pt-1 col">
+            <th:block
+              th:with="urlPath=${(admin == true) ? '/ad/profile' : (seller == true) ? '/seller/profile' : '/profile'}">
+              <a style="position: relative; display: flex; justify-content: center" th:href="${urlPath}">
+                <i class="bi bi-person-circle fs-4 text-dark fw-bold"></i>
+                <i th:if="${session.user != null}" style="
+                      font-size: 1rem;
+                      background-color: #2550b9ab;
+                      color: white;
+                      position: absolute;
+                      top: 2rem;
+                      text-decoration: none;
+                    " th:text="${session.user.username}"></i>
+              </a>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .lds-ellipsis {
+      display: inline-block;
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+
+    .lds-ellipsis div {
+      position: absolute;
+      top: 33px;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #2550b9ab;
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+    }
+
+    .lds-ellipsis div:nth-child(1) {
+      left: 8px;
+      animation: lds-ellipsis1 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(2) {
+      left: 8px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(3) {
+      left: 32px;
+      animation: lds-ellipsis2 0.6s infinite;
+    }
+
+    .lds-ellipsis div:nth-child(4) {
+      left: 56px;
+      animation: lds-ellipsis3 0.6s infinite;
+    }
+
+    @keyframes lds-ellipsis1 {
+      0% {
+        transform: scale(0);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes lds-ellipsis3 {
+      0% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(0);
+      }
+    }
+
+    @keyframes lds-ellipsis2 {
+      0% {
+        transform: translate(0, 0);
+      }
+
+      100% {
+        transform: translate(24px, 0);
+      }
+    }
+  </style>
+</header>

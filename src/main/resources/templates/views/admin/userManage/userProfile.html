@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    .product-name {
+      max-width: 180px;
+      /* Đặt giới hạn chiều rộng, ví dụ 200px */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="myController">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+    </div>
+
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Thông tin người dùng</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Người dùng</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3">
+
+              <!-- Profile Image -->
+              <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                  <div class="text-center"
+                    style="position: relative; width: 100px;height: 100px;overflow: hidden;left: 50%;transform: translateX(-50%);">
+                    <label for="avatarInput">
+                      <img class="profile-user-img img-fluid img-circle"
+                        style="border: 3px solid #adb5bd;margin: 0 auto;padding: 3px;object-fit: cover;position: absolute;top: 0;left: 0;width: 100%;height: 100%;"
+                        th:src="@{/img/account/__${session.user.avatar}__}" alt="User profile picture" id="avatar">
+                    </label>
+
+                  </div>
+                  <h3 class="profile-username text-center" th:text="${session.user.fullname}"></h3>
+                  <p class="text-muted text-center" th:text="${session.user.username}"></p>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+            <div class="col-md-9">
+              <div class="card">
+                <div class="card-header p-2">
+                  <ul class="nav nav-pills">
+                    <li class="nav-item"><a class="nav-link active" href="#infomation" data-toggle="tab">Hồ sơ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Nhật ký</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#noti" data-toggle="tab">Thông báo</a></li>
+                  </ul>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <div class="tab-content">
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="timeline">
+                      <!-- The timeline -->
+                      <div class="timeline timeline-inverse" id="history">
+                        <!-- timeline time label -->
+                        <div class="time-label">
+                          <span class="bg-danger"> Đây sẽ là dòng thời gian </span>
+                        </div>
+                        <!-- /.timeline-label -->
+                        <!-- timeline item -->
+                        <div>
+                          <i class="fas fa-user bg-info"></i>
+
+                          <div class="timeline-item">
+                            <span class="time"><i class="far fa-clock"></i> 5
+                              mins ago</span>
+
+                            <h3 class="timeline-header border-0">
+                              <a href="#">Sarah Young</a> accepted your friend request
+                            </h3>
+                          </div>
+                        </div>
+                        <!-- END timeline item -->
+                        <!-- timeline time label -->
+                        <div class="time-label">
+                          <span class="bg-success"> 1/1/1111 </span>
+                        </div>
+                        <!-- /.timeline-label -->
+                        <!-- timeline item -->
+                        <div>
+                          <i class="fas fa-camera bg-purple"></i>
+
+                          <div class="timeline-item">
+                            <span class="time"><i class="far fa-clock"></i> 2 days ago</span>
+
+                            <h3 class="timeline-header">
+                              <a href="#">Mina Lee</a> uploaded new photos
+                            </h3>
+
+                            <div class="timeline-body">
+                              <img src="https://placehold.it/150x100" alt="...">
+                              <img src="https://placehold.it/150x100" alt="...">
+                              <img src="https://placehold.it/150x100" alt="...">
+                              <img src="https://placehold.it/150x100" alt="...">
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END timeline item -->
+                        <div>
+                          <i class="far fa-clock bg-gray"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                    <div class="tab-pane" id="noti">
+                      <div class="timeline timeline-inverse" id="allnotifications">
+                        <!-- timeline time label -->
+                        <div class="time-label">
+                          <span class="bg-danger"> Đây sẽ là dòng thời gian tb</span>
+                        </div>
+                        <!-- /.timeline-label -->
+
+                      </div>
+                    </div>
+
+                    <div class="tab-pane active" id="infomation">
+                      <form class="mt-4 form-horizontal" method="post" enctype="multipart/form-data"
+                        action="/profile/update">
+                        <div class="mb-3 bg-white rounded px-2">
+                          <input type="text" id="inputFullname" placeholder="Fullname" pattern="[a-zA-ZÀ-ỹ ]+"
+                            title="Name does not contain number" required class="form-control border-1 p-0 ps-2"
+                            name="fullname" th:value="${session.user.fullname}" />
+                        </div>
+
+                        <div class="input-group mb-3 bg-white rounded px-2">
+                          <input type="email" id="inputEmail"
+                            th:value="${session.user.email == null ? '' : session.user.email}"
+                            placeholder="Email chưa được đăng ký..." pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                            maxlength="50" minlength="5" required class="form-control border-1 p-0 ps-2" name="email"
+                            disabled /> <span class="input-group-append">
+                            <button type="button" class="btn btn-info" data-toggle="modal"
+                              data-target="#ModalVerifyEmail">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          </span>
+                        </div>
+                        <!-- The Modal -->
+                        <div class="modal fade" id="ModalVerifyEmail">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <!-- Modal Header -->
+                              <div class="modal-header">
+                                <h4 class="modal-title">Xác thực</h4>
+                                <button type="button" class="close" data-dismiss="modal">
+                                  &times;</button>
+                              </div>
+
+                              <!-- Modal body -->
+                              <div class="modal-body">
+                                <div class="icon-security text-center mb-4">
+                                  <img class="img-fluid img-circle" src="img/banner/security.png" alt="icon"
+                                    style="width: 80px" />
+                                </div>
+                                <div class="by-verify text-center mb-4">
+                                  <a
+                                    th:href="${session.user.email != null} ? @{/profile/verify/email} : @{/profile/change-email}"><label
+                                      class="btn btn-danger font-weight-normal">
+                                      Xác
+                                      minh bằng mã OTP gửi qua Email </label> </a>
+                                </div>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="input-group mb-3 bg-white rounded px-2">
+                          <input type="text" id="inputPhone"
+                            th:value="${session.user.phone == null ? '' : session.user.phone}"
+                            placeholder="Số điện thoại chưa được đăng ký..." pattern="[0-9()+-]*" maxlength="15"
+                            minlength="5" required class="form-control border-1 p-0 ps-2" name="phone" disabled /> <span
+                            class="input-group-append">
+                            <button type="button" class="btn btn-info" data-toggle="modal"
+                              data-target="#ModalVerifyPhone">
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          </span>
+                        </div>
+
+                        <!-- The Modal -->
+                        <div class="modal fade" id="ModalVerifyPhone">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <!-- Modal Header -->
+                              <div class="modal-header">
+                                <h4 class="modal-title">Xác thực</h4>
+                                <button type="button" class="close" data-dismiss="modal">
+                                  &times;</button>
+                              </div>
+
+                              <!-- Modal body -->
+                              <div class="modal-body">
+                                <div class="icon-security text-center mb-4">
+                                  <img class="img-fluid img-circle" src="img/banner/security.png" alt="icon"
+                                    style="width: 80px" />
+                                </div>
+                                <div class="by-verify text-center mb-4">
+                                  <a
+                                    th:href="${session.user.phone != null} ? @{/profile/verify/phone} : @{/profile/change-phone}"><label
+                                      class="btn btn-danger font-weight-normal">
+                                      Xác
+                                      minh bằng mã OTP gửi qua số điện thoại
+                                    </label> </a>
+                                </div>
+                              </div>
+
+                              <!-- Modal footer -->
+                            </div>
+                          </div>
+                        </div>
+                        <input type="file" id="avatarInput" style="display: none" name="avatarInput" /> <input
+                          type="hidden" name="avatar" id="avatar-hide" th:value="${session.user.avatar}" />
+
+                        <div class="mb-3 bg-white rounded px-2">
+                          <div class="form-group">
+                            <select name="gender" id="gender" class="form-control">
+                              <option selected="selected" disabled="disabled" value="null">Giới tính</option>
+                              <option value="Nam" th:selected="${session.user.gender == 'Nam'}">Nam
+                              </option>
+                              <option value="Nữ" th:selected="${session.user.gender == 'Nữ'}">Nữ</option>
+                              <option value="Other" th:selected="${session.user.gender == 'Other'}">Khác
+                              </option>
+                            </select>
+                          </div>
+                          <!--SOME INPUT RIGHT HERE -->
+                        </div>
+
+                        <div class="row">
+                          <div class="form-signup col-6">
+                            <div class="mb-3 bg-white rounded px-2">
+                              <button type="submit" class="form-control btn btn-success mt-3">Lưu</button>
+                            </div>
+                          </div>
+                          <div class="form-signup col-6">
+                            <div class="mb-3 rounded px-2">
+                              <a href="/verify-password" class="form-control text-white btn btn-success mt-3">
+                                Đổi mật khẩu </a>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                      <!-- Bảo code -->
+                    </div>
+                    <!-- /.tab-pane -->
+                  </div>
+                  <!-- /.tab-content -->
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+  <script>
+    // Khi người dùng chọn ảnh, xử lý sự kiện change của input file
+    document.getElementById("avatarInput").addEventListener(
+      "change",
+      function (event) {
+        const file = event.target.files[0]; // Lấy file ảnh từ input
+
+        if (file) {
+          // Gắn tên tệp vào input ẩn có id="avatar-hide"
+          document.getElementById("avatar-hide").setAttribute(
+            "value", file.name);
+
+          // (Tùy chọn) Hiển thị ảnh đã chọn lên trang web (nếu muốn)
+          const reader = new FileReader();
+          reader.onload = function () {
+            const imageDataURL = reader.result;
+            document.getElementById("avatar").setAttribute(
+              "src", imageDataURL);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+  </script>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+<script src="/admin/dist/js/handMade.js"></script>
+<script src="/js/admin/adminProfile.js"></script>
+<script src="/js/admin/DWalletAdmin.js"></script>
+<!-- <script src="/js/seller/sellerProfile.js"></script> -->
+
+</html>

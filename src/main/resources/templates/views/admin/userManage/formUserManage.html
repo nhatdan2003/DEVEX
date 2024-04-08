@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+	<!-- daterange picker -->
+	<link rel="stylesheet" href="/admin/plugins/daterangepicker/daterangepicker.css">
+	<!-- iCheck for checkboxes and radio inputs -->
+	<link rel="stylesheet" href="/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- Bootstrap Color Picker -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+	<!-- Tempusdominus Bootstrap 4 -->
+	<link rel="stylesheet" href="/admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="/admin/plugins/select2/css/select2.min.css">
+	<link rel="stylesheet" href="/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+	<!-- Bootstrap4 Duallistbox -->
+	<link rel="stylesheet" href="/admin/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css">
+	<!-- BS Stepper -->
+	<link rel="stylesheet" href="/admin/plugins/bs-stepper/css/bs-stepper.min.css">
+	<!-- Bootstrap5 Duallistbox -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="myController">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+
+		<div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+		<div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0" th:text="${titleType}"></h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/ad/home">Trang
+										chủ</a></li>
+								<li class="breadcrumb-item active">Quản lý người dùng</li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.container-fluid -->
+			<!--modal validate-->
+			<div class="modal fade" id="modalValidate" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content" style="margin-top: 20%">
+						<!-- Modal body -->
+						<div class="modal-body">
+							<div class="text-left mt-2" style="margin-bottom: 60px">
+								<h5 id="message-validation"></h5>
+							</div>
+							<div class="text-center mb-2">
+								<button class="btn btn-danger w-100" data-dismiss="modal">
+									OK
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--modal validate-->
+
+			<div class="row">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">Quản lý người dùng</h3>
+						</div>
+						<!-- /.card-header -->
+						<div ng-if="data.userRoles[0].user" class="card-body">
+							<form method="post">
+								<div class="mb-3">
+									<label for="UserName" class="form-label">Tên tài khoản</label>
+									<input ng-model="data.userRoles[0].user.username" name="username" type="text"
+										class="form-control" id="UserName" aria-describedby="UserName" disabled>
+
+								</div>
+								<div class="mb-3">
+									<label for="FullName" class="form-label">Họ và tên</label>
+									<input ng-model="data.userRoles[0].user.fullname" name="fullName" type="text"
+										class="form-control" id="FullName" aria-describedby="FullName">
+								</div>
+								<div class="mb-3">
+									<label for="Email" class="form-label">Email</label>
+									<input ng-model="data.userRoles[0].user.email" name="email" type="email"
+										class="form-control" id="Email" aria-describedby="Email">
+								</div>
+								<div class="mb-3">
+									<label for="Password" class="form-label">Mật khẩu</label>
+									<input ng-model="data.userRoles[0].user.password" name="password" type="password"
+										class="form-control" id="Password" aria-describedby="Password">
+								</div>
+								<div class="mb-3">
+									<label for="Phone" class="form-label">Điện thoại</label>
+									<input ng-model="data.userRoles[0].user.phone" name="phone" type="text"
+										class="form-control" id="Phone" aria-describedby="Phone">
+								</div>
+								<div class="mb-3 d-flex">
+									<label for="Role" class="form-label me-4">Giới tính</label> <br>
+									<div class="form-check pe-3">
+										<input class="form-check-input" type="radio" name="gender" id="Nam"
+											ng-model="data.userRoles[0].user.gender" ng-value="'Nam'"> <label
+											class="form-check-label" for="Nam"> Nam </label>
+									</div>
+									<div class="form-check" style="margin: 0px 20px;">
+										<input class="form-check-input" type="radio" name="gender" id="Nữ"
+											ng-model="data.userRoles[0].user.gender" ng-value="'Nữ'"> <label
+											class="form-check-label" for="Nữ"> Nữ </label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="gender" id="Orther"
+											ng-model="data.userRoles[0].user.gender" ng-value="'Other'"> <label
+											class="form-check-label" for="Other"> Khác </label>
+									</div>
+
+								</div>
+								<div class="mb-3 d-flex">
+									<label for="Role" class="form-label me-4">Trạng thái</label>
+									<div class="form-check pe-3">
+										<input class="form-check-input" type="radio" name="active" id="true"
+											ng-model="data.userRoles[0].user.active" ng-value="true"> <label
+											class="form-check-label" for="true"> Hoạt Động </label>
+									</div>
+									<div class="form-check" style="margin: 0px 20px;">
+										<input class="form-check-input" type="radio" name="active" id="false"
+											ng-model="data.userRoles[0].user.active" ng-value="false"> <label
+											class="form-check-label" for="false"> Không hoạt động </label>
+									</div>
+
+								</div>
+								<div class="mb-3 d-flex">
+									<label for="Role" class="form-label me-4">Vai trò</label>
+									<div class="form-check pe-3" ng-repeat="role in data.roles">
+										<input ng-checked="isRoleSelected(role.id)"
+											ng-disabled="isRoleSelected(role.id) && role.id ==='SELLER' && isSellerSelected ||role.id ==='ADMIN'"
+											ng-click="toggleRole(role.id)" class="form-check-input" type="checkbox"
+											name="role" id="{{role.id}}">
+										<label class="form-check-label" for="{{role.id}}">{{ role.name }}</label>
+									</div>
+								</div>
+
+
+
+								<button type="submit" class="btn btn-primary" ng-click="updateRoles()">Update</button>
+
+
+
+							</form>
+						</div>
+						<!-- /.card-body -->
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- /.container-fluid -->
+	</div>
+	<!-- /.content-header -->
+
+	<!-- Main content -->
+	<section class="content">
+		<div class="container-fluid">
+			<div class="row"></div>
+			<!-- /.row -->
+		</div>
+		<!-- /.container-fluid -->
+	</section>
+	<!-- /.content -->
+	</div>
+	<!-- /.content-wrapper -->
+
+	<div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+	<div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+	<script src="/admin/plugins/select2/js/select2.full.min.js"></script>
+	<!-- Bootstrap4 Duallistbox -->
+	<script src="/admin/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
+	<!-- InputMask -->
+	<script src="/admin/plugins/moment/moment.min.js"></script>
+	<script src="/admin/plugins/inputmask/jquery.inputmask.min.js"></script>
+	<!-- dropzonejs -->
+	<script src="/admin/plugins/dropzone/min/dropzone.min.js"></script>
+	</div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+
+	<script>
+		$(function () {
+			//Initialize Select2 Elements
+			$('.select2').select2()
+
+			//Initialize Select2 Elements
+			$('.select2bs4').select2({
+				theme: 'bootstrap4'
+			})
+
+			//Datemask dd/mm/yyyy
+			$('#datemask').inputmask('dd/mm/yyyy', {
+				'placeholder': 'dd/mm/yyyy'
+			})
+			//Datemask2 mm/dd/yyyy
+			$('#datemask2').inputmask('mm/dd/yyyy', {
+				'placeholder': 'mm/dd/yyyy'
+			})
+			//Money Euro
+			$('[data-mask]').inputmask()
+
+			//Date picker
+			$('#reservationdate').datetimepicker({
+				format: 'L'
+			});
+
+			//Date and time picker
+			$('#reservationdatetime').datetimepicker({
+				icons: {
+					time: 'far fa-clock'
+				}
+			});
+
+			//Date range picker
+			$('#reservation').daterangepicker()
+			//Date range picker with time picker
+			$('#reservationtime').daterangepicker({
+				timePicker: true,
+				timePickerIncrement: 30,
+				locale: {
+					format: 'MM/DD/YYYY hh:mm A'
+				}
+			})
+			//Date range as a button
+			$('#daterange-btn').daterangepicker({
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+						'month').endOf('month')]
+				},
+				startDate: moment().subtract(29, 'days'),
+				endDate: moment()
+			},
+				function (start, end) {
+					$('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+				}
+			)
+
+			//Timepicker
+			$('#timepicker').datetimepicker({
+				format: 'LT'
+			})
+
+			//Bootstrap Duallistbox
+			$('.duallistbox').bootstrapDualListbox()
+
+			//Colorpicker
+			$('.my-colorpicker1').colorpicker()
+			//color picker with addon
+			$('.my-colorpicker2').colorpicker()
+
+			$('.my-colorpicker2').on('colorpickerChange', function (event) {
+				$('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+			})
+		})
+		// BS-Stepper Init
+		document.addEventListener('DOMContentLoaded', function () {
+			window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+		})
+
+		// DropzoneJS Demo Code Start
+		Dropzone.autoDiscover = false
+
+		// Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+		var previewNode = document.querySelector("#template")
+		previewNode.id = ""
+		var previewTemplate = previewNode.parentNode.innerHTML
+		previewNode.parentNode.removeChild(previewNode)
+
+		var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+			url: "/target-url", // Set the url
+			thumbnailWidth: 80,
+			thumbnailHeight: 80,
+			parallelUploads: 20,
+			previewTemplate: previewTemplate,
+			autoQueue: false, // Make sure the files aren't queued until manually added
+			previewsContainer: "#previews", // Define the container to display the previews
+			clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+		})
+
+		myDropzone.on("addedfile", function (file) {
+			// Hookup the start button
+			file.previewElement.querySelector(".start").onclick = function () {
+				myDropzone.enqueueFile(file)
+			}
+		})
+
+		// Update the total progress bar
+		myDropzone.on("totaluploadprogress", function (progress) {
+			document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+		})
+
+		myDropzone.on("sending", function (file) {
+			// Show the total progress bar when upload starts
+			document.querySelector("#total-progress").style.opacity = "1"
+			// And disable the start button
+			file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+		})
+
+		// Hide the total progress bar when nothing's uploading anymore
+		myDropzone.on("queuecomplete", function (progress) {
+			document.querySelector("#total-progress").style.opacity = "0"
+		})
+
+		// Setup the buttons for all transfers
+		// The "add files" button doesn't need to be setup because the config
+		// `clickable` has already been specified.
+		document.querySelector("#actions .start").onclick = function () {
+			myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
+		}
+		document.querySelector("#actions .cancel").onclick = function () {
+			myDropzone.removeAllFiles(true)
+		}
+		// DropzoneJS Demo Code End
+	</script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+	<!-- script click button thêm hình ảnh -->
+	<script>
+		function openFilePicker() {
+			// Khi người dùng nhấp vào button, ta kích hoạt sự kiện nhấn vào thẻ input type="file".
+			document.getElementById('fileInput').click();
+		}
+	</script>
+	<!-- END script click button thêm hình ảnh -->
+	<!-- script xử lý hình ảnh -->
+	<script>
+		app = angular.module("app", []);
+
+		app.controller('myController', function ($scope, $http, $window) {
+			const content = document.getElementById('content');
+			let message = document.getElementById("message-validation");
+			let checkExist = true;
+
+			$scope.isSellerSelected = false; // khởi tạo biến chứa roles true ? false
+			$scope.data = []; // khởi tạo biến $scope.fill với một mảng rỗng
+			$scope.fillAll = function () {
+				$http.get('/api/userDetail').then(resp => {
+					$scope.data = resp.data;
+					// $scope.selectedRoles = [$scope.data.userRoles.role.id];
+					$scope.selectedRoles = $scope.data.userRoles.map(userRole => userRole.role.id);
+					$scope.isSellerSelected = $scope.selectedRoles.includes('SELLER');
+					console.log($scope.isSellerSelected);
+					// console.log($scope.selectedRoles)
+					// console.log($scope.data)
+
+				}).catch(function (err) {
+					console.log('Lỗi này:' + err);
+					console.error(err); // xử lý lỗi khi gọi API
+					alert('Có lỗi xảy ra khi gọi API'); // hiển thị thông báo lỗi cho người dùng
+				});
+			};
+
+			$scope.fillAll();
+
+
+			$scope.isRoleSelected = function (roleId) {
+				return $scope.selectedRoles.includes(roleId);
+			};
+
+			$scope.toggleRole = function (roleId) {
+				var index = $scope.selectedRoles.indexOf(roleId);
+				if (index === -1) {
+					$scope.selectedRoles.push(roleId); // Nếu role chưa được chọn, thêm vào mảng
+				} else {
+					$scope.selectedRoles.splice(index, 1); // Nếu role đã được chọn, loại bỏ khỏi mảng
+				}
+			};
+
+
+			$scope.updateRoles = function () {
+
+				$scope.isUpdateClicked = true; // cập nhập disable
+
+				// Tạo đối tượng chứa dữ liệu cần cập nhật
+				var updatedRoles = {
+					userId: $scope.data.userRoles[0].user.username, // ID của người dùng
+					fullname: $scope.data.userRoles[0].user.fullname,
+					email: $scope.data.userRoles[0].user.email,
+					password: $scope.data.userRoles[0].user.password,
+					phone: $scope.data.userRoles[0].user.phone,
+					gender: $scope.data.userRoles[0].user.gender,
+					active: $scope.data.userRoles[0].user.active,
+					roles: $scope.selectedRoles // Danh sách roles đã chọn
+				};
+				console.log(updatedRoles);
+				if ($scope.selectedRoles.length <= 0) {
+					checkExist = false;
+				}
+				// Gửi yêu cầu cập nhật lên server
+				if (checkExist == true) {
+					$http.post('/api/updateUserRoles', updatedRoles).then(response => {
+
+						message.innerText = "Cập nhập thành công!";
+						$("#modalValidate").modal("show");
+
+					}).catch(error => {
+						console.error(error);
+						message.innerText = "Cập nhập thất bại!";
+						$("#modalValidate").modal("show");
+
+					});
+				} else {
+					message.innerText = "Cập nhập thất bại!";
+					$("#modalValidate").modal("show");
+				}
+
+
+			};
+
+
+
+
+
+		});
+	</script>
+	<!-- END script xử lý hình ảnh -->
+	<!-- Script thêm sự kiện model -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var successbtn = document.getElementById('successbtn');
+			var failsebtn = document.getElementById('failsebtn');
+			var successModal = document.getElementById('successModal');
+			var failseModal = document.getElementById('failseModal');
+			var closeButtons = document.getElementsByClassName('close');
+
+			successbtn.addEventListener('click', function () {
+				successModal.display = 'block';
+			});
+
+			failsebtn.addEventListener('click', function () {
+				failseModal.style.display = 'block';
+			});
+
+			for (var i = 0; i < closeButtons.length; i++) {
+				closeButtons[i].addEventListener('click', function () {
+					successModal.style.display = 'none';
+					failseModal.style.display = 'none';
+				});
+			}
+
+			window.addEventListener('click', function (event) {
+				if (event.target === failseModal) {
+					successModal.style.display = 'none';
+					failseModal.style.display = 'none';
+				}
+			});
+		});
+	</script>
+	<!-- END Script thêm sự kiện model -->
+	<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+</body>
+
+</html>

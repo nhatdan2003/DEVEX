@@ -1,0 +1,1295 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Chi tiết sản phẩm</title>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link class="devex" rel="icon" href="/img/banner/title-icon.png" />
+	<!-- Bootstrap CSS v5.2.1 -->
+
+	<!-- Bootstrap CSS v5.2.1 -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+	<!--cnd fontawesome-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- Theme style -->
+
+	<link rel="stylesheet" href="/admin/dist/css/productDetail.css" th:href="@{/admin/dist/css/productDetail.css}">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css">
+
+	<!--slick-->
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+	<!--angular-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+		integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.js"></script>
+	<script th:src="@{/js/cart-ctrl.js}"></script>
+	<script th:src="@{/js/user/autoComplete.js}"></script>
+	<script th:src="@{/js/commentAPI.js}"></script>
+	<style>
+		/* Định nghĩa animation slideUp */
+		@keyframes slideUp {
+			0% {
+				transform: translate(-50%, 100%);
+			}
+
+			100% {
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.icon-sale {
+			width: auto;
+			background-color: #2550b9;
+			position: absolute;
+			border-radius: 20px;
+			margin-top: 150px;
+			font-size: .75rem;
+		}
+
+		.icon-sale>a {
+			color: aliceblue;
+			text-decoration: none;
+			font-size: 13px;
+			font-weight: 500;
+			padding: 10PX;
+		}
+
+		.hot-sale {
+			position: absolute;
+			top: 0;
+			right: 0;
+			font-size: .7rem;
+			color: aliceblue;
+		}
+
+		.mall-icon {
+			position: absolute;
+		}
+
+		.img-comment {
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+
+		.fixed-picture {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.fixed-picture img {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.error-actions .btn {
+			margin-right: 10px;
+		}
+
+		.comment-box {
+			padding: 5px
+		}
+
+		.comment-area textarea {
+			resize: none;
+			border: 1px solid #ff0000
+		}
+
+		.form-control:focus {
+			color: #495057;
+			background-color: #fff;
+			border-color: #ffffff;
+			outline: 0;
+			box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
+		}
+
+		.send {
+			color: #fff;
+			background-color: #ff0000;
+			border-color: #ff0000
+		}
+
+		.send:hover {
+			color: #fff;
+			background-color: #f50202;
+			border-color: #f50202
+		}
+
+		.custom-dropdown {
+			position: absolute;
+			display: none;
+			border: 1px solid #ccc;
+			max-height: 200px;
+			margin-top: 5px;
+			overflow-y: auto;
+			width: 95%;
+			max-width: 760px;
+			background-color: #fff;
+			z-index: 100;
+			border-radius: 12px;
+		}
+
+		/* Style for the custom dropdown options */
+		.custom-dropdown div {
+			padding: 4px 12px;
+			/* border-bottom: 1px solid #b4b4b4; */
+			cursor: pointer;
+		}
+
+		.custom-dropdown div:hover {
+			background-color: #f2f2f2;
+		}
+	</style>
+	<!-- <div th:replace="~{flagment/user/userHead :: userHeadFragment}"></div> -->
+</head>
+
+<body lang="en" th:object="${product}" ng-app="app" ng-controller="comment-ctrl">
+	<!-- <header> -->
+	<div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+
+	<!-- </header> -->
+	<main th:object="${product}">
+		<div class="container  mt-3">
+			<div class="row">
+				<div class="col-12">
+					<span class="content"><a class="path_content">Trang Chủ</a></span>
+					<span class="path_arrow"> <i class="fa-solid fa-chevron-right"></i></span> <span class="content"><a
+							class="path_content" th:text="*{productbrand.name}"></a></span> <span class="path_arrow"> <i
+							class="fa-solid fa-chevron-right"></i>
+					</span> <span class="content"><a class="path_content" th:text="*{name}"></a></span>
+				</div>
+			</div>
+		</div>
+
+		</header>
+		<main th:object="${product}">
+			<input type="text" th:value="${product.id}" id="idup" hidden>
+			<!-- duyện qua product trả về -->
+			<div class="container container_main mt-4 ">
+				<form th:action="@{'/cart/add/' + *{id}}" method="post">
+					<div class="row   ">
+
+						<!--main-left-->
+						<div class=" col-12 col-lg-5 mt-3 slick-Slider-Syncing ">
+							<!--slider-for-->
+							<div class="slider-for">
+
+								<div th:each="img: *{imageProducts}" class="image-item">
+
+									<div class="image">
+
+										<img th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${img.name}|}"
+											alt="null" />
+									</div>
+
+								</div>
+
+							</div>
+
+							<!--slider-nav-->
+							<div class=" col-12 slick-slider_nav">
+								<!-- Hiện Thị Hình Ảnh sản phẩm  -->
+								<div class="image-slider">
+									<div th:each="img: *{imageProducts}" style="padding-left: 5px;" class="image-item">
+										<div class="image-nav">
+											<img style="height: 70px; width: 100%;" class="slider_nav-img" tabindex="0"
+												th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${img.name}|}" />
+										</div>
+
+									</div>
+
+
+								</div>
+
+							</div>
+
+						</div>
+						<!--main-right-->
+						<div class=" col-12 col-lg-7 mt-3">
+							<!--Title-->
+							<div class="">
+								<svg width="30" height="16" viewBox="0 0 30 16" fill="none"
+									th:if="${product.sellerProduct.mall}" xmlns="http://www.w3.org/2000/svg"
+									class="d-inline me-2 ps-0 mb-1">
+									<path fill-rule="evenodd" clip-rule="evenodd"
+										d="M0 2C0 0.895431 0.895431 0 2 0L28 0C29.1046 0 30 0.895431 30 2V14C30 15.1046 29.1046 16 28 16H2C0.89543 16 0 15.1046 0 14L0 2Z"
+										fill="blue"></path>
+									<path fill-rule="evenodd" clip-rule="evenodd"
+										d="M11.8045 3.00128H10.8673C10.8403 3.00132 10.8137 3.00752 10.7895 3.01939C10.7652 3.03126 10.744 3.0485 10.7274 3.0698L10.151 3.70154C10.1108 3.74133 10.0736 3.78149 10.0397 3.82129L10.0109 3.85512L9.73645 4.1559C9.26611 4.63346 8.55272 5.15874 7.50601 5.1696H7.47399C6.35562 5.1696 5.61724 4.53545 5.18223 4.084L4.2545 3.06788C4.23787 3.04676 4.21666 3.02968 4.19249 3.01792C4.16831 3.00617 4.14178 3.00004 4.1149 3H3.17803C3.13084 3.00008 3.08561 3.01887 3.05224 3.05223C3.01887 3.0856 3.00008 3.13084 3 3.17803V12.8198C3.00008 12.867 3.01887 12.9123 3.05224 12.9456C3.08561 12.979 3.13084 12.9978 3.17803 12.9979H4.11458C4.16177 12.9978 4.207 12.979 4.24037 12.9456C4.27373 12.9123 4.29252 12.867 4.2926 12.8198V5.00726C4.51669 5.20068 4.74894 5.38439 4.9887 5.55788C5.57807 5.9956 6.40375 6.40585 7.47655 6.40585H7.51722C8.53818 6.3953 9.32642 6.03468 9.89137 5.64233L9.89877 5.64155L9.97012 5.58642C10.0506 5.52802 10.1262 5.46926 10.1969 5.41116L10.689 5.03095V12.8198C10.6892 12.867 10.708 12.9122 10.7413 12.9455C10.7747 12.9789 10.8199 12.9977 10.867 12.9979H11.8042C11.8514 12.9977 11.8966 12.9789 11.9299 12.9455C11.9633 12.9122 11.9821 12.867 11.9822 12.8198V3.17931C11.9821 3.1322 11.9633 3.08706 11.93 3.05372C11.8967 3.02038 11.8516 3.00153 11.8045 3.00128ZM19.3506 6.74843H18.4154C18.3682 6.74851 18.3229 6.76729 18.2896 6.80066C18.2562 6.83403 18.2374 6.87926 18.2373 6.92645V7.5172C17.6712 7.03692 16.8957 6.70776 16.087 6.70776C14.307 6.70776 12.8639 8.11659 12.8639 9.85105C12.8639 11.5855 14.307 12.9947 16.087 12.9947C16.8743 12.9882 17.6348 12.7074 18.2373 12.2006V12.8195C18.2372 12.843 18.2417 12.8663 18.2506 12.888C18.2595 12.9097 18.2726 12.9295 18.2891 12.9461C18.3057 12.9628 18.3253 12.976 18.347 12.9851C18.3686 12.9941 18.3919 12.9988 18.4154 12.9988H19.3522C19.3994 12.9987 19.4446 12.98 19.478 12.9466C19.5114 12.9132 19.5302 12.868 19.5303 12.8208V6.92933C19.5306 6.90559 19.5262 6.88202 19.5173 6.86C19.5084 6.83798 19.4952 6.81796 19.4785 6.80111C19.4618 6.78426 19.4418 6.77092 19.4199 6.76187C19.3979 6.75283 19.3744 6.74825 19.3506 6.74843ZM16.1455 11.8375C14.9929 11.8375 14.0586 10.9493 14.0586 9.85425C14.0586 8.75921 14.9929 7.87133 16.1455 7.87133C17.2982 7.87133 18.2329 8.75921 18.2329 9.85425C18.2329 10.9493 17.2982 11.8375 16.1455 11.8375ZM23.7506 12.02C23.7618 11.9746 23.7547 11.9266 23.7307 11.8865C23.7067 11.8464 23.6678 11.8174 23.6225 11.8058L23.2034 11.7005L23.1918 11.6976C22.5499 11.5653 22.3174 11.354 22.287 10.769V3.17897C22.2866 3.13204 22.2677 3.08715 22.2344 3.05414C22.201 3.02114 22.1559 3.0027 22.109 3.00287H21.2445C21.1975 3.0027 21.1524 3.02114 21.1191 3.05414C21.0857 3.08715 21.0668 3.13204 21.0664 3.17897V10.4472C21.0082 12.1513 21.9818 12.6863 22.8857 12.8864L23.3174 12.9947C23.363 13.0061 23.4113 12.999 23.4517 12.975C23.4922 12.951 23.5216 12.9121 23.5335 12.8666L23.6318 12.4888C23.6348 12.4786 23.6374 12.4681 23.6399 12.4576L23.6427 12.4465L23.7506 12.02ZM26.9708 11.8864C26.9948 11.9266 27.0019 11.9746 26.9905 12.02L26.8826 12.4465C26.8794 12.4606 26.8759 12.475 26.8718 12.4888L26.7738 12.8666C26.7618 12.9121 26.7324 12.9511 26.6918 12.975C26.6513 12.999 26.603 13.0061 26.5573 12.9947L26.1257 12.8864C25.2218 12.6863 24.2485 12.1513 24.3064 10.4472V3.17897C24.3067 3.13204 24.3257 3.08715 24.359 3.05414C24.3924 3.02114 24.4375 3.0027 24.4844 3.00287H25.3489C25.3959 3.0027 25.441 3.02114 25.4743 3.05414C25.5077 3.08715 25.5266 3.13204 25.527 3.17897V10.769C25.5574 11.354 25.7914 11.5653 26.4318 11.6976C26.436 11.6982 26.4395 11.7005 26.4437 11.7005L26.8625 11.8058C26.9078 11.8173 26.9468 11.8463 26.9708 11.8864Z"
+										fill="white"></path>
+								</svg>
+								<span th:id="*{id}" class="text_name-product" th:text="*{name}" id="orderInfo"
+									name="orderInfo">
+								</span>
+								<!-- hiện thị tên sp -->
+
+							</div>
+							<!--Evalue-->
+							<div class="row d-none d-lg-flex" style="height: 20px;">
+								<div class="col-3 evaluate d-flex  ">
+									<div class>
+										<span class="evaluate-text" th:text="${starAverage}">4.7 </span>
+									</div>
+									<div class="evaluate-star">
+										<a class="icon-star text-center" style="text-decoration: none;">
+											<i th:if="${starAverage >= 1}" class="fa-solid fa-star text-danger"></i>
+											<i th:if="${starAverage >= 2}" class="fa-solid fa-star text-danger"></i>
+											<i th:if="${starAverage >= 3}" class="fa-solid fa-star text-danger"></i>
+											<i th:if="${starAverage >= 4}" class="fa-solid fa-star text-danger"></i>
+											<i th:if="${starAverage >= 5}" class="fa-solid fa-star text-danger"></i>
+											<i th:unless="${starAverage >= 1}" class="far fa-star text-danger"></i>
+											<i th:unless="${starAverage >= 2}" class="far fa-star text-danger"></i>
+											<i th:unless="${starAverage >= 3}" class="far fa-star text-danger"></i>
+											<i th:unless="${starAverage >= 4}" class="far fa-star text-danger"></i>
+											<i th:unless="${starAverage >= 5}" class="far fa-star text-danger"></i>
+										</a>
+									</div>
+
+								</div>
+								<div class="col-3 evaluate d-flex  ">
+									<div>
+										<span class="evaluate-value text-dark " th:text="${commentCount}"><a
+												href="#">29,2K</a></span>
+									</div>
+
+									<div class="evaluate-content">
+										<span class="evaluate-content_text ">Đánh Giá</span>
+									</div>
+
+								</div>
+
+								<div class="col-3 d-flex">
+
+									<div class="evaluate-sold ">
+										<span class="evaluate-sold-value text-dark" th:text="*{soldCount}">99</span>
+									</div>
+
+									<div class="evaluate-sold-content ">
+										<span class="evaluate-sold-content_text ps-2 ">Đã Bán</span>
+									</div>
+
+								</div>
+								<!-- <div class="col-3">
+								<div class="report float-end">
+									<span><a class=" " href="#">Tố Cáo</a></span>
+								</div>
+							</div> -->
+							</div>
+							<!--price-->
+							<div class="row mt-3  d-lg-flex align-items-center ">
+
+								<div class=" col-2 d-none d-lg-flex">
+									<span>Giá bán:</span>
+
+								</div>
+
+								<div class=" col-10">
+									<span> <strong class="fs-3 fw-bold price totalPrice" id="amount" name="amount"
+											style="color: #ee4d2d;"
+											th:text="*{#numbers.formatDecimal(productVariants[0].priceSale, 0,'POINT',0,'POINT')}+' ₫'"></strong></span>
+									<del class="fs-5 ms-3 opacity-50 price2"
+										th:text="*{#numbers.formatDecimal(productVariants[0].price, 0,'POINT',0,'POINT')}+' ₫'"></del>
+
+								</div>
+								<!--GIÁ TRƯỚC KHI GIẢM-->
+								<div class="col-4"></div>
+
+							</div>
+
+							<!--Color-->
+							<div class="row mt-3   ">
+								<div class="row  d-none  d-lg-flex">
+									<div class="col-12 col-lg-2">
+										<span class="opacity-md-25 opacity-lg-100">Màu sắc: </span>
+									</div>
+									<div class="col-12 col-lg-10 d-flex">
+
+										<div th:each="color, iter : ${listColor}"
+											class="  form-check product-variation ms-1  align-items-center justify-content-center ">
+											<input onchange="sendRadioValue(this.value) " th:value="${color}"
+												th:attr="data-id=${product.id}" class="  form-check-input"
+												style="margin-left: -1em !important; padding: 3px;" type="radio"
+												name="flexRadioDefault" th:id="'flexRadioDefault'+${iter.count}"> <label
+												class="form-check-label pe-1 " style="margin-left: 0.3rem; padding: 3px"
+												th:for="'flexRadioDefault'+${iter.count}" th:text="${color}">
+											</label>
+										</div>
+									</div>
+
+								</div>
+
+								<div th:if="*{#lists.size(productVariants[0].size)} > 0" id="size"
+									class=" mt-2 d-none  d-lg-flex  justify-content-between ">
+									<div class="col-12 col-lg-2">
+										<span>Size: </span>
+									</div>
+									<div class="col-12 col-lg-10 d-flex">
+										<div th:each="size, iter : ${listSize}"
+											class="form-check product-variation ms-1  align-items-center justify-content-center ">
+											<input class="  form-check-input" th:checked="${iter.index==0}"
+												onchange="sendRadioValue(this.value)" th:value="${size}"
+												style="margin-left: -1em !important; padding: 3px;" type="radio"
+												name="flexRadio" th:id="'flexRadio'+${iter.count}"> <label
+												class="form-check-label pe-1 " style="margin-left: 0.3rem; padding: 3px"
+												th:for="'flexRadio'+${iter.count}" th:text="${size}">
+											</label>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+							<!--quantity-->
+							<div class="row mt-3 d-none d-lg-flex justify-content-center align-items-center ">
+								<div class="col-12 col-lg-2">
+									<span>Số lượng: </span>
+								</div>
+								<div class="col-12 col-lg-10">
+									<div id="number_quantity" class=" pe-none ">
+
+										<div class="  control d-flex align-items-center ">
+
+											<label id="btn_quantity" class="button  btn_Sub border-0 fs-3 "
+												onclick="subtract(this)"> <i class="fa-solid fa-minus icon_Sub"></i>
+											</label> <input oninput="updateTotalPrice(this)"
+												class="text-center product_quantity " type="number" name="soluong"
+												id="inputField" min="1" value="1" max="100" readonly="true"><br>
+											<label id="btn_quantity" class="button btn_Add border-0 fs-4"
+												onclick="add(this)"> <i class="fa-solid fa-plus icon_Add"></i>
+											</label>
+											<span style="margin-left: 50px;" id="totalquantity"></span>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+							<!--total money-->
+
+
+							<!--Purchase(mua)-->
+							<div id="addCart" class="row mt-3 d-none d-lg-flex pe-none" th:if="${shop}">
+								<div class="col-7 col-lg-5">
+									<button class="btn btn_buy" id="btn_buy_isDesktop" type="submit" name="action"
+										value="addcart" onclick="show()">
+										<i class="fa-solid fa-cart-shopping"></i> Thêm Vào Giỏ
+
+										Hàng
+									</button>
+								</div>
+								<!-- <div class="col-5 col-lg-4 mb-3">
+								<button class="btn btn_buy" type="submit" name="action" value="order">
+									<i class="fa-solid fa-cart-shopping"></i> Đặt Hàng
+								</button>
+							</div> -->
+
+							</div>
+
+				</form>
+
+			</div>
+
+			<!-- </div> -->
+
+
+		</main>
+		<div class="text-center">
+			<button id="successbtn" hidden>Lưu</button>
+			<button id="failsebtn" hidden>Xóa</button>
+		</div>
+
+		<div id="successModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+				<span id="content" class="text-success fs-3">Thêm thành công</span>
+			</div>
+		</div>
+
+		<div id="failseModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+				<span id="contentfalse" class="text-danger fs-3">Thêm thất bại</span>
+			</div>
+		</div>
+		<!--shop name-->
+		<div th:object="${sellerObj}" class="container container-shop mt-3 ">
+			<!-- sài chung cho toàn bộ trang -->
+			<div class="row">
+				<div class="col-12 col-lg-4">
+					<div class="row d-flex justify-content-between ">
+						<div class="col-3" style="padding: 0;">
+							<div class="img_salles">
+								<img class="img_salles-logo" th:src="@{|/img/account/*{sellerProduct.avatar}}" alt="">
+							</div>
+						</div>
+						<div class="col-9 contact ">
+							<div class="shop_name" th:text="*{sellerProduct.shopName}">
+
+							</div>
+							<div class="contact-content mt-2">
+								<div class="row">
+									<div class="col-6 d-none d-lg-flex" ng-controller="message-ctrl">
+										<button class="btn_chat" ng-click="message.sendMessageAuto()">
+											<div class="content_chat ">
+												<i class="fs-6 fa-solid fa-message"></i> <span
+													style="font-size: .875rem;">Chat ngay</span>
+											</div>
+
+										</button>
+									</div>
+									<input hidden th:value="*{sellerProduct.username}" id="username">
+									<div class="col-6 d-flex">
+										<button class="float-end btn_seeShop" id="showpage" onclick="showpageseller()">
+											<div class="content_seeShop ">
+												<i class="fs-6 fa-solid fa-shop"></i> <span
+													style="font-size: .875rem;">Xem
+													Shop</span>
+											</div>
+
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-12 col-lg-8 d-flex d-lg-grid align-items-center">
+					<div class="row">
+						<div class="col-6 col-lg-4 d-flex justify-content-between">
+							<label class="dis-shop">Đánh Giá:</label> <span class=" parameter-content text-danger"
+								th:text="${starAverage}">29,9k</span>
+						</div>
+						<div class="col-6 col-lg-4 d-flex justify-content-between">
+							<label class="dis-shop">Phản Hồi Chat:</label> <span
+								class=" parameter-content text-danger">29,9k</span>
+						</div>
+						<div class="col-4 d-none d-lg-flex justify-content-between">
+							<label class="dis-shop ">Tham Gia:</label> <span class=" parameter-content text-danger"
+								th:text="*{sellerProduct.createDay}">29,9k</span>
+						</div>
+
+					</div>
+					<div class="row">
+						<div class="col-6 col-lg-4 d-flex justify-content-between">
+							<label class="dis-shop">Sản Phẩm:</label> <span class=" parameter-content text-danger"
+								th:text="*{productVariants.size()}">29,9k</span>
+						</div>
+						<div class="col-4  d-none d-lg-flex justify-content-between">
+							<label class="dis-shop">Thời Gian Phản Hồi:</label> <span
+								class=" parameter-content text-danger">Trong vài giờ</span>
+						</div>
+						<div class="col-4 d-none d-lg-flex justify-content-between">
+							<label class="dis-shop">Người Theo Dõi:</label> <span
+								class=" parameter-content text-danger">29,9k</span>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+
+
+		</div>
+		<!--describe(mô tả)-->
+		<div class="container container_describe mt-5 border border-1 " style="height: 100%; padding-bottom: 1.5rem;">
+			<div class="row mt-3  mx-2 " style="height: 50px; background-color: rgb(153, 153, 153, 0.3);">
+
+				<div class=" d-flex align-items-center mx-2">
+					<h2 class="describe_content my-auto">MÔ TẢ SẢN PHẨM</h2>
+
+				</div>
+
+			</div>
+			<div class="row mt-3 mx-3">
+				<div class="">
+					<pre th:text="*{description}">
+
+                        </pre>
+					<pre>
+*Đổi trả theo đúng quy định của DEVEX online:
+1. Điều kiện áp dụng (trong vòng 03 ngày kể từ khi nhận sản phẩm)
+- Vui lòng quay video trước khi khui hàng
+- Hàng hoá bị lỗi hoặc hư hỏng do vận chuyển hoặc do nhà sản xuất 
+2. Trường hợp được chấp nhận: 
+- Hàng không đúng chủng loại, mẫu mã như quý khách đặt hàng 
+- Không đủ số lượng, không đủ bộ như trong đơn hàng                       
+                        </pre>
+				</div>
+			</div>
+		</div>
+
+		<div class="container d-none d-lg-grid container_evaluate_end  mt-4 border border-1" id="comment">
+			<div class="row mt-3  mx-2 " style="height: 50px;">
+				<input type="hidden" id="productID" th:value="${id}" ng-model="comment.productID">
+				<div class=" d-flex align-items-center mx-2">
+					<h2 class="describe_content my-auto">ĐÁNH GIÁ SẢN PHẨM</h2>
+
+				</div>
+
+
+			</div>
+
+			<div class="row mx-4   border border-1   " style="padding: 30px;">
+				<div class="col-2  text-center  flex-column ">
+					<span class="fs-5 text-danger " style="font-weight: 350;"><strong ng-bind="comment.totalStar"
+							class="fs-2">0</strong> trên 5</span>
+
+					<div>
+						<a class="icon-star text-center" style="text-decoration: none;">
+							<i class="icon-flash text-red"></i>
+							<i ng-class="{'fa-solid fa-star text-danger': comment.totalStar >= 1}"></i>
+							<i
+								ng-class="{'fa-solid fa-star text-danger': comment.totalStar >= 2, 'fas fa-star-half-alt text-danger': comment.totalStar < 2 &&  comment.totalStar > 1, 'far fa-star text-danger': comment.totalStar < 1.5}"></i>
+							<i
+								ng-class="{'fa-solid fa-star text-danger': comment.totalStar >= 3, 'fas fa-star-half-alt text-danger': comment.totalStar < 3 &&  comment.totalStar > 2, 'far fa-star text-danger': comment.totalStar < 2.5}"></i>
+							<i
+								ng-class="{'fa-solid fa-star text-danger': comment.totalStar >= 4, 'fas fa-star-half-alt text-danger': comment.totalStar < 4 &&  comment.totalStar > 3, 'far fa-star text-danger': comment.totalStar < 3.5}"></i>
+							<i
+								ng-class="{'fa-solid fa-star text-danger': comment.totalStar >= 5, 'fas fa-star-half-alt text-danger': comment.totalStar < 5 &&  comment.totalStar > 4, 'far fa-star text-danger': comment.totalStar < 4.5}"></i>
+						</a>
+					</div>
+
+
+				</div>
+				<div class="col-10 d-flex  align-items-center ">
+
+					<div class="row   ">
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllComments()">
+								<span>Tất Cả</span>
+							</button>
+						</div>
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllCommentsByStar(5)">
+								<span>5 Sao (<span ng-bind="comment.sortRatingByStar[4]">0</span>)</span>
+							</button>
+						</div>
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllCommentsByStar(4)">
+								<span>4 Sao (<span ng-bind="comment.sortRatingByStar[3]">0</span>)</span>
+							</button>
+						</div>
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllCommentsByStar(3)">
+								<span>3 Sao (<span ng-bind="comment.sortRatingByStar[2]">0</span>)</span>
+							</button>
+						</div>
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllCommentsByStar(2)">
+								<span>2 Sao (<span ng-bind="comment.sortRatingByStar[1]">0</span>)</span>
+							</button>
+						</div>
+						<div class="col-2" style="width: 150px; height: 2rem;">
+							<button class="btn-star" aria-label="Đen" aria-disabled="false"
+								ng-click="comment.loadAllCommentsByStar(1)">
+								<span>1 <Sao></Sao> (<span ng-bind="comment.sortRatingByStar[0]">0</span>)</span>
+							</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="row mt-2 mx-4" ng-repeat="(orderDetailID, comments) in comment.commentList">
+				<div class="col">
+					<div class="row-3 row" ng-repeat="comment in comments" ng-if="!comment.comment.isSellerReply">
+						<div class="img-comment p-0 fixed-picture col-3">
+							<img class="img-fluid rounded-circle" src="/img/account/{{comment.avatar}}" alt="">
+						</div>
+						<div class="col-9">
+							<span class="fw-bold" ng-bind="comment.username">User name</span>
+							<div class="">
+								<a class="text-center" style="text-decoration: none;font-size: 0.7rem;">
+									<i class="icon-flash text-red"></i>
+									<i
+										ng-class="{'fa-solid fa-star text-danger': comment.comment.rating >= 1, 'far fa-star text-danger': comment.comment.rating < 1}"></i>
+									<i
+										ng-class="{'fa-solid fa-star text-danger': comment.comment.rating >= 2, 'far fa-star text-danger': comment.comment.rating < 2}"></i>
+									<i
+										ng-class="{'fa-solid fa-star text-danger': comment.comment.rating >= 3, 'far fa-star text-danger': comment.comment.rating < 3}"></i>
+									<i
+										ng-class="{'fa-solid fa-star text-danger': comment.comment.rating >= 4, 'far fa-star text-danger': comment.comment.rating < 4}"></i>
+									<i
+										ng-class="{'fa-solid fa-star text-danger': comment.comment.rating >= 5, 'far fa-star text-danger': comment.comment.rating < 5}"></i>
+								</a>
+							</div>
+							<span class="font-weight-light text-secondary"
+								style="font-size: 0.7rem;">{{comment.comment.createdAt | date: 'dd/MM/yyyy'}} | Phân
+								loại:
+								{{comment.sizeProduct}} ,{{comment.colorProduct}}</span>
+						</div>
+						<span class="ps-2" ng-bind="comment.comment.content">
+							<div class="lds-ellipsis">
+								<div></div>
+								<div></div>
+								<div></div>
+								<div></div>
+							</div>
+						</span>
+
+					</div>
+					<div class="row-9 ps-3 ms-3 py-2">
+						<div ng-repeat="comments in comments" class="" style="font-size: 0.8rem;">
+							<div ng-if="comments.comment.isSellerReply"
+								style="background-color: rgba(153, 153, 153, 0.3);">
+								<div>
+									<span class="ps-2 fw-bold">Phản Hồi Của người bán</span>
+									<br>
+									<span class="ps-2" ng-bind="comments.comment.content"></span>
+								</div>
+							</div>
+
+							<div class="w-100 text-center" ng-if="comments.isSeller && !comments.isReply">
+								<button class="text-center btn btn btn-outline-info btn-sm end"
+									data-bs-target="#form{{modalCounter}}" ng-click="comment.openModal(orderDetailID)"
+									data-bs-toggle="modal" type="button">
+									<span>Trả lời</span>
+								</button>
+
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
+				<hr>
+
+			</div>
+
+			<div class="modal fade" id="formReply" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content p-3">
+						<div class="card-body text-center">
+							<div class="comment-box text-center">
+								<h4>Trả lời đánh giá</h4>
+								<div class="comment-area">
+									<textarea class="form-control" ng-model="comment.content" name="content"
+										placeholder="Câu trả lời của bạn?" rows="4"></textarea>
+								</div>
+
+								<div class="text-center mt-4">
+									<button class="btn btn-success send px-5" ng-click="comment.addComment()">Trả lời
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Sản Phẩm của shop-->
+
+		<div class="container container_main mt-3">
+			<div class="row ">
+
+				<div class="col-12 col-lg-7 text-dark content_price mt-2 ">CÁC SẢN PHẨM KHÁC CỦA SHOP</div>
+
+			</div>
+
+			<div class="row mt-2">
+				<div class="col-12  ">
+					<div class="card-slider d-flex justify-content-start"> <!-- slider sp của shop-->
+						<div id="suggest_Shop" class="col-6 col-md-4 col-lg-3 col-xl-2 pt-2"
+							th:each="shopProduct : ${shopProduct}">
+							<a th:href="@{|/details/${shopProduct.id}|}" class="text-decoration-none">
+								<div class="card m-2 pb-2">
+									<div class="hot-sale"
+										th:if="${#numbers.formatDecimal(100 - ((shopProduct.productVariants[0].priceSale / shopProduct.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')} > 0">
+										<svg width="34" height="36" viewBox="0 0 34 36" fill="none"
+											xmlns="http://www.w3.org/2000/svg">
+											<path fill-rule="evenodd" clip-rule="evenodd"
+												d="M0 0H34V36L16.9991 32.2105L0 36V0Z" fill="#FCD511"></path>
+										</svg>
+										<div class="hot-sale text-center">
+
+											<span class="text-danger font-weight-bold">
+												<span class="text-danger font-weight-bold"
+													th:text="${#numbers.formatDecimal(100 - ((shopProduct.productVariants[0].priceSale / shopProduct.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')}"></span>%
+
+											</span>
+											Giảm
+										</div>
+									</div>
+									<svg width="30" height="16" viewBox="0 0 30 16" fill="none"
+										th:if="${shopProduct.sellerProduct.mall}" xmlns="http://www.w3.org/2000/svg"
+										class="BSp+Yo col-3 ps-0 mb-1 mall-icon">
+										<path fill-rule="evenodd" clip-rule="evenodd"
+											d="M0 2C0 0.895431 0.895431 0 2 0L28 0C29.1046 0 30 0.895431 30 2V14C30 15.1046 29.1046 16 28 16H2C0.89543 16 0 15.1046 0 14L0 2Z"
+											fill="blue"></path>
+										<path fill-rule="evenodd" clip-rule="evenodd"
+											d="M11.8045 3.00128H10.8673C10.8403 3.00132 10.8137 3.00752 10.7895 3.01939C10.7652 3.03126 10.744 3.0485 10.7274 3.0698L10.151 3.70154C10.1108 3.74133 10.0736 3.78149 10.0397 3.82129L10.0109 3.85512L9.73645 4.1559C9.26611 4.63346 8.55272 5.15874 7.50601 5.1696H7.47399C6.35562 5.1696 5.61724 4.53545 5.18223 4.084L4.2545 3.06788C4.23787 3.04676 4.21666 3.02968 4.19249 3.01792C4.16831 3.00617 4.14178 3.00004 4.1149 3H3.17803C3.13084 3.00008 3.08561 3.01887 3.05224 3.05223C3.01887 3.0856 3.00008 3.13084 3 3.17803V12.8198C3.00008 12.867 3.01887 12.9123 3.05224 12.9456C3.08561 12.979 3.13084 12.9978 3.17803 12.9979H4.11458C4.16177 12.9978 4.207 12.979 4.24037 12.9456C4.27373 12.9123 4.29252 12.867 4.2926 12.8198V5.00726C4.51669 5.20068 4.74894 5.38439 4.9887 5.55788C5.57807 5.9956 6.40375 6.40585 7.47655 6.40585H7.51722C8.53818 6.3953 9.32642 6.03468 9.89137 5.64233L9.89877 5.64155L9.97012 5.58642C10.0506 5.52802 10.1262 5.46926 10.1969 5.41116L10.689 5.03095V12.8198C10.6892 12.867 10.708 12.9122 10.7413 12.9455C10.7747 12.9789 10.8199 12.9977 10.867 12.9979H11.8042C11.8514 12.9977 11.8966 12.9789 11.9299 12.9455C11.9633 12.9122 11.9821 12.867 11.9822 12.8198V3.17931C11.9821 3.1322 11.9633 3.08706 11.93 3.05372C11.8967 3.02038 11.8516 3.00153 11.8045 3.00128ZM19.3506 6.74843H18.4154C18.3682 6.74851 18.3229 6.76729 18.2896 6.80066C18.2562 6.83403 18.2374 6.87926 18.2373 6.92645V7.5172C17.6712 7.03692 16.8957 6.70776 16.087 6.70776C14.307 6.70776 12.8639 8.11659 12.8639 9.85105C12.8639 11.5855 14.307 12.9947 16.087 12.9947C16.8743 12.9882 17.6348 12.7074 18.2373 12.2006V12.8195C18.2372 12.843 18.2417 12.8663 18.2506 12.888C18.2595 12.9097 18.2726 12.9295 18.2891 12.9461C18.3057 12.9628 18.3253 12.976 18.347 12.9851C18.3686 12.9941 18.3919 12.9988 18.4154 12.9988H19.3522C19.3994 12.9987 19.4446 12.98 19.478 12.9466C19.5114 12.9132 19.5302 12.868 19.5303 12.8208V6.92933C19.5306 6.90559 19.5262 6.88202 19.5173 6.86C19.5084 6.83798 19.4952 6.81796 19.4785 6.80111C19.4618 6.78426 19.4418 6.77092 19.4199 6.76187C19.3979 6.75283 19.3744 6.74825 19.3506 6.74843ZM16.1455 11.8375C14.9929 11.8375 14.0586 10.9493 14.0586 9.85425C14.0586 8.75921 14.9929 7.87133 16.1455 7.87133C17.2982 7.87133 18.2329 8.75921 18.2329 9.85425C18.2329 10.9493 17.2982 11.8375 16.1455 11.8375ZM23.7506 12.02C23.7618 11.9746 23.7547 11.9266 23.7307 11.8865C23.7067 11.8464 23.6678 11.8174 23.6225 11.8058L23.2034 11.7005L23.1918 11.6976C22.5499 11.5653 22.3174 11.354 22.287 10.769V3.17897C22.2866 3.13204 22.2677 3.08715 22.2344 3.05414C22.201 3.02114 22.1559 3.0027 22.109 3.00287H21.2445C21.1975 3.0027 21.1524 3.02114 21.1191 3.05414C21.0857 3.08715 21.0668 3.13204 21.0664 3.17897V10.4472C21.0082 12.1513 21.9818 12.6863 22.8857 12.8864L23.3174 12.9947C23.363 13.0061 23.4113 12.999 23.4517 12.975C23.4922 12.951 23.5216 12.9121 23.5335 12.8666L23.6318 12.4888C23.6348 12.4786 23.6374 12.4681 23.6399 12.4576L23.6427 12.4465L23.7506 12.02ZM26.9708 11.8864C26.9948 11.9266 27.0019 11.9746 26.9905 12.02L26.8826 12.4465C26.8794 12.4606 26.8759 12.475 26.8718 12.4888L26.7738 12.8666C26.7618 12.9121 26.7324 12.9511 26.6918 12.975C26.6513 12.999 26.603 13.0061 26.5573 12.9947L26.1257 12.8864C25.2218 12.6863 24.2485 12.1513 24.3064 10.4472V3.17897C24.3067 3.13204 24.3257 3.08715 24.359 3.05414C24.3924 3.02114 24.4375 3.0027 24.4844 3.00287H25.3489C25.3959 3.0027 25.441 3.02114 25.4743 3.05414C25.5077 3.08715 25.5266 3.13204 25.527 3.17897V10.769C25.5574 11.354 25.7914 11.5653 26.4318 11.6976C26.436 11.6982 26.4395 11.7005 26.4437 11.7005L26.8625 11.8058C26.9078 11.8173 26.9468 11.8463 26.9708 11.8864Z"
+											fill="white"></path>
+									</svg>
+									<img th:src="@{|/img/product/${shopProduct.sellerProduct.username}/${shopProduct.id}/${shopProduct.imageProducts[0].name}|}"
+										class="img-fluid w-100 p-0" th:alt="${shopProduct.name}" />
+									<div class="card-body" style="padding: 5px">
+
+										<div class="card-title tensp text-left" style="height: 40px"
+											th:text="${shopProduct.name}" th:title="${shopProduct.name}"></div>
+
+										<div class="price-box row ">
+											<div class="price_suggest col-6  m-0">
+												<span style="color: #ff0821bb">₫</span><strong class="fs-10"
+													th:text="${#numbers.formatDecimal(shopProduct.productVariants[0].priceSale, 0 , 'POINT', 0, 'COMMA')}"
+													style="color: #ff0821bb; font-weight: 600">8,490,000</strong>
+											</div>
+
+											<div class=" col-6 ">
+												<p class="text-info text-end buy m-0">
+													đã bán <i class="text-info m-0"
+														th:text="${shopProduct.soldCount}"></i>
+
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</a>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--Gợi Ý Sản Phẩm-->
+		<div class="container container_main mt-3">
+			<div class="row ">
+
+				<div class="col-12 col-lg-7 text-dark content_price mt-2 "> CÓ THỂ BẠN CŨNG THÍCH</div>
+
+			</div>
+
+			<div class="row mt-2">
+				<div class="col-12  ">
+					<div class="row">
+						<div id="suggest" class="col-6 col-md-4 col-lg-3 col-xl-2 pt-2"
+							th:each="products : ${products}">
+							<a th:href="@{|/details/${products.id}|}" class="text-decoration-none">
+								<div class="card pb-2">
+									<div class="hot-sale">
+										<svg width="34" height="36" viewBox="0 0 34 36" fill="none"
+											th:if="${#numbers.formatDecimal(100 - ((products.productVariants[0].priceSale / products.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')} > 0"
+											xmlns="http://www.w3.org/2000/svg">
+											<path fill-rule="evenodd" clip-rule="evenodd"
+												d="M0 0H34V36L16.9991 32.2105L0 36V0Z" fill="#FCD511"></path>
+										</svg>
+										<div class="hot-sale text-center"
+											th:if="${#numbers.formatDecimal(100 - ((products.productVariants[0].priceSale / products.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')} > 0">
+
+											<span class="text-danger font-weight-bold">
+												<span class="text-danger font-weight-bold"
+													th:text="${#numbers.formatDecimal(100 - ((products.productVariants[0].priceSale / products.productVariants[0].price) * 100),0,'POINT', 0, 'COMMA')}"></span>%
+
+											</span>
+											Giảm
+										</div>
+									</div>
+									<svg width="30" height="16" viewBox="0 0 30 16" fill="none"
+										th:if="${products.sellerProduct.mall}" xmlns="http://www.w3.org/2000/svg"
+										class="BSp+Yo col-3 ps-0 mb-1 mall-icon">
+										<path fill-rule="evenodd" clip-rule="evenodd"
+											d="M0 2C0 0.895431 0.895431 0 2 0L28 0C29.1046 0 30 0.895431 30 2V14C30 15.1046 29.1046 16 28 16H2C0.89543 16 0 15.1046 0 14L0 2Z"
+											fill="blue"></path>
+										<path fill-rule="evenodd" clip-rule="evenodd"
+											d="M11.8045 3.00128H10.8673C10.8403 3.00132 10.8137 3.00752 10.7895 3.01939C10.7652 3.03126 10.744 3.0485 10.7274 3.0698L10.151 3.70154C10.1108 3.74133 10.0736 3.78149 10.0397 3.82129L10.0109 3.85512L9.73645 4.1559C9.26611 4.63346 8.55272 5.15874 7.50601 5.1696H7.47399C6.35562 5.1696 5.61724 4.53545 5.18223 4.084L4.2545 3.06788C4.23787 3.04676 4.21666 3.02968 4.19249 3.01792C4.16831 3.00617 4.14178 3.00004 4.1149 3H3.17803C3.13084 3.00008 3.08561 3.01887 3.05224 3.05223C3.01887 3.0856 3.00008 3.13084 3 3.17803V12.8198C3.00008 12.867 3.01887 12.9123 3.05224 12.9456C3.08561 12.979 3.13084 12.9978 3.17803 12.9979H4.11458C4.16177 12.9978 4.207 12.979 4.24037 12.9456C4.27373 12.9123 4.29252 12.867 4.2926 12.8198V5.00726C4.51669 5.20068 4.74894 5.38439 4.9887 5.55788C5.57807 5.9956 6.40375 6.40585 7.47655 6.40585H7.51722C8.53818 6.3953 9.32642 6.03468 9.89137 5.64233L9.89877 5.64155L9.97012 5.58642C10.0506 5.52802 10.1262 5.46926 10.1969 5.41116L10.689 5.03095V12.8198C10.6892 12.867 10.708 12.9122 10.7413 12.9455C10.7747 12.9789 10.8199 12.9977 10.867 12.9979H11.8042C11.8514 12.9977 11.8966 12.9789 11.9299 12.9455C11.9633 12.9122 11.9821 12.867 11.9822 12.8198V3.17931C11.9821 3.1322 11.9633 3.08706 11.93 3.05372C11.8967 3.02038 11.8516 3.00153 11.8045 3.00128ZM19.3506 6.74843H18.4154C18.3682 6.74851 18.3229 6.76729 18.2896 6.80066C18.2562 6.83403 18.2374 6.87926 18.2373 6.92645V7.5172C17.6712 7.03692 16.8957 6.70776 16.087 6.70776C14.307 6.70776 12.8639 8.11659 12.8639 9.85105C12.8639 11.5855 14.307 12.9947 16.087 12.9947C16.8743 12.9882 17.6348 12.7074 18.2373 12.2006V12.8195C18.2372 12.843 18.2417 12.8663 18.2506 12.888C18.2595 12.9097 18.2726 12.9295 18.2891 12.9461C18.3057 12.9628 18.3253 12.976 18.347 12.9851C18.3686 12.9941 18.3919 12.9988 18.4154 12.9988H19.3522C19.3994 12.9987 19.4446 12.98 19.478 12.9466C19.5114 12.9132 19.5302 12.868 19.5303 12.8208V6.92933C19.5306 6.90559 19.5262 6.88202 19.5173 6.86C19.5084 6.83798 19.4952 6.81796 19.4785 6.80111C19.4618 6.78426 19.4418 6.77092 19.4199 6.76187C19.3979 6.75283 19.3744 6.74825 19.3506 6.74843ZM16.1455 11.8375C14.9929 11.8375 14.0586 10.9493 14.0586 9.85425C14.0586 8.75921 14.9929 7.87133 16.1455 7.87133C17.2982 7.87133 18.2329 8.75921 18.2329 9.85425C18.2329 10.9493 17.2982 11.8375 16.1455 11.8375ZM23.7506 12.02C23.7618 11.9746 23.7547 11.9266 23.7307 11.8865C23.7067 11.8464 23.6678 11.8174 23.6225 11.8058L23.2034 11.7005L23.1918 11.6976C22.5499 11.5653 22.3174 11.354 22.287 10.769V3.17897C22.2866 3.13204 22.2677 3.08715 22.2344 3.05414C22.201 3.02114 22.1559 3.0027 22.109 3.00287H21.2445C21.1975 3.0027 21.1524 3.02114 21.1191 3.05414C21.0857 3.08715 21.0668 3.13204 21.0664 3.17897V10.4472C21.0082 12.1513 21.9818 12.6863 22.8857 12.8864L23.3174 12.9947C23.363 13.0061 23.4113 12.999 23.4517 12.975C23.4922 12.951 23.5216 12.9121 23.5335 12.8666L23.6318 12.4888C23.6348 12.4786 23.6374 12.4681 23.6399 12.4576L23.6427 12.4465L23.7506 12.02ZM26.9708 11.8864C26.9948 11.9266 27.0019 11.9746 26.9905 12.02L26.8826 12.4465C26.8794 12.4606 26.8759 12.475 26.8718 12.4888L26.7738 12.8666C26.7618 12.9121 26.7324 12.9511 26.6918 12.975C26.6513 12.999 26.603 13.0061 26.5573 12.9947L26.1257 12.8864C25.2218 12.6863 24.2485 12.1513 24.3064 10.4472V3.17897C24.3067 3.13204 24.3257 3.08715 24.359 3.05414C24.3924 3.02114 24.4375 3.0027 24.4844 3.00287H25.3489C25.3959 3.0027 25.441 3.02114 25.4743 3.05414C25.5077 3.08715 25.5266 3.13204 25.527 3.17897V10.769C25.5574 11.354 25.7914 11.5653 26.4318 11.6976C26.436 11.6982 26.4395 11.7005 26.4437 11.7005L26.8625 11.8058C26.9078 11.8173 26.9468 11.8463 26.9708 11.8864Z"
+											fill="white"></path>
+									</svg>
+									<img th:src="@{|/img/product/${products.sellerProduct.username}/${products.id}/${products.imageProducts[0].name}|}"
+										class="img-fluid w-100 p-0" th:alt="${products.name}" />
+									<div class="card-body" style="padding: 5px">
+										<div class="card-title tensp text-left" style="height: 40px"
+											th:text="${products.name}" th:title="${products.name}"></div>
+
+										<div id="price-box">
+											<div class="price_suggest col-6  m-0">
+												<span style="color: #ff0821bb">₫</span><strong class="fs-10"
+													th:text="${#numbers.formatDecimal(products.productVariants[0].priceSale, 0 , 'POINT', 0, 'COMMA')}"
+													style="color: #ff0821bb; font-weight: 600">8,490,000</strong>
+											</div>
+
+											<div class=" col-6 ">
+												<p class="text-info text-end buy m-0">
+													đã bán <i class="text-info m-0"
+														th:text="${products.soldCount}"></i>
+
+												</p>
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="model-container">
+			<form th:action="@{'/cart/add/' + *{id}}">
+				<div class="model bg-light" id="model-demo">
+					<div id="model-header" style="padding: 5px;">
+						<div class="row border-bottom border-bottom-1">
+							<div class="col-5">
+								<div class="model-header_image">
+									<img class="img-fluid"
+										th:src="@{|/img/product/${product.sellerProduct.username}/${product.id}/${product.imageProducts[0].name}|}"
+										alt="null" />
+								</div>
+							</div>
+							<div class="col-5 position-relative ">
+								<div class="model-header_price position-absolute " style="bottom: 0;">
+
+									<div class="model-header_price-real ">
+										<span> <strong class="fs-6 fw-bold price_real" style="color: #ee4d2d;"
+												th:text="*{#numbers.formatDecimal(productVariants[0].priceSale, 0,'COMMA',0,'POINT')}+'₫'"></strong></span>
+
+										<del class="fs-6 ms-3 opacity-50"
+											th:text="*{#numbers.formatDecimal(productVariants[0].price, 0,'COMMA',0,'POINT')}+'₫'"></del>
+
+										<p class="text-info m-0">
+											Tồn kho: <i class="text-info m-0"
+												th:text="*{productVariants[0].quantity}">###</i>
+										</p>
+									</div>
+
+
+								</div>
+							</div>
+							<div class="col-2">
+								<div class="model-header_close">
+									<label id="btn-close" class="float-end me-2 "><i
+											class="fa-solid fa-xmark"></i></label>
+								</div>
+							</div>
+						</div>
+
+					</div>
+					<!--model body-->
+					<div class="model-body" style="padding: 5px;">
+						<div class="row border-bottom border-bottom-1">
+							<div class="col-12 col-lg-2">
+								<span class="opacity-md-25 opacity-lg-100">Màu sắc: </span>
+							</div>
+							<div class="col-12 col-lg-10 d-flex my-2">
+
+								<div th:each="color, iter : ${listColor}"
+									class="form-check product-variation ms-1  align-items-center justify-content-center ">
+									<input onchange="sendRadioValue(this.value) " th:value="${color}"
+										th:attr="data-id=${product.id}" class="  form-check-input"
+										style="margin-left: -1em !important; padding: 3px;" type="radio"
+										name="flexRadioDefault" th:id="'flexRadioDefault'+${iter.count}">
+									<label class="form-check-label pe-1 " style="margin-left: 0.3rem; padding: 3px"
+										th:for="'flexRadioDefault'+${iter.count}" th:text="${color}">
+									</label>
+
+								</div>
+							</div>
+
+						</div>
+
+						<div class="row border-bottom border-bottom-1 ">
+							<div id="size" th:if="*{#lists.size(productVariants[0].size)} > 0"
+								class="checkNull mt-2  d-flex flex-column justify-content-between ">
+								<div class="col-12 col-lg-2">
+									<span>Size: </span>
+								</div>
+								<div class=" col-12 col-lg-10 d-flex my-2">
+
+									<div th:each="size, iter : ${listSize}"
+										class="form-check product-variation ms-1  align-items-center justify-content-center ">
+										<input class="  form-check-input" onchange="sendRadioValue(this.value)"
+											th:value="${size}" style="margin-left: -1em !important; padding: 3px;"
+											type="radio" name="flexRadio" th:id="'flexRadio'+${iter.count}">
+										<label class="form-check-label pe-1 " style="margin-left: 0.3rem; padding: 3px"
+											th:for="'flexRadio'+${iter.count}" th:text="${size}"> </label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--số lượng- mobile-->
+						<div class="row mt-2 ">
+
+							<div class="col-6 ">
+								<span>Số lượng: </span>
+							</div>
+							<div class="col-6 ">
+								<div id="number_quantity_mobile" class=" pe-none  float-end ">
+									<div class="control d-flex align-items-center ">
+
+										<label class="button btn_Sub border-0 fs-3 " onclick="subtract(this)"> <i
+												class="fa-solid fa-minus icon_Sub"></i>
+										</label> <input class="text-center product_quantity " type="number"
+											name="soluong" id="inputField" min="1" value="1"><br>
+										<label class="button btn_Add border-0 fs-4 " style="outline-style: none;"
+											onclick="add(this)"> <i class="fa-solid fa-plus icon_Add"></i>
+										</label>
+
+									</div>
+								</div>
+							</div>
+
+
+							<div class="control d-flex align-items-center ">
+
+							</div>
+						</div>
+						<!--model footer-->
+						<div class="model-footer">
+							<div class="row d-flex justify-content-center">
+								<!-- 					<a th:href="@{'/cart/add/' + *{id}}"> -->
+								<button id="btn_add_buy" class="product-bottom-mobile_add-cart" name="btn_add_buy"
+									style="background-color: #2550b9 !important;">
+									<div class="content_Add-cart " style="line-height: 50px;">
+										<span class="text-light" style="font-size: .875rem;">Thêm
+											vào Giỏ hàng</span>
+									</div>
+								</button>
+								<!-- 					</a> -->
+
+							</div>
+						</div>
+					</div>
+			</form>
+		</div>
+
+		<footer>
+
+			<!--footer Mobile-->
+			<div class="container-fluid d-inline-flex d-lg-none  ">
+				<div class="row product-bottom  " style="width: 100%; position: fixed; bottom: 0; z-index: 10;">
+					<div class="col-3 d-flex   align-items-center justify-content-center  p-0">
+						<button class="product-bottom_chat  ">
+							<i class="fs-6 mt-1 fa-regular fa-comment-dots"></i>
+							<div class="content_chat ">
+								<span class="text-light" style="font-size: .625rem;">Chat
+									ngay</span>
+							</div>
+
+						</button>
+
+						<div class="product-bottom-panel__separator ">
+							<div class="product-bottom-panel__separator-real"></div>
+						</div>
+					</div>
+					<div class="col-3 d-flex flex-column  align-items-center justify-content-center p-0 bg-info">
+						<button id="btn_add_cart" class="product-bottom_add-cart">
+							<!-- <i class="  fa-solid fa-cart-shopping"></i> -->
+							<i class="fs-6 mt-1 fa-solid fa-cart-plus"></i>
+							<div class="content_Add-cart ">
+
+								<span class="text-light" style="font-size: .625rem;">Thêm
+									vào Giỏ hàng</span>
+							</div>
+						</button>
+
+					</div>
+					<div class="col-6 d-flex justify-content-center align-items-center p-0  bg-danger">
+						<button id="btn_buy-mobile" class="product-bottom_buy"
+							style="background-color: #2550b9 !important;">
+							<div class="content_buy">
+								<span id="text_add_buy" class="text-light" style="font-size: .875rem;">Mua ngay</span>
+							</div>
+						</button>
+					</div>
+
+				</div>
+			</div>
+			<!-- place footer here -->
+
+
+		</footer>
+		<div th:replace="~{flagment/user/userFooter :: userFooterFragment}"></div>
+		<!-- Bootstrap JavaScript Libraries -->
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+			integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+
+			</script>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+			integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+
+			</script>
+		<!--slick slide-->
+		<script>
+			var idup = document.getElementById('idup').value;
+			// up view
+			function upView() {
+				fetch("/api/upview?id=" + idup, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						// Các headers khác nếu cần
+					},
+				})
+					.then(response => response.json())
+					.then(data => {
+						console.log(idup);
+					});
+			}
+			upView();
+			// Khai báo một biến toàn cục để lưu giá bán đầu
+			var quantityproductvariant;
+			var originalPrice;
+			var isDesktop = window.matchMedia("(min-width: 768px)");
+
+			function updateTotalPrice(input) {
+				// Lấy phần tử span chứa giá tiền
+				var span = document.querySelector(".price");
+				// Kiểm tra nếu biến originalPrice chưa được gán
+				if (!originalPrice) {
+					// Lấy nội dung của span, đó chính là giá bán đầu của sản phẩm
+					var price = span.textContent;
+					// Xóa ký tự VNĐ và dấu phẩy khỏi nội dung
+					price = price.replace(/\.|\,|₫/g, "");
+					// Chuyển giá trị của nội dung thành số
+					price = parseInt(price);
+					// Gán giá trị cho biến originalPrice
+					originalPrice = price;
+				}
+				// Lấy input chứa số lượng
+				var quantity = parseInt(input.value);
+				console.log(quantity);
+				// Tính tổng tiền bằng cách nhân giá bán đầu với số lượng
+				var total = originalPrice * quantity;
+				// Định dạng tổng tiền theo định dạng VNĐ
+				var formatter = new Intl.NumberFormat("vi-VN", {
+					style: "currency",
+					currency: "VND",
+					currencyDisplay: "symbol",
+				});
+				if (isDesktop.matches) {
+					// Lấy phần tử span chứa tổng tiền
+					var span = document.querySelector(".totalPrice");
+					// Cập nhật nội dung của span bằng tổng tiền đã định dạng
+					span.textContent = formatter.format(total);
+				}
+			}
+
+			function subtract(button) {
+				var input = button.parentNode.querySelector(".product_quantity");
+				var currentValue = parseInt(input.value);
+				if (currentValue > 1) {
+					input.value = currentValue - 1;
+					input.dispatchEvent(new Event("input"));
+				}
+			}
+
+			function add(button) {
+				var input = button.parentNode.querySelector(".product_quantity");
+				var currentValue = parseInt(input.value);
+				if (currentValue < quantityproductvariant) {
+					input.value = currentValue + 1;
+					input.dispatchEvent(new Event("input"));
+				}
+			}
+
+
+		</script>
+
+
+		<script>
+			const btn_add_cart = document.getElementById('btn_add_cart')
+			const btn_close = document.getElementById('btn-close')
+
+			const btn_buy = document.getElementById('btn_buy-mobile');
+			const model_container = document.getElementById('model-container')
+
+			const btn_add_buy = document.getElementById('btn_add_buy');
+
+			btn_add_cart.addEventListener('click', () => {
+				model_container.classList.add('show');
+				btn_add_buy.innerHTML = 'Thêm vào Giỏ hàng';
+			});
+
+			btn_buy.addEventListener('click', () => {
+				model_container.classList.add('show');
+				btn_add_buy.innerHTML = 'Mua ngay';
+			})
+			btn_close.addEventListener('click', () => {
+				model_container.classList.remove('show');
+			});
+
+
+
+		</script>
+
+
+		<script>
+			var setNumber = document.getElementById('inputField');
+			var setLabel = document.getElementById('btn_quantity');
+			const quantity = document.getElementById('number_quantity');
+			const quantity_mobile = document.getElementById('number_quantity_mobile');
+			const size = document.getElementById('size');
+			const addCart = document.getElementById('addCart');
+			var addButton = document.getElementById("btn_add_buy");
+			var price = document.getElementById("amount");
+			var btn_buy_isDesktop = document.getElementById('btn_buy_isDesktop');
+
+			function sendRadioValue(value) {
+				// lấy giá trị của color
+
+				var color = document.querySelector("input[name='flexRadioDefault']:checked").value;
+				// lấy giá trị của size
+
+				var size = "";
+				// kiểm tra nếu size không tồn tại
+
+				// kiểm tra nếu có radio được checked
+				if (document.querySelector("input[name='flexRadio']:checked")) {
+					//   gán giá trị của radio cho size
+					size = document.querySelector("input[name='flexRadio']:checked").value;
+
+
+				}
+
+				if (size) {
+					if (document.querySelector("input[name='flexRadioDefault']:checked") && document.querySelector("input[name='flexRadio']:checked")) {
+						quantity.classList.remove("pe-none");
+						quantity_mobile.classList.remove("pe-none");
+						addCart.classList.remove("pe-none");
+					}
+				} else {
+					if (color != null) {
+
+						quantity.classList.remove("pe-none");
+						quantity_mobile.classList.remove("pe-none");
+						addCart.classList.remove("pe-none");
+					}
+				}
+				var price1 = parseFloat(price.textContent);
+				// check null color vs size
+				if (document.querySelector("input[name='flexRadioDefault']:checked") || document.querySelector("input[name='flexRadio']:checked")) {
+					// Lấy input chứa số lượng
+					setNumber.value = 1;
+
+				}
+				// var size =document.querySelector("input[name='flexRadio']:checked").value;
+
+				var id = document.querySelector("input[name='flexRadioDefault']:checked").dataset.id;
+
+				// hoặc tạo một chuỗi query chứa color và size
+				var data = "id=" + id + "&color=" + color + "&size=" + size;
+				var totalquantity = document.getElementById("totalquantity");
+				console.log(id, color, size);
+				$.ajax({
+					url: "/data", // url của server
+					type: "POST", // phương thức gửi request
+					data: data, // dữ liệu gửi lên server
+					success: function (price) {
+						console.log(price);
+						let formatter = new Intl.NumberFormat('vi-VN', {
+							style: 'currency',
+							currency: 'VND',
+						});
+						// sử dụng phương thức format để định dạng giá tiền
+						let formattedPrice = formatter.format(price);
+						// "123.456.789 ₫"
+
+						if (price === null || price === "") {
+							btn_buy_isDesktop.classList.add("pe-none");
+
+							totalquantity.textContent = "Số lượng kho: " + 0;
+							if (isDesktop.matches) {
+								$(".price").text("Hết Hàng");
+								$(".price2").text("");
+							}
+
+						} else {
+							btn_buy_isDesktop.classList.remove("pe-none");
+							if (isDesktop.matches) {
+								$(".price").text(formattedPrice); // giá bán mới
+							}
+							$(".price_real").text(formattedPrice);
+						}
+
+
+					}
+
+
+				});
+				$.ajax({
+					url: "/quantityproductvariant", // url của server
+					type: "POST", // phương thức gửi request
+					data: data, // dữ liệu gửi lên server
+					success: function (quantity) {
+						quantityproductvariant = quantity;
+						totalquantity.textContent = "Số lượng kho: " + quantityproductvariant;
+
+						totalquantity.className = "text-danger";
+
+						if (quantityproductvariant == 0) {
+							addCart.classList.add("pe-none");
+							totalquantity.textContent = "Số lượng kho:" + 0;
+						}
+					}
+
+				});
+				// console.log(color);
+				// fetch('/quantityproductvariant?id=' + id + '&color=' + color + '&size=' + size)
+				// 		.then(response => response.json())
+				// 		.then(quantity => {
+				// 			// Cập nhật dữ liệu cho biểu đồ
+				// 			quantityproductvariant = quantity;
+				// 			console.log(quantityproductvariant);
+				// 		});
+
+			}
+		</script>
+
+		<script>
+			var spanElement = document.getElementById("amount");
+			var spanText = spanElement.textContent;
+			$.ajax({
+				type: "POST", // Hoặc "GET" tùy vào yêu cầu của bạn
+				url: "/submitOrder", // Đường dẫn đến phương thức trong Controller
+				data: { spanValue: spanText }, // Dữ liệu bạn muốn gửi đến Controller
+				success: function (response) {
+					// Xử lý kết quả từ Controller (nếu cần)
+					console.log(response);
+				},
+				error: function (error) {
+					// Xử lý lỗi (nếu có)
+					console.error(error);
+				}
+			});
+		</script>
+		<script>
+
+			function showpageseller() {
+				var sellerUsername = document.getElementById('username');
+				window.location.href = "/pageseller/" + sellerUsername.value;
+			}
+		</script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script type="text/javascript"
+			src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.0/sockjs.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+		<script src="/js/productDetail.js"></script>
+		<script src="/js/commentAPI.js"></script>
+		<script src="/js/message.js"></script>
+</body>
+
+</html>

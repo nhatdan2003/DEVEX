@@ -1,0 +1,1353 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <div th:replace="~{flagment/account/head :: headFragment}"></div>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/user/userIndex.css"/>
+    <title>Tra cứu đơn hàng</title>
+    </script>
+    <script th:src="@{/js/cart-ctrl.js}"></script>
+    <script th:src="@{/js/user/autocomplete.js}"></script>
+</head>
+<style>
+    .fixed-picture {
+        position: relative;
+        width: 100px;
+        /* Đặt kích thước khung theo ý muốn */
+        height: 100px;
+        /* Đặt kích thước khung theo ý muốn */
+        overflow: hidden;
+        left: 50%;
+        /* Di chuyển container sang trái 50% */
+        transform: translateX(-50%);
+        /* Di chuyển lại 50% theo chiều X */
+    }
+
+    .fixed-picture img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+<style>
+    body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    /*header top*/
+    header a.nav-link {
+        color: white;
+        font-weight: 270;
+        padding: 0 0 0 20px !important;
+        font-size: 13px;
+    }
+
+    header a.nav-link:hover {
+        color: white;
+        font-weight: 600 !important;
+    }
+
+    .header-inf:hover {
+        transition: 10s all;
+        height: 35px;
+        background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%,
+        rgba(57, 151, 184, 1) 36%, rgba(25, 38, 186, 1) 62%);
+    }
+
+    .header-inf {
+        height: 35px;
+        background: linear-gradient(90deg, rgba(25, 38, 186, 1) 0%,
+        rgba(57, 151, 184, 1) 54%, rgba(0, 212, 255, 1) 100%);
+    }
+
+    .header-inf * {
+        background-color: transparent;
+        color: white;
+        font-weight: 400 !important;
+    }
+
+    .header-inf a {
+        color: white;
+    }
+
+    /* header>.container-fluid:hover {} */
+    /*header mid*/
+    .container_mid {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    .img_logo {
+        width: 7.5rem;
+        height: 3.4375rem;
+        margin-left: 40px;
+        margin-top: 5px;
+    }
+
+    .list_type ul {
+        max-height: 360px;
+        min-height: 360px;
+        overflow-y: scroll;
+        position: relative;
+        top: -2rem;
+    }
+
+    .list_type ul li {
+        max-width: 7.5rem;
+    }
+
+    * {
+        scrollbar-width: thin;
+    }
+
+    /* Tùy chỉnh thanh cuộn trên Chrome, Edge, và Safari */
+    *::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: white;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background-color: rgb(90, 89, 89);
+        border-radius: 20px;
+        border: 3px solid white;
+    }
+
+    .error-template {
+        padding: 40px 15px;
+        text-align: center;
+    }
+
+    .error-actions {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .error-actions .btn {
+        margin-right: 10px;
+    }
+    .comment-box {
+        padding: 5px
+    }
+
+    .comment-area textarea {
+        resize: none;
+        border: 1px solid #ff0000
+    }
+
+    .form-control:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #ffffff;
+        outline: 0;
+        box-shadow: 0 0 0 1px rgb(255, 0, 0) !important
+    }
+
+    .send {
+        color: #fff;
+        background-color: #ff0000;
+        border-color: #ff0000
+    }
+
+    .send:hover {
+        color: #fff;
+        background-color: #f50202;
+        border-color: #f50202
+    }
+
+    .rating {
+        display: inline-flex;
+        margin-top: -10px;
+        flex-direction: row-reverse;
+
+
+    }
+
+    .rating>input {
+        display: none
+    }
+
+    .rating>label {
+        position: relative;
+        width: 28px;
+        font-size: 35px;
+        color: #ff0000;
+        cursor: pointer;
+    }
+
+    .rating>label::before {
+        content: "\2605";
+        position: absolute;
+        opacity: 0
+    }
+
+    .rating>label:hover:before,
+    .rating>label:hover~label:before {
+        opacity: 1 !important
+    }
+
+    .rating>input:checked~label:before {
+        opacity: 1
+    }
+
+    .rating:hover>input:checked~label:before {
+        opacity: 0.4
+    }
+</style>
+
+<body style="display: flex; flex-direction: column; min-height: 100vh;" ng-app="app">
+<header>
+    <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+</header>
+<div class="container">
+    <div class="wall-header-offset p-1"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="m-0">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="text-secondary">Đơn hàng đã mua</h1>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="">
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-md-12">
+                        <div class="card bg-transparent border-0"
+                             style="box-shadow: none;">
+                            <div class="card-header p-2 bg-white  ">
+                                <ul class="nav nav-pills d-flex justify-content-between">
+                                    <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" aria-controls="all-order" aria-selected="true"
+                                                            href="#all-order" data-toggle="tab">Tất cả</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#paying" role="tab" aria-controls="paying" aria-selected="true"
+                                                            data-toggle="tab">Chờ thanh toán/Xác nhận</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#shiping" role="tab" aria-controls="shiping" aria-selected="true"
+                                                            data-toggle="tab">Vận chuyển/Đang giao</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#success" role="tab" aria-controls="success" aria-selected="true"
+                                                            data-toggle="tab">Hoàn thành</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" href="#cancel" role="tab" aria-controls="cancel" aria-selected="true"
+                                                            data-toggle="tab">Đã hủy</a></li>
+                                    <li class="nav-item" role="presentation"><a class="nav-link" role="tab" aria-controls="return-refund" aria-selected="true"
+                                                            href="#return-refund" data-toggle="tab">Trả hàng/Hoàn
+                                        tiền</a></li>
+                                </ul>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body border-0"
+                                 style="background-color: transparent;">
+                                <div class="tab-content ">
+                                    <!-- /.Toàn bộ order -->
+                                    <div class="tab-pane active bg-transparent" role="tabpanel" aria-labelledby="all-order" id="all-order">
+                                        <div th:if="${allOrder == null or allOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${allOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"  th:if="${orderDetail.productVariant.size != ''}"
+                                                                                    >
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding"   th:text="${orderDetail.productVariant.size}">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3" th:if="${orderDetail.productVariant.color != ''}"
+                                                                                >
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding" th:text="${orderDetail.productVariant.color}">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+                                                            <div class="btn-group col-6">
+                                                                    <a th:href="@{/order/thanhcong(id=${orderDetail.id})}" class="btn btn-success start" th:if="${orderDetail.status.id == 1004 or orderDetail.status.id == 1003}" >
+                                                                        Xác nhận đã nhận hàng
+                                                                    </a>
+                                                                <a th:href="@{/order/huy(id=${orderDetail.id})}" data-dz-remove class="btn btn-danger delete" th:if="${orderDetail.status.id == 1001 or orderDetail.status.id == 1002 or orderDetail.status.id == 1009}">
+                                                                    <span>Hủy đơn</span>
+                                                                </a>
+
+                                                                <!-- /.Nuts Đánh giá sản phẩm -->
+                                                                <button th:if="${orderDetail.status.id == 1006 && orderDetail.isComment}" class="btn btn-primary start" data-toggle="modal" th:data-target="'#form-' + ${orderDetail.id}" type="button">
+                                                                    <span>Đánh giá sản phẩm</span>
+                                                                </button>
+                                                                <form method="post" th:action="@{/order/addcomment/__${orderDetail.id}__}" class="modal fade" th:id="'form-' + ${orderDetail.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="card-body text-center">
+                                                                                <div class="comment-box text-center">
+                                                                                    <h4>Đánh giá sản phẩm</h4>
+                                                                                    <div class="rating">
+                                                                                        <input type="radio" name="rating" value="5"  th:id="'5-x' + ${orderDetail.id}" checked><label  th:for="'5-x' + ${orderDetail.id}" >☆</label>
+                                                                                        <input type="radio" name="rating" value="4"  th:id="'4-x' + ${orderDetail.id}"><label  th:for="'4-x' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="3"  th:id="'3-x' + ${orderDetail.id}"><label  th:for="'3-x' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="2"  th:id="'2-x' + ${orderDetail.id}"><label  th:for="'2-x' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="1"  th:id="'1-x' + ${orderDetail.id}"><label  th:for="'1-x' + ${orderDetail.id}">☆</label>
+                                                                                    </div>
+                                                                                    <div class="comment-area">
+                                                                                        <textarea class="form-control" name="content" placeholder="what is your view?" rows="4"></textarea>
+                                                                                    </div>
+
+                                                                                    <div class="text-center mt-4">
+                                                                                        <button class="btn btn-success send px-5">Đánh giá<i class="fa fa-long-arrow-right ml-1"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                                <!-- /.Nuts trả hàng hoản tiền -->
+                                                                <button th:if="${orderDetail.status.id == 1004 || orderDetail.status.id == 1003}" class="btn btn-danger start" data-toggle="modal" th:data-target="'#refund-' + ${orderDetail.id}" type="button">
+                                                                    <span>Trả hàng/Hoàn tiền</span>
+                                                                </button>
+                                                                <form method="post" th:action="@{/order/refund/__${orderDetail.id}__}" class="modal fade" th:id="'refund-' + ${orderDetail.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="card-body text-center">
+                                                                                <div class="comment-box text-center">
+                                                                                    <h4>Lý do trả hàng hoàn tiền</h4>
+                                                                                    <div class="comment-area">
+                                                                                        <textarea class="form-control" name="contentRefund" placeholder="Lý do gì khiến bạn huỷ hàng?" rows="4"></textarea>
+                                                                                    </div>
+
+                                                                                    <div class="text-center mt-4">
+                                                                                        <button class="btn btn-success send px-5">Giử xét duyệt<i class="fa fa-long-arrow-right ml-1"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.Đơn hàng chờ thanh toán -->
+                                    <div class="tab-pane bg-transparent" role="tabpanel" aria-labelledby="paying" id="paying">
+                                        <div th:if="${payingOrder == null or payingOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${payingOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"
+                                                                                     ng-if="item.size != ''">
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3">
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+                                                            <div class="btn-group col-6">
+                                                                <button class="btn btn-secondary start" disabled="disabled">
+                                                                    <span>Shop đang chuẩn bị hàng</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.Đơn hàng đang vận chuyển -->
+                                    <div class="tab-pane" role="tabpanel" aria-labelledby="shiping" id="shiping">
+                                        <div th:if="${shipingOrder == null or shipingOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${shipingOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"
+                                                                                     ng-if="item.size != ''">
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3">
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+                                                            <div class="btn-group col-6">
+                                                                <a th:href="@{/order/thanhcong(id=${orderDetail.id})}" class="btn btn-success start" >
+                                                                   Xác nhận đã nhận hàng
+                                                                </a>
+                                                                <button th:if="${orderDetail.status.id == 1004 || orderDetail.status.id == 1003}" class="btn btn-danger start" data-toggle="modal" th:data-target="'#refund1-' + ${orderDetail.id}" type="button">
+                                                                    <span>Trả hàng/Hoàn tiền</span>
+                                                                </button>
+                                                                <form method="post" th:action="@{/order/refund/__${orderDetail.id}__}" class="modal fade" th:id="'refund1-' + ${orderDetail.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="card-body text-center">
+                                                                                <div class="comment-box text-center">
+                                                                                    <h4>Lý do trả hàng hoàn tiền</h4>
+                                                                                    <div class="comment-area">
+                                                                                        <textarea class="form-control" name="contentRefund" placeholder="Lý do gì khiến bạn huỷ hàng?" rows="4"></textarea>
+                                                                                    </div>
+
+                                                                                    <div class="text-center mt-4">
+                                                                                        <button class="btn btn-success send px-5">Giử xét duyệt<i class="fa fa-long-arrow-right ml-1"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <!-- /.Nuts trả hàng hoản tiền -->
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.Đơn hàng thành công -->
+                                    <div class="tab-pane" role="tabpanel" aria-labelledby="success" id="success">
+                                        <div th:if="${successOrder == null or successOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${successOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"
+                                                                                     ng-if="item.size != ''">
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3">
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+                                                            <div class="btn-group col-6">
+                                                                <!-- /.Nút đánh giá sản phẩm -->
+                                                                <button th:if="${orderDetail.status.id == 1006 && orderDetail.isComment}" class="btn btn-primary start" data-toggle="modal" th:data-target="'#form1-' + ${orderDetail.id}" type="button">
+                                                                    <span>Đánh giá sản phẩm</span>
+                                                                </button>
+                                                                <form method="post" th:action="@{/order/addcomment/__${orderDetail.id}__}" class="modal fade" th:id="'form1-' + ${orderDetail.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="card-body text-center">
+                                                                                <div class="comment-box text-center">
+                                                                                    <h4>Đánh giá sản phẩm</h4>
+                                                                                    <div class="rating">
+                                                                                        <input type="radio" name="rating" value="5"  th:id="'5-' + ${orderDetail.id}" checked><label  th:for="'5-' + ${orderDetail.id}" >☆</label>
+                                                                                        <input type="radio" name="rating" value="4"  th:id="'4-' + ${orderDetail.id}"><label  th:for="'4-' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="3"  th:id="'3-' + ${orderDetail.id}"><label  th:for="'3-' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="2"  th:id="'2-' + ${orderDetail.id}"><label  th:for="'2-' + ${orderDetail.id}">☆</label>
+                                                                                        <input type="radio" name="rating" value="1"  th:id="'1-' + ${orderDetail.id}"><label  th:for="'1-' + ${orderDetail.id}">☆</label>
+                                                                                    </div>
+                                                                                    <div class="comment-area">
+                                                                                        <textarea class="form-control" name="content" placeholder="what is your view?" rows="4"></textarea>
+                                                                                    </div>
+
+                                                                                    <div class="text-center mt-4">
+                                                                                        <button class="btn btn-success send px-5">Đánh giá<i class="fa fa-long-arrow-right ml-1"></i></button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </form>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.Đơn hàng đã huỷ -->
+                                    <div class="tab-pane" role="tabpanel" aria-labelledby="cancel" id="cancel">
+                                        <div th:if="${cancelOrder == null or cancelOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${cancelOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"
+                                                                                     ng-if="item.size != ''">
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3">
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.Đơn hàng trả hàng / hoàn tiền -->
+                                    <div class="tab-pane" role="tabpanel" aria-labelledby="return-refund" id="return-refund">
+                                        <div th:if="${refundOrder == null or refundOrder.size() == 0}">
+                                            <div class="col-md-12" style="min-height: 47vh;">
+                                                <div class="error-template">
+                                                    <h1>
+                                                        Oops!</h1>
+                                                    <h2>
+                                                        Có vẻ như chẳng có gì ở đây cả!</h2>
+
+                                                    <div class="error-actions">
+                                                        <a href="http://localhost:8888/home"
+                                                           class="btn btn-primary btn-lg"><span
+                                                                class="glyphicon glyphicon-home"></span>
+                                                            Trở về trang chủ</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container_main_middle bg-white mb-4"
+                                             th:each="order: ${refundOrder}" style="padding: 20px;">
+                                            <!-- Lặp qua các shop và sản phẩm -->
+                                            <div>
+                                                <div th:each="shop : ${order.key}">
+                                                    <div
+                                                            class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+                                                        <button
+                                                                class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
+                                                                type="button">
+                                                            <div class="">
+                                                                <img alt="Avatar Shop"
+                                                                     th:src="@{|/img/account/${shop.avt}}"
+                                                                     class="rounded-circle img-fluid p-0"
+                                                                     style="width: 2.5rem; height: auto;"/>
+
+                                                            </div>
+                                                            <!-- Tên shop -->
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${shop.shopName}">
+                                                            </p>
+                                                        </button>
+                                                        <div
+                                                                class="text-center d-flex align-items-center font-italic">
+                                                            <p class="d-flex align-items-center m-0 ng-binding">Ngày
+                                                                tạo:</p>
+                                                            <p class="d-flex align-items-center m-0 ng-binding"
+                                                               th:text="${#dates.format(shop.createdDay, 'dd/MM/yyyy')}"></p>
+                                                        </div>
+                                                        <!--CART -->
+                                                        <div class="border-top bg-light">
+                                                            <a th:href="@{|/orderDetail/${shop.orderID}|}"
+                                                               class="text-white fw-bold">
+                                                                <div class="text-white fw-bold"
+                                                                     style="background-color: #007bff80;">
+                                                                    >>>> Chi tiết
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <!--END CART -->
+                                                    </div>
+                                                    <!-- Lặp qua các sản phẩm trong cùng một shop -->
+                                                    <div class="row px-3 pb-3 pt-2"
+                                                         th:each="orderDetail: ${order.value}">
+                                                        <div class="col-md-12">
+                                                            <!--CART -->
+                                                            <div class="border-top bg-light">
+                                                                <div class="card-body p-2 bg-white">
+                                                                    <div
+                                                                            class="row d-flex justify-content-between align-items-center">
+                                                                        <div
+                                                                                class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                                                                            <a class="p-0 col-12"
+                                                                               th:href="@{|/details/${orderDetail.productVariant.product.id}}">
+                                                                                <img style="height: auto"
+                                                                                     th:src="@{|/img/product/${orderDetail.productVariant.product.sellerProduct.username}/${orderDetail.productVariant.product.id}/${orderDetail.productVariant.product.imageProducts[0].name}}"
+                                                                                     class="img-fluid rounded-3"
+                                                                                     alt="Cotton T-shirt"/>
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-4">
+                                                                            <p
+                                                                                    th:text="${orderDetail.productVariant.product.name}"
+                                                                                    th:title="${orderDetail.productVariant.product.name}"
+                                                                                    class="fw-normal mb-2 card-title tensp ng-binding fs-6">
+                                                                            </p>
+                                                                            <div
+                                                                                    class="bg-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                                                                                <div class="m-0 px-3"
+                                                                                     ng-if="item.size != ''">
+                                                                                    Size: <span
+                                                                                        class="text-white ng-binding">XL
+																						</span>
+                                                                                </div>
+                                                                                <div class="m-0 px-3">
+                                                                                    Màu: <span
+                                                                                        class="text-white ng-binding">Hồng</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-6 ">
+                                                                                    <span class="row-1"
+                                                                                          style="color: #3f3d3d">₫</span><s
+                                                                                        class="ng-binding row-10"
+                                                                                        th:text="${#numbers.formatDecimal(orderDetail.productVariant.price, 0 , 'POINT', 0, 'COMMA')}">giá
+                                                                                    gốc ₫</s>
+                                                                                </div>
+                                                                                <div class="col-6 ">
+																						<span class="row-1 text-danger"
+                                                                                              style="color: #3f3d3d">₫</span>
+                                                                                    <span
+                                                                                            class="text-danger ng-binding row-11"
+                                                                                            th:text="${#numbers.formatDecimal(orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}">
+																							giá sale</span>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                        <div class="col-md-4 col-lg-4 col-xl-2 d-flex fs-7">
+                                                                            Số lượng: x
+                                                                            <div class="fs-7"
+                                                                                 th:text="${orderDetail.quantity}">1
+                                                                            </div>
+                                                                        </div>
+                                                                        <div
+                                                                                class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 fs-6">
+																				<span class="row-1 text-danger fw-bold"
+                                                                                      style="color: #3f3d3d">₫</span>
+                                                                            <span
+                                                                                    th:text="${#numbers.formatDecimal(orderDetail.quantity * orderDetail.productVariant.priceSale, 0 , 'POINT', 0, 'COMMA')}"
+                                                                                    class="mb-0 text-danger fw-bold ng-binding">100.100 VNĐ</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!--END CART -->
+
+                                                        </div>
+                                                        <div
+                                                                class="row-12 d-flex justify-content-end align-items-between mt-3">
+                                                            <div class="col-6 row">
+                                                                <p class="text-primary fw-italic col-5 fs-6 p-0"
+                                                                   th:text="${orderDetail.status.name}">
+                                                                </p>
+                                                            </div>
+                                                            <div class="btn-group col-6">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.tab-content -->
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <!-- END CONTENT-MEN-SHOES -->
+
+</div>
+
+
+<footer class="mt-3">
+    <!-- place footer here -->
+    <div th:replace="~{flagment/user/userFooter :: userFooterFragment}"></div>
+</footer>
+
+
+<script>
+    // Khi người dùng chọn ảnh, xử lý sự kiện change của input file
+    document.getElementById("avatarInput").addEventListener(
+        "change",
+        function (event) {
+            const file = event.target.files[0]; // Lấy file ảnh từ input
+
+            if (file) {
+                // Gắn tên tệp vào input ẩn có id="avatar-hide"
+                document.getElementById("avatar-hide").setAttribute(
+                    "value", file.name);
+
+                // (Tùy chọn) Hiển thị ảnh đã chọn lên trang web (nếu muốn)
+                const reader = new FileReader();
+                reader.onload = function () {
+                    const imageDataURL = reader.result;
+                    document.getElementById("avatar").setAttribute(
+                        "src", imageDataURL);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+</script>
+<script
+        src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
+<!-- 	<div th:replace="~{flagment/account/footLink :: footLinkFragment}"></div> -->
+<script src="/js/userIndex.js"></script>
+</body>
+
+</html>

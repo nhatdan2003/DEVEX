@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    /* CSS để giới hạn chiều rộng của cột 'Product Name' */
+    .product-name {
+      max-width: 100px;
+      /* Đặt giới hạn chiều rộng, ví dụ 200px */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    button.btn.btn-secondary.buttons-collection.dropdown-toggle.buttons-colvis {
+      margin-left: 10px;
+      /* border-radius: 5px; */
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0" th:text="${titleType}"></h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                  <a href="/ad/home">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Danh sách người dùng</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.container-fluid -->
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- /.card -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách người dùng</h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <!-- TABLE USER LIST -->
+                  <table id="example1" class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>STT</th>
+                        <th>Họ và tên</th>
+                        <th>Tài khoản</th>
+                        <th>Email</th>
+                        <th>Mật khẩu</th>
+                        <th>SĐT</th>
+                        <th>Giới tính</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th>Khác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- DATA -->
+                      <div>
+                        <div>
+                          <tr th:each="user,iter : ${user}">
+                            <td th:text="${iter.index + 1 }"></td>
+                            <td class="product-name" th:text="${user.fullname}"></td>
+                            <td class="product-name" th:text="${user.username}"></td>
+                            <td class="product-name" th:text="${user.email}"></td>
+                            <td class="product-name" th:text="${user.password}"></td>
+                            <td class="product-name" th:text="${user.phone}"></td>
+                            <td th:text="${user.gender}"></td>
+                            <td th:text="${user.createDay}"></td>
+                            <td th:text="${user.active == true ? 'Hoạt động' : 'Không hoạt động'}"></td>
+
+                            <td class="text-center">
+                              <div class="btn-group btn-group-sm">
+                                <a th:href="@{/ad/edit/__${user.username}__}" class="btn btn-primary"><i
+                                    class="fas fa-eye"></i></a>
+                                <a href="#" class="btn btn-danger"><i class="fas fa-edit"></i></a>
+                              </div>
+                            </td>
+                          </tr>
+                        </div>
+                      </div>
+                    </tbody>
+
+                  </table>
+                  <!-- ..END TABLE USER LIST.. TABLE SELLER LIST -->
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script> -->
+  <script>
+    const app = angular.module("app", []);
+  </script>
+  <script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+</body>
+
+</html>
+
+</html>

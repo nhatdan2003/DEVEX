@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    .category {
+      background: linear-gradient(to right, #808080 50%, transparent 50%);
+      background-size: 200% 100%;
+      background-position: right bottom;
+      transition: all 0.5s ease-out;
+    }
+
+    .category:hover {
+      background-position: left bottom;
+      color: white;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Quản lý danh mục</h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                  <a href="/ad/home">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Quản lý danh mục</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <section class="content" ng-controller="category">
+        <div class="container-fluid">
+          <!-- Loại sản phẩm -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="card-title">Quản lý loại sản phẩm</h4>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <!-- Category -->
+                    <div class="col-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="text-center">Loại sản phẩm</h5>
+                        </div>
+                        <form name="addCategoryForm">
+                          <div class="input-group mt-2 mb-1 mr-2">
+                            <input ng-model="namecategory" type="text" class="form-control"
+                              placeholder="Nhập tên loại sản phẩm" aria-label="Nhập tên loại sản phẩm"
+                              aria-describedby="basic-addon2" name="namecategory" ng-required="true" />
+                            <div class="input-group-append">
+                              <button ng-click="addCategory()" class="input-group-text btn btn-success"
+                                id="basic-addon2" ng-disabled="addCategoryForm.namecategory.$invalid">
+                                <i class="fa-solid fa-plus"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="text-danger"
+                            ng-show="addCategoryForm.namecategory.$dirty && addCategoryForm.namecategory.$error.required">
+                            Vui lòng tên nhập loại sản phẩm.
+                          </div>
+                        </form>
+                        <hr style="margin-top: 5px; margin-bottom: 5px" />
+                        <div class="card-body" style="overflow-y: scroll; height: 400px">
+                          <div ng-repeat="category in listCategory">
+                            <div ng-hide="editca[category.id]" class="btn-group w-100" role="group"
+                              aria-label="Basic example">
+                              <button id="{{category.id}}" class="btn btn-white w-100 category text-left"
+                                ng-click="showCategoryDetails(category.id)">
+                                {{category.name}}
+                              </button>
+                              <button ng-click="editCategory(category.id)" class="btn btn-primary text-right">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <button ng-click="deleteCategory(category.id)" class="btn btn-danger text-right">
+                                <i class="fa-solid fa-trash"></i>
+                              </button>
+                            </div>
+                            <!-- Edit -->
+                            <form name="formCategory">
+                              <div ng-show="editca[category.id]" class="btn-group w-100" role="group"
+                                aria-label="Basic example">
+                                <input ng-model="categoryNames[category.id]" type="text" class="form-control"
+                                  placeholder="Nhập loại sản phẩm" name="categoryName_{{category.id}}"
+                                  ng-required="true" />
+                                <button ng-click="cancelCategory(category.id)"
+                                  class="btn btn-secondary text-right">Hủy</button>
+                                <button ng-click="saveCategory(category.id)" class="btn btn-success text-right"
+                                  ng-disabled="formCategory['categoryName_' + category.id].$invalid">Lưu</button>
+                              </div>
+                              <div class="text-danger"
+                                ng-show="formCategory['categoryName_' + category.id].$dirty && formCategory['categoryName_' + category.id].$error.required">
+                                Vui lòng tên nhập loại sản phẩm.
+                              </div>
+                            </form>
+                            <!-- End Edit -->
+                            <hr />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End Category -->
+
+                    <!-- CategoryDetails -->
+                    <div class="col-6">
+                      <div class="card">
+                        <div class="card-header">
+                          <h5 class="text-center">Loại sản phẩm chi tiết</h5>
+                        </div>
+                        <form name="addCategoryDetailsForm">
+                          <div class="input-group mt-2 mb-1 mr-2">
+                            <input ng-model="namecategorydetails" type="text" class="form-control"
+                              placeholder="Nhập tên loại chi tiết sản phẩm" aria-label="Nhập tên loại chi tiết sản phẩm"
+                              aria-describedby="basic-addon2" name="namecategorydetails" ng-required="true" />
+                            <div class="input-group-append">
+                              <button ng-click="addCategoryDetails()" class="input-group-text btn btn-success"
+                                id="basic-addon2" ng-disabled="addCategoryDetailsForm.namecategorydetails.$invalid">
+                                <i class="fa-solid fa-plus"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="text-danger"
+                            ng-show="addCategoryDetailsForm.namecategorydetails.$dirty && addCategoryDetailsForm.namecategorydetails.$error.required">
+                            Vui lòng tên nhập loại sản phẩm chi tiết.
+                          </div>
+                        </form>
+                        <hr style="margin-top: 5px; margin-bottom: 5px" />
+                        <div class="card-body" style="overflow-y: scroll; height: 400px">
+                          <div ng-repeat="categorydetails in listCategoryDetails">
+                            <div ng-hide="editcad[categorydetails.id]" class="btn-group w-100" role="group"
+                              aria-label="Basic example">
+                              <button class="btn btn-white w-100 category text-left">
+                                {{categorydetails.name}}
+                              </button>
+                              <button ng-click="editCategoryDetails(categorydetails.id)"
+                                class="btn btn-primary text-right">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                              </button>
+                              <button ng-click="deleteCategoryDetails(categorydetails.id)"
+                                class="btn btn-danger text-right">
+                                <i class="fa-solid fa-trash"></i>
+                              </button>
+                            </div>
+                            <!-- Edit -->
+                            <form name="formCategoryDetails">
+                              <div ng-show="editcad[categorydetails.id]" class="btn-group w-100" role="group"
+                                aria-label="Basic example">
+                                <input ng-model="categoryDetailsNames[categorydetails.id]" type="text"
+                                  class="form-control" placeholder="Nhập loại chi tiết sản phẩm"
+                                  name="categoryDetailsName_{{categorydetails.id}}" ng-required="true" />
+                                <button ng-click="cancelCategoryDetails(categorydetails.id)"
+                                  class="btn btn-secondary text-right">
+                                  Cancel
+                                </button>
+                                <button ng-click="saveCategoryDetails(categorydetails.id)"
+                                  class="btn btn-success text-right"
+                                  ng-disabled="formCategoryDetails['categoryDetailsName_' + categorydetails.id].$invalid">
+                                  Save
+                                </button>
+                              </div>
+                              <div class="text-danger"
+                                ng-show="formCategoryDetails['categoryDetailsName_' + categorydetails.id].$dirty && formCategoryDetails['categoryDetailsName_' + categorydetails.id].$error.required">
+                                Vui lòng nhập tên loại chi tiết sản phẩm.
+                              </div>
+                            </form>
+                            <!-- End Edit -->
+                            <hr />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- End CategoryDetails -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Thương hiệu sản phẩm -->
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h4 class="card-title">Quản lý thương hiệu sản phẩm</h4>
+                </div>
+                <form name="addBrandForm">
+                  <div class="input-group mt-2 mb-1 mr-2">
+                    <input ng-model="nameProductBrand" type="text" class="form-control"
+                      placeholder="Nhập thương hiệu sản phẩm" aria-label="Nhập thương hiệu sản phẩm"
+                      aria-describedby="basic-addon2" name="namebrand" ng-required="true" />
+                    <div class="input-group-append">
+                      <button ng-click="addProductBrand()" class="input-group-text btn btn-success" id="basic-addon2"
+                        ng-disabled="addBrandForm.namebrand.$invalid">
+                        <i class="fa-solid fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="text-danger"
+                    ng-show="addBrandForm.namebrand.$dirty && addBrandForm.namebrand.$error.required">
+                    Vui lòng tên nhập thương hiệu sản phẩm.
+                  </div>
+                </form>
+                <hr style="margin-top: 5px; margin-bottom: 5px" />
+                <div class="card-body" style="overflow-y: scroll; height: 400px">
+                  <div ng-repeat="ProductBrand in listProductBrand">
+                    <div ng-hide="editpb[ProductBrand.id]" class="btn-group w-100" role="group"
+                      aria-label="Basic example">
+                      <button id="pb{{ProductBrand.id}}" class="btn btn-white w-100 category text-left">
+                        {{ProductBrand.name}}
+                      </button>
+                      <button ng-click="editProductBrand(ProductBrand.id)" class="btn btn-primary text-right">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                      </button>
+                      <button ng-click="deleteProductBrand(ProductBrand.id)" class="btn btn-danger text-right">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </div>
+                    <!-- Edit -->
+                    <form name="formBrand">
+                      <div ng-show="editpb[ProductBrand.id]" class="btn-group w-100" role="group"
+                        aria-label="Basic example">
+                        <input ng-model="productBrandNames[ProductBrand.id]" type="text" class="form-control"
+                          placeholder="Nhập thương hiệu sản phẩm" name="brandName_{{ProductBrand.id}}"
+                          ng-required="true" />
+                        <button ng-click="cancelProductBrand(ProductBrand.id)" class="btn btn-secondary text-right">
+                          Cancel
+                        </button>
+                        <button ng-click="saveProductBrand(ProductBrand.id)" class="btn btn-success text-right"
+                          ng-disabled="formBrand['brandName_' + ProductBrand.id].$invalid">
+                          Save
+                        </button>
+                      </div>
+                      <div class="text-danger"
+                        ng-show="formBrand['brandName_' + ProductBrand.id].$dirty && formBrand['brandName_' + ProductBrand.id].$error.required">
+                        Vui lòng nhập tên thương hiệu sản phẩm.
+                      </div>
+                    </form>
+                    <!-- End Edit -->
+                    <hr />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Model delete category -->
+        <button id="ca" type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteCategory" hidden>
+          Xóa category
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteCategory" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                  Cảnh báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  <span class="fw-bold">Lưu ý:</span> khi xóa Category sẽ
+                  xóa tất cả CategoryDetails, tất cả sản phẩm tồn tại
+                  CategoryDetails này khi bạn xóa hệ thống sẽ đặt lại loại
+                  sản phẩm là Unknoun!
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  Hủy
+                </button>
+                <button ng-click="updateCategory()" type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Model delete categorydetails -->
+        <button id="cad" type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteCategoryDetails"
+          hidden>
+          Xóa categorydetails
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteCategoryDetails" tabindex="-1" role="dialog" aria-labelledby=""
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                  Cảnh báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  <span class="fw-bold">Lưu ý:</span> hiện tại đã có sản
+                  phẩm tồn tại trong CategoryDetails này nếu bạn xóa hệ
+                  thống sẽ đặt lại loại sản phẩm là Unknoun!
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  Hủy
+                </button>
+                <button ng-click="updateCategoryDetails()" type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Model delete product brand -->
+        <button id="pb" type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteBrand" hidden>
+          Xóa ProductBrand
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="deleteBrand" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-triangle-exclamation text-warning"></i>
+                  Cảnh báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>
+                  <span class="fw-bold">Lưu ý:</span> hiện tại đã có sản
+                  phẩm tồn tại trong Thương hiệu này nếu bạn xóa hệ thống sẽ
+                  đặt lại thương hiệu sản phẩm là Unknoun!
+                </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  Hủy
+                </button>
+                <button ng-click="updateProductBrand()" type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- / End model delete product brand -->
+
+        <!-- Model success thêm -->
+        <button id="si" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successInsert" hidden>
+          Thêm thành công
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="successInsert" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+                <h3 class="text-center text-success">
+                  Thêm thành công!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model success thêm -->
+
+        <!-- Model false thêm -->
+        <button id="fi" type="button" class="btn btn-primary" data-toggle="modal" data-target="#falseInsert" hidden>
+          Thêm thất bại
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="falseInsert" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+                <h3 class="text-center text-success">
+                  Thêm thất bại!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model false thêm -->
+
+        <!-- Model success cập nhật -->
+        <button id="su" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successUpdate" hidden>
+          Cập nhật thành công
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="successUpdate" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+                <h3 class="text-center text-success">
+                  Cập nhật thành công!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model success cập nhật -->
+
+        <!-- Model false cập nhật -->
+        <button id="fu" type="button" class="btn btn-primary" data-toggle="modal" data-target="#falseUpdate" hidden>
+          Cập nhật thất bại
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="falseUpdate" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+                <h3 class="text-center text-success">
+                  Cập nhật thất bại!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model false cập nhật -->
+
+        <!-- Model success xóa -->
+        <button id="sd" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successDelete" hidden>
+          Xóa thành công
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+                <h3 class="text-center text-success">
+                  Xóa thành công!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model success xóa -->
+
+        <!-- Model false xóa -->
+        <button id="fd" type="button" class="btn btn-primary" data-toggle="modal" data-target="#falseDelete" hidden>
+          Xóa thất bại
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="falseDelete" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="">
+                  <i class="fa-solid fa-circle-exclamation text-primary"></i>
+                  Thông báo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body text-center">
+                <iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+                <h3 class="text-center text-success">
+                  Xóa thất bại!
+                </h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                  Chấp nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End model false xóa -->
+
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+    <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+</body>
+<script src="/admin/dist/js/handMade.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="/js/admin/category.js"></script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>
+
+</html>

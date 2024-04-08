@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <style>
+    .btn-time {
+      border: 1px solid #ee4d2d;
+      /* outline-style: solid;  */
+      /* outline-color: orangered; */
+    }
+
+    /* CSS cho modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal1 {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+    }
+
+    .modal-content,
+    .modal-content1 {
+      background-color: white;
+      width: 80%;
+      /* max-width: 70%; */
+      height: 80%;
+      margin: 50px auto;
+      padding: 10px;
+      border-radius: 5px;
+      /* overflow-x: scroll; */
+    }
+
+    .modal-body1 {
+      height: 380px;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    .modal-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      /* Điều chỉnh màu nền tùy ý */
+      padding: 10px;
+      /*Điều chỉnh khoảng cách nội dung tùy ý*/
+      box-shadow: 0px -5px 5px rgba(0, 0, 0, 0.2);
+      /* Tạo bóng đổ tùy ý */
+      z-index: 999;
+      /* Điều chỉnh thứ tự hiển thị tùy ý */
+    }
+
+    #myCalendar {
+      width: 90%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #myCalendar td {
+      /* margin: 2px; */
+      height: 40px;
+      /* Đặt chiều cao là 50px */
+      width: 40px;
+    }
+
+    /* CSS cho ngày được chọn */
+    .selected-day {
+      border: 1px solid rgb(0, 0, 0, 0.5);
+      color: black;
+      cursor: pointer;
+    }
+
+    table {
+      border-collapse: separate !important;
+      border-spacing: 2px !important;
+      /* Adjust the value as needed */
+    }
+
+    .table th,
+    .table td {
+      border-top: none !important;
+    }
+
+    /* CSS để giới hạn chiều rộng của cột 'Product Name' */
+    .product-name {
+      max-width: 200px;
+      /* Đặt giới hạn chiều rộng, ví dụ 200px */
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .th_with_product {
+      max-width: 180px;
+      width: 180px;
+      overflow: hidden;
+    }
+
+    .th_with_input {
+      width: 150px;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app" ng-controller="myController">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+    <div th:replace="~{flagment/seller/sellerHeader :: sellerHeaderFragment}"></div>
+    <div th:replace="~{flagment/seller/sellerMainSidebar :: sellerMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0" th:text="${titleType}"></h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item">
+                  <a href="/seller/home">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">FlashSale</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <!-- /.card -->
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title fs-3">
+                    Tạo chương trình Flash Sale của Shop
+                  </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-12">
+                      <span class="fs-5"> Thông tin cơ bản </span>
+                    </div>
+                  </div>
+                  <div class="row mt-3 d-flex justify-content-center align-items-center">
+                    <div class="col-10 d-flex">
+                      <div class="col-6">
+                        <span class="fs-6 me-3">Khung thời gian: </span>
+                        <button ng-click="openModal()" type="button" class="btn btn-time">
+                          <i class="fa-regular fa-calendar-days me-2" style="color: #ee4d2d"></i><span class=""
+                            style="color: #ee4d2d">Lựu chọn khung giờ</span>
+                        </button>
+                      </div>
+                      <div class="col-6 d-flex">
+                        <span class="fs-6 me-3">
+                          Thời gian tham gia:
+                          <i *ngIf="selectedItem" class="timeSelected">
+                            {{ selectedItem.firstTime | date:'HH:mm' }} {{
+                            selectedItem.firstTime | date:'dd/MM/yyyy'}} ~
+                            {{ selectedItem.lastTime | date:'HH:mm' }}</i>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Modal -->
+                  <div id="myModal" class="modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          Chọn khung giờ Flash sale Của Shop
+                        </h5>
+                        <button type="button" class="btn-close" ng-click="closeModal()"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                          <div class="col-6">
+                            <!-- Phần lịch -->
+                            <div class="calendar" id="calendar"></div>
+                          </div>
+
+                          <div class="col-6">
+                            <!-- <div class="row " style=" height: 55px ;background-color: rgba(167, 164, 164, 0.5);">
+															<span class="text-center fs-3"  >Khung giờ</span>
+														</div> -->
+                            <!--Radio Time-->
+                            <table class="table table-hover">
+                              <thead class="text-center">
+                                <tr>
+                                  <th>Khung giờ</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="item in data ">
+                                  <td>
+                                    <div class="form-check">
+                                      <input type="radio" name="time" ng-model="selectedValue" ng-value="item.id"
+                                        ng-change="valueChanged(this, {{item.id}})" />
+
+                                      <label class="form-check-label">
+                                        {{ item.firstTime | date:'HH:mm' }}
+                                        {{ item.firstTime |
+                                        date:'dd/MM/yyyy'}} ~ {{
+                                        item.lastTime | date:'HH:mm' }}
+                                      </label>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary">
+                          Huỷ
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="saveTime()">
+                          Lưu
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <!--thêm sản phẩm-->
+
+                  <div id="myModal1" class="modal1">
+                    <div class="modal-content1 position-relative">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          Chọn sản phẩm tham gia FlashSale
+                        </h5>
+                        <button type="button" class="btn-close" ng-click="closeModal1()"></button>
+                      </div>
+                      <div class="modal-body1">
+                        <div class="row px-3 pb-3 pt-2">
+                          <!-- TABLE USER LIST -->
+                          <table datatable="ng" id="tableProduct" class="table">
+                            <thead>
+                              <tr>
+                                <th>
+                                  <input type="checkbox" id="checkedALL" onclick="toggleCheckboxes()" />
+                                  Tất Cả
+                                </th>
+                                <th>Sản Phẩm</th>
+                                <th>Giá Bán</th>
+                                <th>Tồn Kho</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!--DATA -->
+                              <div>
+                                <div>
+                                  <tr ng-repeat=" item in dataProduct">
+                                    <td class="align-middle">
+                                      <input type="checkbox" value="{{item.productVariants[0].id}}"
+                                        class="flash_sale_product" />
+                                    </td>
+                                    <td>
+                                      <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                          <img style="height: 8rem"
+                                            src="/img/product/{{item.sellerProduct.username}}/{{item.id}}/{{item.imageProducts[0].name}}"
+                                            class="img-fluid rounded-3" />
+                                        </div>
+                                        <div class="product-name">
+                                          <span>{{item.name}}</span> <br />
+                                          <span>Mã sp: {{item.id}}</span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                    <td class="align-middle">
+                                      <div class="d-flex align-items-center">
+                                        {{item.productVariants[0].priceSale
+                                        | currency : "" : 0}}
+                                      </div>
+                                    </td>
+                                    <td class="align-middle">
+                                      <div class="d-flex align-items-center">
+                                        {{item.productVariants[0].quantity}}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </div>
+                              </div>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary">
+                          Huỷ
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="saveProduct()">
+                          Lưu
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <div class="container-fluid border-1 rounded-1 bg-white py-3">
+          <div class="row">
+            <div class="col-12 d-flex">
+              <div class="col-6">
+                <h3>Sản phẩm tham gia FlashSale</h3>
+              </div>
+              <div class="col-6 d-flex align-items-end justify-content-end">
+                <button type="button" ng-click="openModal1()" class="btn btn-time">
+                  <i class="fa-regular fa-plus me-2" style="color: #ee4d2d"></i><span class=""
+                    style="color: #ee4d2d">Thêm sản phẩm</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <hr />
+
+          <div class="card_product">
+            <div class="row">
+              <table id="table_productFlashSale" class="table">
+                <thead>
+                  <tr>
+                    <th class="th_with_product" scope="col">Sản phẩm</th>
+                    <th scope="col">Giá gốc</th>
+                    <th class="th_with_input" scope="col">Giá đã giảm</th>
+                    <th class="th_with_input" scope="col">SL khuyến mãi</th>
+                    <th class="th_with_input" scope="col">Giới hạn SL</th>
+                    <th scope="col">Kho</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col">Xoá</th>
+                  </tr>
+                </thead>
+                <tbody ng-form="validate">
+                  <tr ng-repeat=" item  in dataProductFlashSales ">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-3">
+                          <img style="height: 6rem"
+                            src="/img/product/{{item.sellerProduct.username}}/{{item.id}}/{{item.imageProducts[0].name}}"
+                            class="img-fluid rounded-3" />
+                        </div>
+                        <div class="product-name">
+                          <span>{{item.name}}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div>
+                        <span class="price" [(ngModel)]="price">{{item.productVariants[0].price | currency :
+                          "₫"
+                          : 0}}</span>
+                        <br /><span class="text-danger" id="discount">100%</span>
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="input-group">
+                        <span class="input-group-text">₫</span>
+                        <input type="number" min="1" max="{{item.productVariants[0].price}}" id="priceSale"
+                          class="form-control priceSale" name="priceSale" ng-model="priceSale"
+                          ng-change="handlePriceChange(this,{{item.productVariants[0].price}},{{$index}})"
+                          placeholder="{{item.productVariants[0].price | currency : '₫' : 0}}" />
+
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="input-group">
+                        <input type="number" class="form-control" id="amountSell" name="amountSell" min="1"
+                          max="{{item.productVariants[0].quantity}}" ng-model="amountSell"
+                          ng-change="handleQuantityChange(this,{{item.productVariants[0].quantity}},{{$index}})" />
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="input-group">
+                        <input min="1" max="{{item.productVariants[0].quantity}}" type="number" class="form-control"
+                          id="amountOrder" ng-model="amountOrder"
+                          ng-change="handleAmountOrderChange(this,{{item.productVariants[0].quantity}},{{$index}})" />
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="product-quantity">
+                        <span name="quantity" class="quantity">{{item.productVariants[0].quantity}}</span>
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="form-check form-switch">
+                        <input class="form-check-input w-50" type="checkbox" role="switch" id="status" />
+                      </div>
+                    </td>
+                    <td class="align-middle">
+                      <div class="form-check">
+                        <button ng-model="remove" ng-click="delete( $index)" class="btn btn-outline-*">
+                          <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <button class="btn btn-primary" ng-click="getDataTable()">
+                Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+        <!--modal validate-->
+        <div class="modal fade" id="modalValidate" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content" style="margin-top: 20%">
+              <!-- Modal body -->
+              <div class="modal-body">
+                <div class="text-left mt-2" style="margin-bottom: 60px">
+                  <h5 id="message-validation"></h5>
+                </div>
+                <div class="text-center mb-2">
+                  <button class="btn btn-danger w-100" data-dismiss="modal">
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--modal validate-->
+
+        <!-- /.container-fluid -->
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    <div th:replace="~{flagment/seller/sellerFooter :: sellerFooterFragment}"></div>
+    <div th:replace="~{flagment/seller/sellerFootLink :: sellerFootLinkFragment}"></div>
+  </div>
+  <!-- <script src="/admin/dist/js/handMade.js"></script> -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js"></script>
+  <script th:src="@{/js/SellerFlashSale.js}"></script>
+  <script src="/js/seller/Dwallet.js"></script>
+  <script>
+    let discount = 0;
+  </script>
+</body>
+
+</html>
+
+</html>

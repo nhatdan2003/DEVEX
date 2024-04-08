@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+  <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+  <style>
+    .product-name {
+      max-width: 600px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+  <div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+      <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60" />
+    </div>
+    <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+    <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <div class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1 class="m-0">Quản lý yêu cầu bán sản phẩm</h1>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Tổng quan</li>
+              </ol>
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- /.content-header -->
+
+      <!-- Main content -->
+      <section class="content" ng-controller="requestproduct">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách sản phẩm cần duyệt bán sản phẩm</h3>
+                </div>
+                <div class="card-body">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Loại</th>
+                        <th>Thương hiệu</th>
+                        <th>Cửa hàng</th>
+                        <th>Thời gian yêu cầu</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="ProductRequest in listProductRequest.listProductRequest">
+                        <td>{{listProductRequest.listInfoProduct[$index].id}}</td>
+                        <td class="product-name">{{listProductRequest.listInfoProduct[$index].name}}</td>
+                        <td>{{listProductRequest.listInfoProduct[$index].price}}</td>
+                        <td>{{listProductRequest.listNameCategory[$index]}}</td>
+                        <td>{{listProductRequest.listNameProductBrand[$index]}}</td>
+                        <td>{{listProductRequest.listShopName[$index]}}</td>
+                        <td>{{listProductRequest.listProductRequest[$index].createdDay | date:'dd/MM/yyyy HH:mm:ss'}}
+                        </td>
+                        <td>
+                          <div class="btn-group w-100" role="group" aria-label="Basic example">
+                            <button ng-click="cancelRequest(listProductRequest.listProductRequest[$index].id)"
+                              class="btn btn-danger text-center" title="Từ chối yêu cầu">
+                              <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <button ng-click="confirmRequest(listProductRequest.listProductRequest[$index].id)"
+                              class="btn btn-success text-center" title="Chấp nhận yêu cầu">
+                              <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button ng-click="focusURL(listProductRequest.listInfoProduct[$index].id)"
+                              class="btn btn-primary text-center">
+                              <i class="fa-regular fa-eye"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- End duyệt bán -->
+
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách sản phẩm cần duyệt tắt trạng thái bán</h3>
+                </div>
+                <div class="card-body">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Loại</th>
+                        <th>Thương hiệu</th>
+                        <th>Cửa hàng</th>
+                        <th>Thời gian yêu cầu</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="ProductRequestTrue in listProductRequestTrue.listProductRequestTrue">
+                        <td>{{listProductRequestTrue.listInfoProductTrue[$index].id}}</td>
+                        <td class="product-name">{{listProductRequestTrue.listInfoProductTrue[$index].name}}</td>
+                        <td>{{listProductRequestTrue.listInfoProductTrue[$index].price}}</td>
+                        <td>{{listProductRequestTrue.listNameCategoryTrue[$index]}}</td>
+                        <td>{{listProductRequestTrue.listNameProductBrandTrue[$index]}}</td>
+                        <td>{{listProductRequestTrue.listShopNameTrue[$index]}}</td>
+                        <td>{{listProductRequestTrue.listProductRequestTrue[$index].createdDay | date:'dd/MM/yyyy
+                          HH:mm:ss'}}
+                        </td>
+                        <td>
+                          <div class="btn-group w-100" role="group" aria-label="Basic example">
+                            <button
+                              ng-click="cancelRequestTrue(listProductRequestTrue.listProductRequestTrue[$index].id)"
+                              class="btn btn-danger text-center" title="Từ chối yêu cầu">
+                              <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <button
+                              ng-click="confirmRequestTrue(listProductRequestTrue.listProductRequestTrue[$index].id)"
+                              class="btn btn-success text-center" title="Chấp nhận yêu cầu">
+                              <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button ng-click="focusURL(listProductRequestTrue.listInfoProductTrue[$index].id)"
+                              class="btn btn-primary text-center">
+                              <i class="fa-regular fa-eye"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- End tắt bán -->
+            </div>
+          </div>
+
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+  <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+  </div>
+
+  <!-- Model success accept -->
+  <button id="sa" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successAccept" hidden>
+    accept
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="successAccept" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">
+            <i class="fa-solid fa-circle-exclamation text-primary"></i>
+            Thông báo
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+          <h3 class="text-center text-success">
+            Chấp nhận yêu cầu thành công!
+          </h3>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Chấp nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End model success accept -->
+
+  <!-- Model false accept -->
+  <button id="fa" type="button" class="btn btn-primary" data-toggle="modal" data-target="#falseAccept" hidden>
+    accept
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="falseAccept" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">
+            <i class="fa-solid fa-circle-exclamation text-primary"></i>
+            Thông báo
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+          <h3 class="text-center text-success">
+            Chấp nhận yêu cầu thất bại!
+          </h3>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Chấp nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End model false accept -->
+
+  <!-- Model success refuse -->
+  <button id="sr" type="button" class="btn btn-primary" data-toggle="modal" data-target="#successRefuse" hidden>
+    refuse
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="successRefuse" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">
+            <i class="fa-solid fa-circle-exclamation text-primary"></i>
+            Thông báo
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <iframe src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+          <h3 class="text-center text-success">
+            từ chối yêu cầu thành công!
+          </h3>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Chấp nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End model success accept -->
+
+  <!-- Model false refuse -->
+  <button id="fr" type="button" class="btn btn-primary" data-toggle="modal" data-target="#falseRefuse" hidden>
+    accept
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="falseRefuse" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">
+            <i class="fa-solid fa-circle-exclamation text-primary"></i>
+            Thông báo
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <iframe src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+          <h3 class="text-center text-success">
+            Từ chối yêu cầu thất bại!
+          </h3>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Chấp nhận
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End model false accept -->
+
+</body>
+<!-- <script src="/admin/dist/js/handMade.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script> -->
+<script src="/js/admin/RequestProduct.js"></script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>
+
+</html>

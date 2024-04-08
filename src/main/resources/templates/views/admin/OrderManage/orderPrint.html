@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+<div th:replace="~{flagment/seller/sellerHead :: sellerHeadFragment}"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+  <!-- Main content -->
+  <section class="invoice" th:replace="~{/admin/orderManage/orderDetail :: adminOrderPrintFragment}">
+    <!-- title row -->
+  
+  </section>
+  <!-- /.content -->
+</div>
+<!-- ./wrapper -->
+</body>
+<script>
+  window.addEventListener("load", window.print());
+</script>
+<script src="/admin/dist/js/handMade.js"></script>
+</html>

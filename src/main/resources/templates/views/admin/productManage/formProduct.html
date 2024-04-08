@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+	<div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+	<div class="wrapper">
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+		</div>
+
+		<div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+		<div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-sm-6">
+							<h1 class="m-0">Quản lý sản phẩm</h1>
+						</div>
+						<!-- /.col -->
+						<div class="col-sm-6">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+								<li class="breadcrumb-item active">Tổng quan</li>
+							</ol>
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
+
+			<!-- Main content -->
+			<section class="content" ng-controller="product">
+				<input id="username" type="text" th:value="${username}" hidden>
+				<input id="idproduct" type="text" th:value="${idproduct}" hidden>
+				<div class="container-fluid">
+					<!-- Chọn sản phẩm -->
+					<div class="row">
+						<div class="col-12">
+							<h1>Thông tin sản phẩm</h1>
+							<!-- Thông tin sản phẩm -->
+
+							<!-- Hình ảnh -->
+							<div class="card form-group px-3">
+								<label class="p-0">Hình ảnh</label>
+								<!-- Hiển thị hình ảnh -->
+								<div class="row">
+									<label class="col-1" title="Click vào hình ảnh 2 lần để xóa"
+										ng-repeat="filename in filenames">
+										<img alt="" class="img-fluid" ng-src="{{filename}}"
+											ng-dblclick="deleteimg(filename)">
+									</label>
+									<div class="col-2">
+										<!-- Chọn file -->
+										<input id="fileInput" style="display: none;" type="file" multiple="multiple"
+											onchange="angular.element(this).scope().uploadimg(this.files)">
+										<button class="btn btn-primary mb-2" onclick="openFilePicker()">Thêm</button>
+										<!-- END chọn file -->
+									</div>
+									<!-- END Hiển thị hình ảnh -->
+
+								</div>
+							</div>
+							<!-- END Hình ảnh -->
+							<!-- Thông tin sản phẩm -->
+							<div>
+								<form action="" method="post" name="myForm">
+									<div class="card p-3">
+										<!-- Tên sản phẩm -->
+										<div class="form-group">
+											<label>Tên sản phẩm</label>
+											<input class="form-control" ng-model="form.name"
+												placeholder="Nhập tên sản phẩm" name="productName" ng-required="true">
+											<div class="text-danger"
+												ng-show="myForm.productName.$dirty && myForm.productName.$error.required">
+												Vui lòng nhập tên sản phẩm</div>
+										</div>
+										<!-- END Tên sản phẩm -->
+
+										<!-- COMBOBOX AND SEARCH -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Loại sản phẩm</label>
+												<select id="brands" class="form-control select2" style="width: 100%;"
+													ng-change="getbrand()" ng-model="selectedbrand"
+													ng-options="brand.id as brand.name for brand in brands">
+												</select>
+											</div>
+										</div>
+										<!-- END COMBOBOX SEARCH -->
+										<!-- Loại sản phẩm -->
+										<div class="row">
+											<div class="form-group col-6">
+												<label>Loại sản phẩm</label>
+												<select id="categorys" class="form-control select2" style="width: 100%;"
+													ng-change="getCategoryDetails()" ng-model="selectedCategory"
+													ng-options="category.id as category.name for category in categorys">
+												</select>
+											</div>
+											<div class="form-group col-6">
+												<label>Loại chi tiết</label>
+												<select id="categorydt" class="form-control select2"
+													style="width: 100%;" ng-model="selectedCategoryDetail"
+													ng-options="catedt.id as catedt.name for catedt in categorydetail">
+												</select>
+											</div>
+										</div>
+										<!-- END Loại sản phẩm -->
+										<div class="form-group">
+											<label for="exampleFormControlTextarea1">Mô tả sản phẩm</label>
+											<textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+												ng-model="form.description"></textarea>
+										</div>
+										<div ng-if="checkbutton == false" class="form-check form-switch">
+											<input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+												ng-model="form.active" ng-checked="form.active">
+											<label class="form-check-label" for="flexSwitchCheckDefault">Trạng thái
+												bán</label>
+										</div>
+										<table class="table table-bordered text-center" id="data-table">
+											<thead>
+												<tr>
+													<th style="width: 10px">Kích cỡ</th>
+													<th>Màu sắc</th>
+													<th>Giá tiền</th>
+													<th style="width: 40px">Số lượng hàng</th>
+												</tr>
+											</thead>
+											<tbody id="table-body" ng-repeat="item in variant" ng-form="itemForm">
+												<tr>
+													<td><input type="text" ng-model="item.size"
+															placeholder="Kích thước sản phẩm"></td>
+													<td>
+														<input type="text" ng-model="item.color" name="color"
+															ng-required="true" placeholder="Màu sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.color.$dirty && itemForm.color.$error.required">
+															Vui lòng nhập màu sắc</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.price" name="productPrice"
+															min="1000" ng-min="1000" ng-required="true"
+															placeholder="Giá sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.min">
+															Giá tiền không được thấp hơn 1000</div>
+														<div class="text-danger"
+															ng-show="itemForm.productPrice.$dirty && itemForm.productPrice.$error.required">
+															Vui lòng nhập giá tiền</div>
+													</td>
+													<td>
+														<input type="number" ng-model="item.quantity"
+															name="productQuantity" min="1" ng-min="1" ng-required="true"
+															placeholder="Số lượng sản phẩm">
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.min">
+															Số lượng không được thấp hơn 1</div>
+														<div class="text-danger"
+															ng-show="itemForm.productQuantity.$dirty && itemForm.productQuantity.$error.required">
+															Vui lòng nhập số lượng</div>
+													</td>
+													<td>
+														<button class="btn btn-danger"
+															ng-click="deleteproductvariant(item.id)">
+															<i class="fa-regular fa-trash-can"></i>
+														</button>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+										<button id="add-row-btn" class="btn btn-primary mt-2" ng-click="addRow()">Thêm
+											chi
+											tiết sản phẩm</button>
+										<div class="form-group mt-2" ng-if="checkbutton == true">
+											<label for="exampleFormControlTextarea1">Thông tin người gửi</label>
+											<textarea ng-model="content" class="form-control bg-white"
+												id="exampleFormControlTextarea1" rows="3" disabled></textarea>
+										</div>
+									</div>
+								</form>
+							</div>
+							<!-- END Thông tin sản phẩm -->
+
+							<div class="text-center">
+								<button ng-if="checkbutton == false" class="btn btn-primary" ng-click="save()"
+									ng-disabled="myForm.$invalid">Lưu</button>
+								<button ng-if="checkbutton == false" class="btn btn-primary"
+									ng-click="deleteProduc()">Xóa</button>
+								<button ng-if="checkbutton == true" ng-click="cancelRequest(idrq)"
+									class="btn btn-danger">
+									<i class="fa-solid fa-xmark"></i> Hủy yêu cầu
+								</button>
+								<button ng-if="checkbutton == true" ng-click="confirmRequest(idrq)"
+									class="btn btn-success">
+									<i class="fa-solid fa-check"></i> Chấp nhận yêu cầu
+								</button>
+							</div>
+
+							<!-- Model success save -->
+							<button id="ss" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Lưu thông tin sản phẩm thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success save -->
+
+							<!-- Model false save -->
+							<button id="fs" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseSave" hidden>
+								save
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseSave" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Lưu thông tin sản phẩm thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false save -->
+
+							<!-- Model success delete -->
+							<button id="sd" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successDelete" hidden>
+								delete
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successDelete" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Xóa sản phẩm thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="chuyentrang()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success delete -->
+
+							<!-- Model false delete -->
+							<button id="fd" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseDelete" hidden>
+								delete
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseDelete" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-danger">
+												Xóa sản phẩm thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false delete -->
+
+
+							<!-- Model success accept -->
+							<button id="sa" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successAccept" hidden>
+								accept
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successAccept" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												Chấp nhận yêu cầu thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="chuyentrangrequestthanhcong()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success accept -->
+
+							<!-- Model false accept -->
+							<button id="fa" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseAccept" hidden>
+								accept
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseAccept" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-success">
+												Chấp nhận yêu cầu thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false accept -->
+
+							<!-- Model success refuse -->
+							<button id="sr" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#successRefuse" hidden>
+								refuse
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="successRefuse" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=b88a887a-bdb0-4353-9bf1-6fe27e3eb9f1/FboQjv554S.json"></iframe>
+											<h3 class="text-center text-success">
+												từ chối yêu cầu thành công!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal"
+												ng-click="chuyentrangrequesthuythanhcong()">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model success accept -->
+
+							<!-- Model false refuse -->
+							<button id="fr" type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#falseRefuse" hidden>
+								accept
+							</button>
+
+							<!-- Modal -->
+							<div class="modal fade" id="falseRefuse" tabindex="-1" role="dialog" aria-labelledby=""
+								aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="">
+												<i class="fa-solid fa-circle-exclamation text-primary"></i>
+												Thông báo
+											</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body text-center">
+											<iframe
+												src="https://lottie.host/?file=51cd8b56-3c50-45f1-a51f-9e1ae1a50534/RwZN1jyiA0.json"></iframe>
+											<h3 class="text-center text-success">
+												Từ chối yêu cầu thất bại!
+											</h3>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-dismiss="modal">
+												Chấp nhận
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- End model false accept -->
+
+						</div>
+					</div>
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+		<div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+	</div>
+
+</body>
+<!-- <script src="/admin/dist/js/handMade.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script> -->
+<script src="/js/admin/formProduct.js"></script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>

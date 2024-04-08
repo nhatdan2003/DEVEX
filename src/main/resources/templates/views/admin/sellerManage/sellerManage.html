@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
+<head>
+    <div th:replace="~{flagment/admin/adminHead :: adminHeadFragment}"></div>
+    <style>
+        .entitybutton {
+            background: linear-gradient(to right, #808080 50%, transparent 50%);
+            background-size: 200% 100%;
+            background-position: right bottom;
+            transition: all .5s ease-out;
+        }
+
+        .entitybutton:hover {
+            background-position: left bottom;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini" ng-app="app">
+    <div class="wrapper">
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__wobble" src="/img/banner/logotitle.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        <div th:replace="~{flagment/admin/adminHeader :: adminHeaderFragment}"></div>
+        <div th:replace="~{flagment/admin/adminMainSidebar :: adminMainSidebarFragment}"></div>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Quản lý nhà phân phối</h1>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/ad/home">Trang chủ</a></li>
+                                <li class="breadcrumb-item active">Tổng quan</li>
+                            </ol>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <section class="content" ng-controller="product">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+
+                            <!-- Danh sách nhà phân phố -->
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    <h5 class="text-left">Danh sách nhà phân phối</h5>
+                                </div>
+                                <div class="input-group mt-2 mb-1 mr-2">
+                                    <input ng-enter="searchDistributor()" ng-model="distributor" type="text"
+                                        class="form-control" placeholder="Nhập username hoặc shop name"
+                                        aria-label="Nhập username hoặc shop name" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button ng-click="searchDistributor()" class="input-group-text btn btn-success"
+                                            id="basic-addon2">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr style="margin-top: 5px; margin-bottom: 5px;">
+                                <div class="card-body" style="overflow-y: scroll; height: 400px;">
+                                    <table class="table table-hover mb-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Username</th>
+                                                <th>Tên shop</th>
+                                                <th>Thời gian đồng hành</th>
+                                                <th>Đánh giá</th>
+                                                <th>Số lượng hóa đơn</th>
+                                                <th>Doanh thu</th>
+                                                <th>Chiết khấu</th>
+                                                <th>Trạng thái</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="distributor in listDistributor.listSeller">
+                                                <td>{{distributor.username}}</td>
+                                                <td>{{distributor.shopName}}</td>
+                                                <td>{{listDistributor.listTime[$index]}}</td>
+                                                <td>{{listDistributor.listRating[$index]}} <i
+                                                        class="fa-regular fa-star text-warning"></i></td>
+                                                <td>{{listDistributor.listAmountOrder[$index]}}</td>
+                                                <td>{{listDistributor.listRevenue[$index] | number:0}} VND</td>
+                                                <td>{{listDistributor.listRevenue[$index] * 0.05 | number:0}} VND</td>
+                                                <td>
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            id="flexSwitchCheckDefault"
+                                                            ng-click="updateActive(distributor.username)"
+                                                            ng-checked="distributor.activeShop">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                                        <button title="Xem chi tiết"
+                                                            ng-click="showInfo(listDistributor.listSeller[$index].username, $event)"
+                                                            class="btn btn-primary">
+                                                            <i class="fa-regular fa-eye"></i>
+                                                        </button>
+                                                        <a title="Chỉnh sửa thông tin" class="btn btn-info"
+                                                            href="/ad/edit/{{distributor.username}}"><i
+                                                                class="fa-regular fa-pen-to-square"></i></a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <th>Username</th>
+                                            <th>Tên shop</th>
+                                            <th>Thời gian đồng hành</th>
+                                            <th>Đánh giá</th>
+                                            <th>Số lượng hóa đơn</th>
+                                            <th>Doanh thu</th>
+                                            <th>Chiết khấu</th>
+                                            <th>Trạng thái</th>
+                                            <th></th>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Thống kê -->
+                            <div class="card" id="thongke">
+                                <div class="card-header">
+                                    <h5 class="card-title">Thống kê doanh thu của shop</h5>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- <div class="col-md-2"></div> -->
+                                        <div class="col-md-6">
+                                            <p class="text-center">
+                                                <strong class="fw-1">Doanh thu Tháng </strong>
+                                                <select id="monthSelectrevenuemonthline" class="form-control"
+                                                    style="display: inline-block; width: auto;"></select>
+                                                <strong>Năm</strong>
+                                                <select id="yearSelectrevenuemonthline" class="form-control"
+                                                    style="display: inline-block; width: auto;"></select>
+                                            </p>
+                                            <div class="chart">
+                                                <!-- Sales Chart Canvas -->
+                                                <canvas id="statisticalrevenuemonth" height="150"
+                                                    style="height: 180px;"></canvas>
+                                            </div>
+                                            <div class="description-block border-right"
+                                                style="background-color: #f4f2f2;">
+                                                <h5 class="contributeMonth">$345.980.000</h5>
+                                                <span class="description-text">Tổng chiết khấu của tháng này</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="text-center">
+                                                <strong class="fw-1">Doanh thu Năm </strong>
+                                                <select id="yearSelectrevenueyearyearline" class="form-control"
+                                                    style="display: inline-block; width: auto;"></select>
+                                            </p>
+                                            <div class="chart">
+                                                <!-- Sales Chart Canvas -->
+                                                <canvas id="statisticalrevenueyear" height="150"
+                                                    style="height: 180px;"></canvas>
+                                            </div>
+                                            <div class="description-block border-right"
+                                                style="background-color: #f4f2f2;">
+                                                <h5 class="contributeYear">$345.980.000</h5>
+                                                <span class="description-text">Tổng chiết khấu năm</span>
+                                            </div>
+                                        </div>
+                                        <!-- /.col -->
+
+                                        <!-- /.col -->
+                                    </div>
+                                    <!-- /.row -->
+                                </div>
+                                <!-- ./card-body -->
+                            </div>
+
+                            <!-- Danh sách sản phẩm -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="text-left">Danh sách sản phẩm</h5>
+                                </div>
+                                <div class="input-group mt-2 mb-1 mr-2">
+                                    <input ng-enter="searchProduct()" ng-model="product" type="text"
+                                        class="form-control" placeholder="Nhập ID hoặc tên sản phẩm"
+                                        aria-label="Nhập ID hoặc tên sản phẩm" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button ng-click="searchProduct()" class="input-group-text btn btn-success"
+                                            id="basic-addon2">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr style="margin-top: 5px; margin-bottom: 5px;">
+                                <div class="card-body" style="overflow-y: scroll; height: 400px;">
+                                    <table id="productTable" class="table table-hover mb-3">
+                                        <thead>
+                                            <tr>
+                                                <th>Hình ảnh</th>
+                                                <th>Tên sản phẩm</th>
+                                                <th>Giá</th>
+                                                <th>Đánh giá</th>
+                                                <th>Số lượng đã bán</th>
+                                                <th>Doanh thu</th>
+                                                <th>Chiết khấu</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <tr ng-repeat="product in listProduct.listProduct">
+                                                <td>
+                                                    <img style="width: 50px; height: 50px;"
+                                                        src="{{listProduct.listImage[$index]}}" alt="">
+                                                </td>
+                                                <td>{{product.name}}</td>
+                                                <td>{{listProduct.listProductVariant[$index].price}}</td>
+                                                <td>{{listProduct.listRating[$index]}} <i
+                                                        class="fa-regular fa-star text-warning"></i></td>
+                                                <td>{{product.soldCount}}</td>
+                                                <td>{{listProduct.listRevenue[$index] | number:0}} VND</td>
+                                                <td>{{listProduct.listRevenue[$index] * 0.05 | number:0}} VND</td>
+                                                <td>
+                                                    <a href="/ad/showproduct/{{product.id}}" class="btn">
+                                                        <i class="fa-regular fa-eye fs-2 text-primary"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <th>Hình ảnh</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Đánh giá</th>
+                                            <th>Số lượng đã bán</th>
+                                            <th>Doanh thu</th>
+                                            <th>Chiết khấu</th>
+                                            <th></th>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Danh sách hóa đơn -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="text-left">Danh sách hóa đơn</h5>
+                                </div>
+                                <div class="input-group mt-2 mb-1 mr-2">
+                                    <input ng-enter="searchOrder()" ng-model="order" type="text" class="form-control"
+                                        placeholder="Nhập ID hóa đơn" aria-label="Nhập ID hóa đơn"
+                                        aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button ng-click="searchOrder()" class="input-group-text btn btn-success"
+                                            id="basic-addon2">
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <hr style="margin-top: 5px; margin-bottom: 5px;">
+                                <div class="card-body" style="overflow-y: scroll; height: 400px;">
+                                    <table id="productTable" class="table table-hover mb-3">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tổng giá</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Người đặt</th>
+                                                <th>Thanh toán</th>
+                                                <th>Trạng thái</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <tr ng-repeat="order in listOrder.listOrders">
+                                                <td>{{order.id}}</td>
+                                                <td>{{order.total | number:0}} VND</td>
+                                                <td>{{order.createdDay}}</td>
+                                                <td>{{order.address}}</td>
+                                                <td>{{listOrder.listCustomer[$index]}}</td>
+                                                <td>{{listOrder.listPayment[$index]}}</td>
+                                                <td>{{listOrder.listStatus[$index]}}</td>
+                                                <td>
+                                                    <a href="#" class="btn">
+                                                        <i class="fa-regular fa-eye fs-2 text-primary"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <th>ID</th>
+                                            <th>Tổng giá</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Người đặt</th>
+                                            <th>Thanh toán</th>
+                                            <th>Trạng thái</th>
+                                            <th></th>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <div th:replace="~{flagment/admin/adminFooter :: adminFooterFragment}"></div>
+        <div th:replace="~{flagment/admin/adminFootLink :: adminFootLinkFragment}"></div>
+    </div>
+
+</body>
+<script src="/admin/dist/js/handMade.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="/js/admin/sellerManage.js"></script>
+<script th:src="@{/js/admin/DWalletAdmin.js}"></script>
+
+</html>

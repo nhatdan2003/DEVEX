@@ -1,0 +1,75 @@
+.filter-textprodcut>a{
+    text-decoration: none;
+    font-size: 17px;
+    color: #2550b9;
+    margin: 10px;
+    
+}
+.filter-textprodcut{
+    margin-top: 15px;
+}
+.option-product{
+   border: none;
+    color: #2550b9;
+    
+}
+.custom-table {
+    margin: 0 auto; /* Can giữa bảng */
+    border-color: blue; /* Màu đường viền xanh dương */
+    border: 1px solid #2550b9;
+    margin-top: 10px;
+    height: auto;
+    
+   
+  }
+  .table-cart{
+    width: 99%;
+    
+  }
+  .custom-table>thead>tr>th{
+    color: #2550b9;
+    border: 1px solid #2550b9;
+    
+  }
+  .custom-table>thead>tr{
+    color: #2550b9;
+    
+  }
+  .custom-table>tbody>tr>th{
+    color: #000000;
+    border: 1px solid #2550b9;
+    border-radius: 10px;
+  }
+  .custom-table>tbody>tr>td{
+    color: #000000;
+    font-weight: 400;
+    border: 1px solid #2550b9;
+  }
+  .table-rounded{
+    border-radius: 10px;
+  }
+  .chu>p{
+    color: #2550b9;
+  }
+form>.mb-3>label{
+    color: #2550b9;
+    margin-left: 10px;
+    font-weight: 600;
+}
+form>.mb-3>.form-check>label{
+    color: #2550b9;
+}
+.info-ship>p{
+  color: #2550b9;
+  font-size: 17px;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.info-ship>p>a{
+  color: #2550b9;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  font-weight: bold;
+}
