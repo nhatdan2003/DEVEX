@@ -922,18 +922,6 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
   };
 
   $scope.payment = "cash";
-
-  //	$scope.checkPayment = function() {
-  //		var payment = document.getElementsByName("pay").value;
-  //		if(payment === "paypal") {
-  //			$scope.payment = "paypal";
-  //		}else if(payment === "vnpay") {
-  //			$scope.payment = "vnpay";
-  //		}else {
-  //			$scope.payment = "cash";
-  //		}
-  //	}
-
   $scope.purchase = function () {
     // Thực hiện đặt hàng
     const requestDataDTO = {
