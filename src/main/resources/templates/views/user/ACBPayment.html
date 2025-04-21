@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <html>
+    <head>
+      <title>Thông Tin Thanh Toán</title>
+      <!-- Required meta tags -->
+      <meta charset="utf-8" />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      />
+      <link class="devex" rel="icon" href="/img/banner/title-icon.png" />
+      <!-- Bootstrap CSS v5.2.1 -->
+
+      <!-- Bootstrap CSS v5.2.1 -->
+      <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
+        crossorigin="anonymous"
+      />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      />
+
+      <!--cnd fontawesome-->
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      />
+      <!-- Theme style -->
+
+      <link
+        rel="stylesheet"
+        href="/admin/dist/css/productDetail.css"
+        th:href="@{/admin/dist/css/productDetail.css}"
+      />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css"
+      />
+
+      <!--slick-->
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+      />
+
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+        integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer"
+      ></script>
+      <script th:src="@{/js/cart-ctrl.js}"></script>
+    </head>
+    <body ng-app="app">
+        <header>
+            <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+        </header>
+      <main>
+        <div class="container ">
+          <div class="row pt-5">
+            <div class="col-6">
+                <div class="row" >
+                    <h3 class="text-center">Thông tin thanh toán</h3>
+                    
+                </div>
+                <div class="text-star">
+                    <hr>
+                    <h4>Người Nhận: Tran Nhat Dan</h4>
+                    <h4>Số Tài Khoản: 18740441</h><br>
+                    <span>Tổng thanh toán:<span  class="text-danger" th:text="${total}"></span></span>
+                    <p>Nội dung chuyển khoản: Thanh toan hoa don <span id="idOrder" th:text="${id}"></span></p>
+                </div>
+                
+            </div>
+            <div class="col-6">
+                <img th:src="${qrUrl}" alt="" class="img-fluid" style="width: 450px; margin: 0 auto;">
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="text-center mt-3">
+             <button id="homeButton" class="btn btn-primary mr-3" onclick="redirectToHome(5)">Về Trang Chủ (5 giây)</button>
+            <button class="btn btn-secondary">Xem Đơn Hàng</button>
+        </div> -->
+      </main>
+      <script>
+        // Lấy idOrder từ HTML
+        const idOrder = document.getElementById('idOrder').innerText;
+        console.log(idOrder);  // Kiểm tra giá trị của idOrder
+    
+        // Hàm kiểm tra trạng thái thanh toán
+        function pollPaymentStatus(orderId, interval, apiUrl) {
+            const intervalId = setInterval(async () => {
+                try {
+                    // Gửi yêu cầu kiểm tra trạng thái thanh toán
+                    const response = await fetch(apiUrl,{
+                        method: "GET",
+                        mode: 'no-cors',
+                    }).then(response => {
+                        console.log(response); // Bạn không thể đọc dữ liệu trả về trong chế độ no-cors
+                    })
+                    .catch(error => console.error('Error:', error));
+    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+    
+                    // Nhận dữ liệu trả về từ API
+                    const data = await response.json();
+                    console.log(data)
+                    // Kiểm tra trạng thái của thanh toán
+                    const transaction = data.transactions.find(tx => tx.description.includes(orderId));
+                    if (transaction) {
+                // Kiểm tra trạng thái giao dịch
+                        if (data.status === 'success') {
+                            alert('Thanh toán thành công!');
+                            // window.location.href = '/order/success';  // Điều hướng khi thành công
+                        } else {
+                            alert('Thanh toán thất bại. Vui lòng thử lại.');
+                        }
+                    } else {
+                        console.log('Không tìm thấy giao dịch với orderId:', orderId);
+                        alert('Không tìm thấy giao dịch, vui lòng thử lại.');
+                    }
+                    
+                } catch (error) {
+                    console.error('Lỗi khi kiểm tra trạng thái thanh toán:', error);
+                    clearInterval(intervalId);  // Dừng kiểm tra nếu có lỗi
+                    alert('Đã xảy ra lỗi. Vui lòng kiểm tra lại sau.');
+                }
+            }, interval);  // Kiểm tra sau mỗi khoảng thời gian interval
+        }
+    
+        // Sử dụng hàm kiểm tra trạng thái thanh toán với URL API
+        const apiUrl = "https://dichvuapi.com/historyACB/Dantran@2910/18740441/cjPnjqtHkWpM-wMqRPq-bNHW-LhLw-oDdF";
+        pollPaymentStatus(idOrder, 5000, apiUrl);  // Kiểm tra mỗi 5 giây
+    </script>
+    
+    //   <script>
+    //     checkPaymentWithACB( () => {
+            
+    //     }); 
+    //     // Hàm tự động chuyển hướng về trang chủ
+    //     function redirectToHome() {
+    //       window.location.href = "http://localhost:8888/home";
+    //     }
+
+    //     // Gọi hàm redirectToHome() sau 5 giây tự động
+    //     setTimeout(function () {
+    //       redirectToHome();
+    //     }, 5000);
+
+    //     // Bắt sự kiện click vào nút "Về Trang Chủ" để chuyển hướng
+    //     var homeButton = document.getElementById("homeButton");
+    //     homeButton.addEventListener("click", redirectToHome);
+
+    //     // Cập nhật nội dung của nút sau 1 giây
+    //     setTimeout(function () {
+    //       homeButton.innerText = "Về Trang Chủ";
+    //     }, 1000);
+    //   </script>
+
+      <script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+        crossorigin="anonymous"
+      ></script>
+
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        type="text/javascript"
+        src="https://code.jquery.com/jquery-1.11.0.min.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"
+      ></script>
+      <script
+        type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+      ></script>
+      <!-- <script src="/js/productDetail.js"></script> -->
+    </body>
+  </html>
+</html>

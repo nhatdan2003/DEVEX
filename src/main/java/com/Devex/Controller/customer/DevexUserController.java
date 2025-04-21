@@ -85,38 +85,38 @@ public class DevexUserController {
 	private List<String> listCategory = new ArrayList<>();
 	private List<String> listBrand = new ArrayList<>();
 	private List<Product> temPoraryList = new ArrayList<>();
-	
-	  @ModelAttribute("admin")
-	  public Boolean getAdmin(Principal principal) {
-		  User user = sessionService.get("user");
-			if (user != null) {
-				List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
-				for (UserRole u : roles) {
-					if (u.getRole().getId().equals("ADMIN")) {
-						System.out.println("tôi là admin kk");
-						return true;
-					}
-				}
-			}
-	      return false;
-	  }
-	  
-	  @ModelAttribute("seller")
-	  public Boolean getSeller(Principal principal) {
-		  User user = sessionService.get("user");
-			if (user != null) {
-				List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
-				for (UserRole u : roles) {
-					if (u.getRole().getId().equals("SELLER")) {
-						System.out.println("tôi là seller kk");
-						return true;
-					}
-				}
-			}
-	      return false;
-	  }
 
-	@GetMapping({"/home", "/*"})
+	@ModelAttribute("admin")
+	public Boolean getAdmin(Principal principal) {
+		User user = sessionService.get("user");
+		if (user != null) {
+			List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
+			for (UserRole u : roles) {
+				if (u.getRole().getId().equals("ADMIN")) {
+					// System.out.println("tôi là admin kk");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@ModelAttribute("seller")
+	public Boolean getSeller(Principal principal) {
+		User user = sessionService.get("user");
+		if (user != null) {
+			List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
+			for (UserRole u : roles) {
+				if (u.getRole().getId().equals("SELLER")) {
+					// System.out.println("tôi là seller kk");
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@GetMapping({ "/home", "/*" })
 	public String getHomePage(Model model, Principal principal) throws Exception {
 		// uniqueProductList.clear();
 		User user = new User();
@@ -201,31 +201,31 @@ public class DevexUserController {
 		model.addAttribute("products", uniqueProductList);
 
 		// check quyền admin?
-//		User userAdmin = null;
-//		if (principal != null) {
-//			String id = principal.getName();
-//			System.out.println(id);
-//			if (id != null) {
-//				userAdmin = userService.findById(id).orElse(null);
-//			}
-//		}
-//		boolean adminFlag = false;
-//		boolean sellerFlag = false;
-//		if (userAdmin != null) {
-//			List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
-//			for (UserRole u : roles) {
-//				if (u.getRole().getId().equals("ADMIN")) {
-//					System.out.println("tôi là admin");
-//					adminFlag = true;
-//				}
-//				if (u.getRole().getId().equals("SELLER")) {
-//					System.out.println("tôi là seller");
-//					sellerFlag = true;
-//				}
-//			}
-//		}
-//		model.addAttribute("seller", sellerFlag);
-//		model.addAttribute("admin", adminFlag);
+		// User userAdmin = null;
+		// if (principal != null) {
+		// String id = principal.getName();
+		// System.out.println(id);
+		// if (id != null) {
+		// userAdmin = userService.findById(id).orElse(null);
+		// }
+		// }
+		// boolean adminFlag = false;
+		// boolean sellerFlag = false;
+		// if (userAdmin != null) {
+		// List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
+		// for (UserRole u : roles) {
+		// if (u.getRole().getId().equals("ADMIN")) {
+		// System.out.println("tôi là admin");
+		// adminFlag = true;
+		// }
+		// if (u.getRole().getId().equals("SELLER")) {
+		// System.out.println("tôi là seller");
+		// sellerFlag = true;
+		// }
+		// }
+		// }
+		// model.addAttribute("seller", sellerFlag);
+		// model.addAttribute("admin", adminFlag);
 		return "user/index";
 	}
 

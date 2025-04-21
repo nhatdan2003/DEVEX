@@ -47,11 +47,22 @@
     </div>
   </div>
 
-  <div class="container container_mid mt-3 bg-white" style="height: 500px">
+  <div class="container-fluid container_mid mt-3 bg-white" >
+    <style>
+       .container_mid {
+        height: 500px;
+       }
+       @media (max-width: 768px) {
+              
+              .container_mid {
+            height: auto;
+          }
+        }
+    </style>
     <div class="row mt-2 mb-2 col-12">
       <div class="col-md-2 col-3 text-center">
         <a href="/home">
-          <img class="img-fluid img_logo m-0 mt-1" src=" /img/banner/logoDUAN.png" alt />
+          <img class="img-fluid img_logo m-0 mt-1" src="/img/banner/LogoDUAn.png"  />
         </a>
       </div>
 
@@ -77,8 +88,8 @@
                   margin-top: -2px;
                   width: 0px;
                 ">
-                <a href="#" style="color: #fff; font-size: 12px" class="mt-1">
-                  <i class="fa-solid fa-magnifying-glass fs-4 mt-2 pt-1 text-dark"></i>
+                <a href="#" style="color: #fff; font-size: 12px" class="mt-1 d-none d-sm-block">
+                  <i class="fa-solid fa-magnifying-glass fs-4 mt-1 pt-1 text-dark"></i>
                 </a>
               </span>
             </div>
@@ -89,9 +100,9 @@
       </div>
       <div class="col-md-1 col-2 mt-2">
         <div class="row">
-          <div class="col-6 pt-1">
+          <div class="col-12 col-lg-6 pt-1">
             <a href="/cart" style="position: relative">
-              <i class="bi bi-cart3 fs-4 text-dark fw-bold"></i>
+              <i class="bi bi-cart3 fs-4 ms-3 ms-sm-0 text-dark fw-bold"></i>
               <i class="d-flex rounded-circle px-1" style="
                   font-size: 0.8rem;
                   background-color: #2550b9ab;
@@ -103,11 +114,11 @@
                 " ng-bind="cart.countItem"></i>
             </a>
           </div>
-          <div class="col-6 pt-1 col">
+          <div class=" d-none d-lg-flex col-6 pt-1 col">
             <th:block
               th:with="urlPath=${(admin == true) ? '/ad/profile' : (seller == true) ? '/seller/profile' : '/profile'}">
-              <a style="position: relative; display: flex; justify-content: center" th:href="${urlPath}">
-                <i class="bi bi-person-circle fs-4 text-dark fw-bold"></i>
+              <a  style="position: relative; display: flex; justify-content: center" th:href="${urlPath}">
+                <i class="bi bi-person-circle fs-4 text-dark fw-bold "></i>
                 <i th:if="${session.user != null}" style="
                       font-size: 1rem;
                       background-color: #2550b9ab;
@@ -122,9 +133,20 @@
         </div>
       </div>
     </div>
-    <div class="row" style="height: 360px">
+    <div class="row images-height" >
+      <style>
+        .images-height {
+         height: 360px;
+        }
+        @media (max-width: 768px) {
+               
+               .images-height {
+             height: auto;
+           }
+         }
+     </style>
       <div
-        class="col-md-2 d-md-none d-lg-flex list_type mt-4 text-center overflow-auto d-flex justify-content-center navbar navbar-expand-lg">
+        class="col-md-2 d-none d-lg-flex list_type mt-4 text-center overflow-auto d-flex justify-content-center navbar navbar-expand-lg">
         <ul class="list-group list-group-flush text-center collapse navbar-collapse">
           <li class="list-group-item text-center" th:each="category : ${category}">
             <a class="list_type_product rounded" th:href="@{|/category/${category.id}}" th:text="${category.name}"></a>
@@ -132,34 +154,34 @@
         </ul>
       </div>
       <!--banners advertisement ( slide show)-->
-      <div class="col-12 col-lg-10 mt-4 slideShow">
+      <div class="col-12 col-lg-10 mt-4 slideShow " >
         <div class="image-slider">
-          <div class="image-item">
-            <div class="image">
-              <img class="img-fluid"
+          <div class="image-item" style="object-fit: contain;">
+            <div class="image" style="height: auto;">
+              <img class="img-lg-fluid"
                 src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/07/25/1200x382-zfoldzflip5-250723.jpg" alt />
             </div>
           </div>
-          <div class="image-item">
-            <div class="image">
-              <img class="img-fluid"
+          <div class="image-item" style="object-fit: contain;">
+            <div class="image" style="height: auto;">
+              <img class="img-lg-fluid"
                 src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/02/sua1reno-10-1200x375-26072023.jpg" alt />
             </div>
           </div>
-          <div class="image-item">
-            <div class="image">
-              <img class="img-fluid" src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/01/web-1200x382.jpg"
+          <div class="image-item" style="object-fit: contain;">
+            <div class="image" style="height: auto;">
+              <img class="img-lg-fluid" src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/01/web-1200x382.jpg"
                 alt />
             </div>
           </div>
-          <div class="image-item">
-            <div class="image">
-              <img class="img-fluid"
+          <div class="image-item" style="object-fit: contain;">
+            <div class="image" style="height: auto;">
+              <img class="img-lg-fluid"
                 src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/04/realme-11-1200-png.png" alt />
             </div>
           </div>
-          <div class="image-item">
-            <div class="image">
+          <div class="image-item" style="object-fit: contain;">
+            <div class="image" style="height: auto;">
               <img class="img-fluid" src="https://cdn.hoanghamobile.com/i/home/Uploads/2023/08/03/1200x382.jpg" alt />
             </div>
           </div>
@@ -309,7 +331,7 @@
     <div class="row mt-2 mb-2 col-12">
       <div class="col-md-2 col-3 text-center">
         <a href="/home">
-          <img class="img-fluid img_logo m-0 mt-1" src=" /img/banner/logoDUAN.png" alt />
+          <img class="img-fluid img_logo m-0 mt-1" src="/img/banner/LogoDUAn.png" alt />
         </a>
       </div>
 
@@ -341,7 +363,7 @@
               </span>
             </div>
           </form>
-          <div class="custom-dropdown mt-2" id="custom-dropdown"></div>
+          <div class="custom-dropdown mt-2" id="custom-dropdown" ></div>
         </div>
       </div>
       <div class="col-md-1 col-2 mt-2">

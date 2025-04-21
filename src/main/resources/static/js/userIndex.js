@@ -3,13 +3,13 @@ $(document).ready(function () {
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 1000,
+      autoplaySpeed: 5000,
       infinite: true,
       arrows: true,
       draggable: true,
-      prevArrow: `<button type='button' class='slick-prev slick-arrow'><i class="fa-solid fa-chevron-left"></i></button>`,
+      prevArrow: `<button type='button' class='slick-prev slick-arrow'><i class="fa-solid fa-chevron-left fs-2 fs-lg-4"></i></button>`,
       nextArrow: `<button type='button' class='slick-next slick-arrow'><i class="fa-solid fa-chevron-right"></i></button>`,
-      dots: true,
+    // dots: true,
     //   responsive: [
     //     {
     //       breakpoint: 1025,

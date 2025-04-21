@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.Devex.DTO.CartDetailDTo;
 import com.Devex.Entity.Customer;
@@ -80,22 +81,27 @@ public class OrderController {
 	private ShoppingCartService shoppingCartService;
 	@Autowired
 	private TransactionService transactionService;
-	
+
 	@Autowired
 	MailerServiceImpl mailer;
-	
+
 	@PostMapping("/cash-payment")
 	public String paymentCash(Model model) {
 		session.set("payment", "cash");
 		return "redirect:/order/success";
 	}
 
+	// @RequestMapping("/sol-payment")
+	// public String paymentSol(Model model) {
+	// // session.set("payment", "sol");
+	// return "redirect:/order/success";
+	// }
+
 	@GetMapping("/cart/detail-order")
 	public String showDetailOrder(Model model) {
 		return "user/cartproductFake";
 	}
-	
-	
+
 	@GetMapping("/order/success")
 	public String showSuccess(Model model) {
 		List<CartDetailDTo> listOrder = session.get("listItemOrder", null);
@@ -110,7 +116,7 @@ public class OrderController {
 				}
 			});
 		}
-//		Customer user = sessionService.get("user");
+		// Customer user = sessionService.get("user");
 		User user = session.get("user");
 		Customer customer = null;
 		if (user != null) {
@@ -122,13 +128,16 @@ public class OrderController {
 		order.setNote("Đóng gói kĩ và giao vào giờ hành chính");
 		order.setAddress(customer.getAddress());
 		order.setPhone(customer.getPhoneAddress());
-//		order.setTotalShip(0.0);
+		// order.setTotalShip(0.0);
 		order.setCustomerOrder(customer);
 		order.setOrderStatus(orderStatusService.findById(1001).get());
 		// Xử lí phương thức thanh toán
 		String payment = session.get("payment", "cash");
 		System.out.println(payment);
-		if (payment.equals("paypal")) {
+		if (payment.equals("ACB")) {
+			Payment p = paymentService.findById(1004).get();
+			order.setPayment(p);
+		} else if (payment.equals("paypal")) {
 			Payment p = paymentService.findById(1003).get();
 			order.setPayment(p);
 		} else if (payment.equals("vnpay")) {
@@ -138,6 +147,7 @@ public class OrderController {
 			Payment p = paymentService.findById(1001).get();
 			order.setPayment(p);
 		}
+		
 		// Tiền ship
 		List<String> listShop = new ArrayList<>();
 		for (CartDetailDTo item : listOrder) {
@@ -218,26 +228,27 @@ public class OrderController {
 					}
 					System.out.println(total);
 				} else if (item.getCategoryVoucher().getId() == 100002) { // Voucher ship
-//					Double price = 0.0;
+					// Double price = 0.0;
 					// Xử lí giá giảm
 					if (item.getDiscount() < 1) {
-//						total -= ship;
+						// total -= ship;
 						sale = totalShip * item.getDiscount();
 						totalShip -= sale;
 						if (totalShip < 0)
 							totalShip = 0.0;
-//						total += price;
+						// total += price;
 					} else {
-//						total -= ship;
+						// total -= ship;
 						sale = item.getDiscount();
 						totalShip -= sale;
 						if (totalShip < 0)
 							totalShip = 0.0;
-//						total += price;
+						// total += price;
 					}
 					System.out.println(total);
 				} else if (item.getCategoryVoucher().getId() == 100001) { // Voucher Devex
-//					Double price = listOrder.stream().mapToDouble(i -> item.getQuantity() * i.getPrice()).sum();
+					// Double price = listOrder.stream().mapToDouble(i -> item.getQuantity() *
+					// i.getPrice()).sum();
 
 					// Xử lí giá giảm
 					if (item.getDiscount() < 1) {
@@ -245,13 +256,13 @@ public class OrderController {
 						total -= sale;
 						if (total < 0)
 							total = 0.0;
-//						total = price + ship;
+						// total = price + ship;
 					} else {
 						sale = item.getDiscount();
 						total -= sale;
 						if (total < 0)
 							total = 0.0;
-//						total = price + ship;
+						// total = price + ship;
 					}
 					System.out.println(total);
 				}
@@ -266,7 +277,6 @@ public class OrderController {
 				od.setVoucher(item);
 				System.out.println(3);
 				orderDiscountService.save(od);
-				
 
 				System.out.println(new Date());
 				// Giảm voucher đã sử dụng đi 1
@@ -277,16 +287,18 @@ public class OrderController {
 				System.out.println(5);
 				voucherDetailService.appliedVoucher(customer.getUsername(), item.getId()); // chuyển trạng thái voucher
 																							// thành đã áp dụng
-				if(!transactionService.transactionDwallet(user.getUsername(),"",order.getTotal()+order.getTotalShip(),payment)) {
+				if (!transactionService.transactionDwallet(user.getUsername(), "",
+						order.getTotal() + order.getTotalShip(), payment)) {
 					orderDiscountService.delete(od); // chua xu li triet de
-					v.setQuantity(v.getQuantity()+1);
+					v.setQuantity(v.getQuantity() + 1);
 					voucherService.save(v);
 				}
 			}
 
 		}
-		//Xử lí dòng tiền
-		if(!transactionService.transactionDwallet(user.getUsername(),"",order.getTotal()+order.getTotalShip(),payment)) {
+		// Xử lí dòng tiền
+		if (!transactionService.transactionDwallet(user.getUsername(), "", order.getTotal() + order.getTotalShip(),
+				payment)) {
 			orderService.delete(orderService.findLatestOrder());
 			return "user/paymentFail";
 		}
@@ -297,8 +309,8 @@ public class OrderController {
 			Order orders = orderService.findLatestOrder();
 			orderDetails.setOrder(orders);
 			orderDetails.setPrice(item.getPrice());
-//			CartDetail cartDetail = cartDetailService.getById(item.getId());
-//			int id = cartDetail.getProductCart().getId();
+			// CartDetail cartDetail = cartDetailService.getById(item.getId());
+			// int id = cartDetail.getProductCart().getId();
 			ProductVariant prod = productVariantService.findById(item.getIdProductVariant()).get();
 			orderDetails.setProductVariant(prod);
 			orderDetails.setQuantity(item.getQuantity());
@@ -319,93 +331,105 @@ public class OrderController {
 			orderDetailService.save(orderDetails);
 			cartDetailService.deleteById(item.getId());
 		}
-		
-		
-        //Gửi Email 
+
+		// Gửi Email
 		List<CartDetailDTo> list = session.get("listItemOrder", null);
-        double totalInMail = session.get("total", 0.0);
-        try {
-	    	  StringBuilder emailContentBuilder = new StringBuilder();
-	    	  emailContentBuilder.append("  <table border=\"0\" style=\"margin: 0 auto; font-family: Arial, Helvetica, sans-serif;\" >");
-	    	  emailContentBuilder.append("<tr style=\"background-color: rgb(254, 253, 253); width: 500px; height: 100px; outline: 1px solid rgb(180, 158, 158); display: flex; justify-content: center; align-items: center;\">\r\n"
-	    	  		+ "            <td><img src=\"https://i.pinimg.com/564x/3a/4c/47/3a4c478ee0994afd0a983082ca14870c.jpg\" style=\"margin-top: 15px;margin-left: 170px;\" width=\"150px\" ></td>\r\n"
-	    	  		+ "        </tr>");
-	    	  emailContentBuilder.append(" <tr style=\"background-color: rgb(254, 253, 253); width: 500px; height: 500px; outline: 1px solid rgb(180, 158, 158);\">");
-	    	  emailContentBuilder.append("<td>\r\n"
-	    	  		+ "                <div style=\"width: 400px; margin: auto;\">");
-	    	  emailContentBuilder.append("<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(42, 68, 119); font-size: 18px;\">THÔNG TIN ĐƠN HÀNG SỐ</p>");
-	    	  emailContentBuilder.append("<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161);\">1. Thông Người Đặt Hàng</p>");
-	    	  emailContentBuilder.append("<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Họ Và Tên: " +user.getFullname()+"</p>");
-	    	  emailContentBuilder.append("<hr>\r\n"
-	    	  		+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Số Điện Thoại: "+user.getPhone()+"</p>");
-	    	  emailContentBuilder.append("<hr>\r\n"
-	    	  		+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Địa Chỉ: "+customer.getAddress()+"</p>");
-	    	  emailContentBuilder.append("<hr>\r\n"
-	    	  		+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(51, 113, 200);\">2.Sản Phẩm Đặt Hàng</p>");
-	    	  emailContentBuilder.append(" <table style=\"margin: 0 auto; border-collapse: collapse; width: 100%; text-align: center; font-size: 15px;\" >");
-	    	  emailContentBuilder.append("<tr>\r\n"
-	    	  		+ "                            <td style=\"border: 2px solid rgb(132, 177, 225);\">STT</td>\r\n"
-	    	  		+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Tên Sản Phẩm</td>\r\n"
-	    	  		+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Số Lượng</td>\r\n"
-	    	  		+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Giá</td>\r\n"
-	    	  		+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Tổng</td>\r\n"
-	    	  		+ "                        </tr>");
-	    	  
-	    	  double tong2= 0;
-	    	  DecimalFormat decimalFormat = new DecimalFormat("###,###");
-	    	  for (CartDetailDTo cartDetailDTo : list) {
-				if(cartDetailDTo.getColor().equals("")) {
+		double totalInMail = session.get("total", 0.0);
+		try {
+			StringBuilder emailContentBuilder = new StringBuilder();
+			emailContentBuilder.append(
+					"  <table border=\"0\" style=\"margin: 0 auto; font-family: Arial, Helvetica, sans-serif;\" >");
+			emailContentBuilder.append(
+					"<tr style=\"background-color: rgb(254, 253, 253); width: 500px; height: 100px; outline: 1px solid rgb(180, 158, 158); display: flex; justify-content: center; align-items: center;\">\r\n"
+							+ "            <td><img src=\"https://i.pinimg.com/564x/3a/4c/47/3a4c478ee0994afd0a983082ca14870c.jpg\" style=\"margin-top: 15px;margin-left: 170px;\" width=\"150px\" ></td>\r\n"
+							+ "        </tr>");
+			emailContentBuilder.append(
+					" <tr style=\"background-color: rgb(254, 253, 253); width: 500px; height: 500px; outline: 1px solid rgb(180, 158, 158);\">");
+			emailContentBuilder.append("<td>\r\n"
+					+ "                <div style=\"width: 400px; margin: auto;\">");
+			emailContentBuilder.append(
+					"<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(42, 68, 119); font-size: 18px;\">THÔNG TIN ĐƠN HÀNG SỐ</p>");
+			emailContentBuilder.append(
+					"<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161);\">1. Thông Người Đặt Hàng</p>");
+			emailContentBuilder.append(
+					"<p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Họ Và Tên: "
+							+ user.getFullname() + "</p>");
+			emailContentBuilder.append("<hr>\r\n"
+					+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Số Điện Thoại: "
+					+ user.getPhone() + "</p>");
+			emailContentBuilder.append("<hr>\r\n"
+					+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(80, 114, 161); font-size: 15px;\">Địa Chỉ: "
+					+ customer.getAddress() + "</p>");
+			emailContentBuilder.append("<hr>\r\n"
+					+ "                    <p style=\"font-family: Arial, Helvetica, sans-serif; font-weight: 600; color: rgb(51, 113, 200);\">2.Sản Phẩm Đặt Hàng</p>");
+			emailContentBuilder.append(
+					" <table style=\"margin: 0 auto; border-collapse: collapse; width: 100%; text-align: center; font-size: 15px;\" >");
+			emailContentBuilder.append("<tr>\r\n"
+					+ "                            <td style=\"border: 2px solid rgb(132, 177, 225);\">STT</td>\r\n"
+					+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Tên Sản Phẩm</td>\r\n"
+					+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Số Lượng</td>\r\n"
+					+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Giá</td>\r\n"
+					+ "                            <td style=\"border: 2px solid  rgb(132, 177, 225);\">Tổng</td>\r\n"
+					+ "                        </tr>");
+
+			double tong2 = 0;
+			DecimalFormat decimalFormat = new DecimalFormat("###,###");
+			for (CartDetailDTo cartDetailDTo : list) {
+				if (cartDetailDTo.getColor().equals("")) {
 					cartDetailDTo.setColor("Không có");
 				}
-				if(cartDetailDTo.getSize().equals("")) {
+				if (cartDetailDTo.getSize().equals("")) {
 					cartDetailDTo.setSize("Không có");
 				}
 				double tong = cartDetailDTo.getPrice() * cartDetailDTo.getQuantity();
-				
+
 				double gia2 = cartDetailDTo.getPrice();
 				String formattedNumber = String.format("%,d", (int) gia2);
 
 				String formattedNumber2 = String.format("%,d", (int) tong);
-				
-				 emailContentBuilder.append("<tr>");
-	    		  emailContentBuilder.append(" <td style=\"border: 2px solid  rgb(132, 177, 225);\">"+"</td>");
-		    	  emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">"+"<p>"+cartDetailDTo.getNameProduct()+"</p>\r\n"
-		    	  		+ "                                <p>Màu Sắc :"+cartDetailDTo.getColor()+"</p>\r\n"
-		    	  		+ "                                <p>Size :"+cartDetailDTo.getSize()+"</p>"+  "</td>");
-		    	  emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">"+cartDetailDTo.getQuantity()+"</td>");
-		    	  emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">"+formattedNumber+"</td>");
-		    	  emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">"+formattedNumber2+"</td>");
-		    	  emailContentBuilder.append("</tr>");
-		    	  tong2 += tong;
-			}
-	    	  String formattedNumber = String.format("%,d", (int) totalInMail);
-	    	  emailContentBuilder.append("</table>\r\n"
-	    	  		+ "                    <hr>");
-	    	  emailContentBuilder.append(
-	    	  		"                    <p style=\"font-weight: bold;\">Tổng Tiền :  <a href=\"\" style=\"color: rgb(254, 3, 3); font-weight: bold;font-size: 16px; float: right;text-decoration: none; \">"+formattedNumber+"VND"
-	    	  		+ "                </a></p> </div>");
-	    	  emailContentBuilder.append("   </td>\r\n"
-	    	  		+ "           \r\n"
-	    	  		+ "        </tr>\r\n"
-	    	  		+ "        <tr style=\"background-color: rgb(104, 170, 228); width: 500px; height: 100px; outline: 1px solid rgb(180, 158, 158);; margin: 0 auto; display: flex; justify-content: center; align-items: center; color: white;\">\r\n"
-	    	  		+ "            <td style=\"font-size: 15px;\">\r\n"
-	    	  		+ "                <p> Truy Cập Trang Web Để Nhập Ưu Đãi</p>\r\n"
-	    	  		+ "                <p>Cảm Ơn Bạn Đã Tin Tưởng DEVEX</p>\r\n"
-	    	  		+ "            </td>\r\n"
-	    	  		+ "            \r\n"
-	    	  		+ "        </tr>\r\n"
-	    	  		+ "    </table>");
-	    	
 
-	    	  String emailContent = emailContentBuilder.toString();
-	    	  
+				emailContentBuilder.append("<tr>");
+				emailContentBuilder.append(" <td style=\"border: 2px solid  rgb(132, 177, 225);\">" + "</td>");
+				emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">" + "<p>"
+						+ cartDetailDTo.getNameProduct() + "</p>\r\n"
+						+ "                                <p>Màu Sắc :" + cartDetailDTo.getColor() + "</p>\r\n"
+						+ "                                <p>Size :" + cartDetailDTo.getSize() + "</p>" + "</td>");
+				emailContentBuilder.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">"
+						+ cartDetailDTo.getQuantity() + "</td>");
+				emailContentBuilder
+						.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">" + formattedNumber + "</td>");
+				emailContentBuilder
+						.append("<td style=\"border: 2px solid  rgb(132, 177, 225);\">" + formattedNumber2 + "</td>");
+				emailContentBuilder.append("</tr>");
+				tong2 += tong;
+			}
+			String formattedNumber = String.format("%,d", (int) totalInMail);
+			emailContentBuilder.append("</table>\r\n"
+					+ "                    <hr>");
+			emailContentBuilder.append(
+					"                    <p style=\"font-weight: bold;\">Tổng Tiền :  <a href=\"\" style=\"color: rgb(254, 3, 3); font-weight: bold;font-size: 16px; float: right;text-decoration: none; \">"
+							+ formattedNumber + "VND"
+							+ "                </a></p> </div>");
+			emailContentBuilder.append("   </td>\r\n"
+					+ "           \r\n"
+					+ "        </tr>\r\n"
+					+ "        <tr style=\"background-color: rgb(104, 170, 228); width: 500px; height: 100px; outline: 1px solid rgb(180, 158, 158);; margin: 0 auto; display: flex; justify-content: center; align-items: center; color: white;\">\r\n"
+					+ "            <td style=\"font-size: 15px;\">\r\n"
+					+ "                <p> Truy Cập Trang Web Để Nhập Ưu Đãi</p>\r\n"
+					+ "                <p>Cảm Ơn Bạn Đã Tin Tưởng DEVEX</p>\r\n"
+					+ "            </td>\r\n"
+					+ "            \r\n"
+					+ "        </tr>\r\n"
+					+ "    </table>");
+
+			String emailContent = emailContentBuilder.toString();
+
 			mailer.send(user.getEmail(), "DEVEX - THÔNG BÁO XÁC NHẬN ĐƠN HÀNG CỦA BẠN", emailContent);
 		} catch (Exception e) {
 			System.out.println("Lỗi");
 			System.out.println(e);
 		}
 
-		
 		return "user/paymentSuccess";
 	}
 

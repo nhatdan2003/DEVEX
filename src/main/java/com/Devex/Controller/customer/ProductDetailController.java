@@ -61,7 +61,7 @@ public class ProductDetailController {
 			List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
 			for (UserRole u : roles) {
 				if (u.getRole().getId().equals("ADMIN")) {
-					System.out.println("tôi là admin kk");
+					// System.out.println("tôi là admin kk");
 					return true;
 				}
 			}
@@ -76,7 +76,7 @@ public class ProductDetailController {
 			List<UserRole> roles = userRoleService.findAllByUserName(user.getUsername());
 			for (UserRole u : roles) {
 				if (u.getRole().getId().equals("SELLER")) {
-					System.out.println("tôi là seller kk");
+					// System.out.println("tôi là seller kk");
 					return true;
 				}
 			}
@@ -86,7 +86,7 @@ public class ProductDetailController {
 
 	@RequestMapping("/details/{id}")
 	public String details(ModelMap model, @PathVariable("id") String id, HttpServletRequest request) {
-		System.out.println("SSS" + id);
+		// System.out.println("SSS" + id);
 		session.set("url", "/details/" + id);
 		// Lưu Lịch Sử Sản phẩm
 		User user = session.get("user");
@@ -101,7 +101,7 @@ public class ProductDetailController {
 		// end.
 		Product seller = productService.findProductById(id);
 		Product product = productService.findById(id).orElse(new Product());
-		System.out.println(product.getActive());
+		// System.out.println(product.getActive());
 		// System.out.println("SSSS" +
 		// product.getProductVariants().get(0).getPriceSale());
 		List<String> listSize = new ArrayList<>();
@@ -154,7 +154,7 @@ public class ProductDetailController {
 
 					flag++;
 				}
-				System.out.println(role.getRole().getId());
+				// System.out.println(role.getRole().getId());
 			}
 			// Kieem tra xem có phải chính shop đó đăn bán không
 			if (user.getUsername().equals(seller.getSellerProduct().getUsername()) || flag == 0) {

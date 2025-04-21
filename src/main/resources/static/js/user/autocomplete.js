@@ -89,11 +89,8 @@ app.controller("autoComplete", function ($scope, $http, $window) {
 
   input.addEventListener('input', (e) => {
     const rs = Searcher.search(loadHistorySearch, e.target.value);
-
-    // Clear previous options in the custom dropdown
     dropdown.innerHTML = '';
 
-    // Populate the custom dropdown with new options
     rs.forEach((el) => {
       var anchor = document.createElement('a');
       var div = document.createElement('div');
@@ -105,7 +102,6 @@ app.controller("autoComplete", function ($scope, $http, $window) {
       });
 
       anchor.appendChild(div);
-
       dropdown.appendChild(anchor);
       anchor.style = "text-decoration: none; color: black";
       anchor.setAttribute('href', '/product/search?search=' + el);

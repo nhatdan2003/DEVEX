@@ -22,17 +22,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @Component
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
-	
+
 	private final UserRoleService userRoleService;
 
-    @Autowired
-    public CustomAuthorizationFilter(UserRoleService userRoleService) {
-        this.userRoleService = userRoleService;
-    }
-	
+	@Autowired
+	public CustomAuthorizationFilter(UserRoleService userRoleService) {
+		this.userRoleService = userRoleService;
+	}
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -41,12 +40,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
 		if (authentication != null && authentication.isAuthenticated()) {
 			String username = authentication.getName();
-//			userRoleService.findAllByUserName(username)
+			// userRoleService.findAllByUserName(username)
 			List<UserRole> list = userRoleService.findAllByUserName(username);
-			if(list != null) {
-				
+			if (list != null) {
+
 				for (UserRole roleUser : list) {
-					
+
 					List<GrantedAuthority> updatedAuthorities = new ArrayList<>(authentication.getAuthorities());
 					updatedAuthorities.add(new SimpleGrantedAuthority(roleUser.getRole().getId()));
 
@@ -57,12 +56,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
 				}
 			}
-			
+
 		}
 
 		filterChain.doFilter(request, response);
 	}
 }
-
-
-

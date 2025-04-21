@@ -131,19 +131,10 @@ public class PaypalServiceImpl implements PaypalService {
 			items.add(item);
 		}
 
-//        Details details = new Details();
-//        details.setShipping(decimalFormat.format(vndAmount));
-//        details.setSubtotal(decimalFormat.format(vndAmount));
-//        details.setTax(decimalFormat.format(vndAmount));
 
 		Amount amount = new Amount();
-//        double formattedTotalAmount = listItemOrder.stream().mapToDouble(item -> item.getQuantity() * item.getPrice()).sum();
-//        double vndAmount = listItemOrder.stream().mapToDouble(item -> item.getQuantity() * item.getPrice()).sum();
 		System.out.println(vndAmount);
-//        double normalNumber = Double.parseDouble(formattedTotalAmount);
 		amount.setCurrency("USD");
-//		amount.setDetails(details);
-//		String formattedAmount = decimalFormat.format(vndAmount);
 		amount.setTotal(decimalFormat.format(vndAmount));
 		System.out.println(amount.getTotal());
         

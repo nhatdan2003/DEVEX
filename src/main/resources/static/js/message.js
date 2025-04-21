@@ -1,6 +1,6 @@
-let host_mess = "http://localhost:8888/rest/message";
+let host_mess = "https://devex.io.vn/rest/message";
 //Socket
-const socket = new SockJS('http://localhost:8888/ws');
+const socket = new SockJS('https://devex.io.vn/ws');
 const stompClient = Stomp.over(socket);
 
 

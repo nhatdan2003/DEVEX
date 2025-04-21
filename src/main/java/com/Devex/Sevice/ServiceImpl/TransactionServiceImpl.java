@@ -74,8 +74,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         //Các trường hợp thanh toán
         switch (payment){
-            case "paypal":
-                from = "paypal-"+fromUser;
+            
+            case "ACB":
+                from = "ACB-"+fromUser;
                 break;
             case "vnpay":
                 from ="vnpay-"+fromUser;

@@ -12,7 +12,7 @@
 	<groupId>com.Devex</groupId>
 	<artifactId>DEVEX</artifactId>
 	<version>1.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>DEVEX</name>
 	<description>E-Commerce Exchange By Springboot</description>
 	<properties>
@@ -170,17 +170,7 @@
 			<artifactId>mssql-jdbc</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!--<dependency> 
-            <groupId>mysql</groupId> 
-            <artifactId>mysql-connector-java</artifactId> 
-            <version>8.0.33</version>
-            <scope>runtime</scope> 
-        </dependency>--> 
-        <dependency> 
-            <groupId>org.springframework.boot</groupId> 
-            <artifactId>spring-boot-starter-test</artifactId> 
-            <scope>test</scope> 
-        </dependency> 
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -191,6 +181,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
 		</dependency>
 	</dependencies>
 	<build>

@@ -21,31 +21,28 @@ import com.paypal.base.rest.PayPalRESTException;
 public class PaypalController {
 	@Autowired
 	PaypalService paypalService;
-	
+
 	@Autowired
 	SessionService session;
 	@Autowired
 	MailerServiceImpl mailer;
-	
+
 	@Autowired
 	CustomerService customerService;
-	
+
 	@PostMapping("/paypal-payment")
 	public String authorizePayment(Model model) {
-        List<CartDetailDTo> list = session.get("listItemOrder", null);
-        System.out.println(list.get(0).getPrice());
-        try {
-            String approvalLink = paypalService.authorizePayment(list);
-            session.set("payment", "paypal");
+		List<CartDetailDTo> list = session.get("listItemOrder", null);
+		System.out.println(list.get(0).getPrice());
+		try {
+			String approvalLink = paypalService.authorizePayment(list);
+			session.set("payment", "paypal");
+			return "redirect:" + approvalLink;
 
-            
-            
-            return "redirect:" + approvalLink;
-             
-        } catch (PayPalRESTException ex) {
-            ex.printStackTrace();
-            return "admin/erorr404";
-        }
-		
+		} catch (PayPalRESTException ex) {
+			ex.printStackTrace();
+			return "admin/erorr404";
+		}
+
 	}
 }

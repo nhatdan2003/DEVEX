@@ -28,43 +28,35 @@
     /* CSS cho các nút chuyển trang */
     .button-pagination {
       background-color: #007bff;
-      /* Màu nền */
+
       color: #fff;
-      /* Màu chữ */
+
       border: none;
-      /* Loại bỏ đường viền */
+
       padding: 8px 16px;
-      /* Kích thước nút */
+
       margin: 4px;
-      /* Khoảng cách giữa các nút */
+
       cursor: pointer;
-      /* Con trỏ thành hình tay khi di chuột qua nút */
+
       border-radius: 4px;
-      /* Bo tròn góc */
     }
 
-    /* CSS khi di chuột qua nút */
     .button-pagination:hover {
       background-color: #0056b3;
-      /* Màu nền thay đổi khi di chuột qua */
     }
 
-    /* CSS cho nút bị vô hiệu hóa (disabled) */
     .button-pagination:disabled {
       background-color: #ccc;
-      /* Màu nền xám */
       cursor: not-allowed;
-      /* Con trỏ không cho phép */
     }
 
     .filter_top {
       display: flex;
-      /* justify-content: baseline; */
       align-items: baseline;
     }
 
     #provinces {
-      /* border: none; */
       border-radius: 2px;
       height: 1.875rem;
       width: 100%;
@@ -76,11 +68,9 @@
     select::-webkit-select-on-focus {
       border: 0;
       outline: none;
-      /* Đặt màu nền trong suốt */
       background-color: transparent;
     }
 
-    /* Loại bỏ viền khi tương tác */
     select:focus {
       border: none;
       outline: none;
@@ -106,11 +96,7 @@
   <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
 
   <main>
-    <!-- <img
-        src="path-to-your-loading-gif.gif"
-        ng-show="search.isLoading"
-        alt="Loading..."
-      /> -->
+
     <div id="spinner" class="text-center">
       <div class="spinner_item">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -138,28 +124,28 @@
           </div>
         </div>
         <div class="container container_main_middle pb-2 bg-white">
-          <div class="row filter_top">
-            <div class="col-md-2 col-3 filter-textprodcut" style="height: 20px">
+          <div class="row filter_top ">
+            <div class="col-lg-2 col-3 d-none d-lg-block filter-textprodcut" style="height: 20px">
               <a href="" style="font-weight: bold; font-size: 20px">Lọc </a>
             </div>
-            <div class="col-md-3 col-3 filter-textprodcut row optionbox" style="height: 20px; color: #2a62b9">
-              <select class="form-select form-select-sm" id="sortPrice" name="sortPrice"
+            <div class="col-md-3 col-3 ms-1 row optionbox mt-2  " style="border-right: 2px solid black;" >
+              <select class="form-select form-select-sm h-75" id="sortPrice" name="sortPrice"
                 ng-click="search.SortProductByPrice(this)" aria-label=".form-select-sm example">
                 <option class="text-dark" selected>Giá (Mặc định)</option>
                 <option class="text-dark" value="ASC">Tăng dần</option>
                 <option class="text-dark" value="DESC">Giảm dần</option>
               </select>
             </div>
-            <div class="col filter-textprodcut">
+            <div class="col-4  col-lg-3 d-flex justify-content-center" style="border-right: 2px solid black;">
               <input type="radio" class="btn-check" name="options-outlined" id="ASC_soldCount"
                 ng-model="selectedSoldCount" value="BAN_CHAY"
                 ng-click="search.SortProductBySoldCount(selectedSoldCount)" />
-              <label class="btn btn-outline-danger" for="ASC_soldCount">BÁN CHẠY</label>
+              <label class="btn  p-0" for="ASC_soldCount">BÁN CHẠY</label>
             </div>
-            <div class="col filter-textprodcut">
+            <div class="col-5 col-lg-4 d-flex justify-content-center">
               <input type="radio" class="btn-check" name="options-outlined" id="Mall" value="DEVEX_MALL"
                 ng-model="selectedMall" ng-click="search.filterProductByMall(selectedMall)" autocomplete="off" />
-              <label class="btn btn-outline-success" for="Mall">DEVEX MALL</label>
+              <label class="btn  p-0" for="Mall">DEVEX MALL</label>
             </div>
           </div>
         </div>
@@ -167,7 +153,7 @@
       <div id="container_main" class="container container_main_middle d-flex mt-3 pb-5">
         <!--left-->
 
-        <div class="col-3 px-4 h-100">
+        <div class="col-3 px-4 h-100 d-none d-lg-block">
           <div class="row mt-3">
             <span>
               <i class="fa-solid me-2 fa-filter"></i> BỘ LỌC TÌM KIẾM</span>
@@ -258,7 +244,7 @@
         </div>
 
         <!--right-->
-        <div class="col-9 bg-white" id="content_right">
+        <div class="col-12 col-lg-9 bg-white" id="content_right">
           <div class="row d-flex px-3 view_product">
             <div class="col-6 col-md-4 col-lg-3 col-xl-3 pt-2" ng-repeat="item in search.pagedItems">
               <a href="/details/{{item.id}}" class="text-decoration-none">

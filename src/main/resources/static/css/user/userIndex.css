@@ -238,6 +238,14 @@ button {
 	/* font-size: 4rem; */
 	color: black;
 }
+@media(max-width: 768px) {
+    .slick-arrow{
+		display: none !important;
+	}
+	.slick-arrow i {
+ 	 display: none;
+	}
+}
 
 .slick-prev {
 	left: 0.75rem;

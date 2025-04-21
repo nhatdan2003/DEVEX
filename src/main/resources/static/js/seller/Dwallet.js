@@ -11,7 +11,7 @@ app.controller("Dwallet_Controller", function ($scope, $http) {
           console.log(this.loadDWallet.user.fullname);
         })
         .catch(function (err) {
-          console.error(err); // xử lý lỗi khi gọi API
+          console.error(err); 
         });
     },
     loadHistoryTransaction: function () {
@@ -24,7 +24,7 @@ app.controller("Dwallet_Controller", function ($scope, $http) {
           this.fillToTable(this.historyTransaction);
         })
         .catch(function (err) {
-          console.error(err); // xử lý lỗi khi gọi API
+          console.error(err); 
         });
     },
     fillToTable: function (data) {
