@@ -922,7 +922,6 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       $window.location.href = "/cart/detail-order";
     }
   };
-
   //*BEGIN FLASHSALE
   $scope.dataTime = [];
   $scope.getTimeFlashSale = function () {
