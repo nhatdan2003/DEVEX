@@ -1,4 +1,4 @@
-let host = "http://localhost:8888/rest/admin/voucher";
+let host = "https://devex.io.vn/rest/admin/voucher";
 const app = angular.module("app", []);
 
 app.controller("voucher-ctrl", function ($scope, $http, $location, $window) {

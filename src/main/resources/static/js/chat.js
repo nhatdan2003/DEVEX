@@ -30,7 +30,7 @@
 // });
 
 // // app.js
-// const socket = new SockJS('http://localhost:8888/ws');
+// const socket = new SockJS('https://devex.io.vn/ws');
 // const stompClient = Stomp.over(socket);
 
 // stompClient.connect({}, () => {

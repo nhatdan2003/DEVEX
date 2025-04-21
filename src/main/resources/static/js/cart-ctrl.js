@@ -1,4 +1,4 @@
-let host = "http://localhost:8888/rest";
+let host = "https://devex.io.vn/rest";
 const app = angular.module("app", ["ngRoute"]);
 
 app.config([
@@ -9,6 +9,7 @@ app.config([
 ]);
 
 app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
+
   //format tiền cho đẹp
   $scope.formatMoney = function (x) {
     var money = "";
@@ -39,17 +40,17 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
     if (action === "increase") {
       if (item.quantity == item.quantityInventory) {
         $scope.message = "Số lượng tồn kho không khả dụng!";
-				$('#ModalOrderMessage').modal('show');
+        $('#ModalOrderMessage').modal('show');
         return;
       }
       if (item.idFlashSale !== null) {
-        if(item.quantity == item.quantitySale) {
+        if (item.quantity == item.quantitySale) {
           $scope.message = "Số lượng khả dụng Flash Sale không đủ!";
-		  		$('#ModalOrderMessage').modal('show');
+          $('#ModalOrderMessage').modal('show');
           item.price = item.cost;
-        }else if(item.quantity == item.quantitySaleLimit) {
+        } else if (item.quantity == item.quantitySaleLimit) {
           $scope.message = "Sản phẩm Flash Sale này chỉ được đặt giới hạn " + item.quantitySaleLimit + "!";
-		  		$('#ModalOrderMessage').modal('show');
+          $('#ModalOrderMessage').modal('show');
           item.price = item.cost;
         }
       }
@@ -61,13 +62,13 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
         item.quantity--;
       }
       if (item.idFlashSale !== null) {
-        if(item.quantity == item.quantitySale) {
+        if (item.quantity == item.quantitySale) {
           item.price = item.priceSale;
-        }else if(item.quantity == item.quantitySaleLimit) {
+        } else if (item.quantity == item.quantitySaleLimit) {
           item.price = item.priceSale;
         }
       }
-      
+
     }
 
     // Gọi hàm changeQty để cập nhật giá trị trong giỏ hàng và cơ sở dữ liệu
@@ -110,9 +111,9 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       console.log(this.itemDetail);
       $("#showDetail").modal("show");
     },
-    
 
-     groupVoucherApplied() {
+
+    groupVoucherApplied() {
       this.itemsApplied = this.items.filter((voucher) =>
         $cart.isItemInMyVoucherApplied(voucher)
       );
@@ -156,6 +157,7 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
     myVoucherManage: [],
     prodVoucher: {},
     shopSelectedOpenVoucher: "",
+
 
     // voucher trong kho quản lý khách hàng
 
@@ -264,10 +266,10 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       if (!this.isItemInMyVoucher(item)) {
         return true;
       }
-      if($cart.amountDetail < item.minPrice) {
-        return true  
+      if ($cart.amountDetail < item.minPrice) {
+        return true
       }
-	    if (this.isShipVoucherApplied()) {
+      if (this.isShipVoucherApplied()) {
         return true;
       }
       if (this.isItemInVoucherClicked(item)) {
@@ -277,23 +279,23 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       }
     },
 
-	//	check hiển thị nút sử dụng voucher Devex
+    //	check hiển thị nút sử dụng voucher Devex
     isShowApplyButtonDevex(item) {
-		if (!this.isItemInMyVoucher(item)) {
-		  return true;
-		}
-    if(this.amountDetail < item.minPrice) {
-      return true  
-    }
-		if (this.isDevexVoucherApplied()) {
-			return true;
-		}
-		if (this.isItemInVoucherClicked(item)) {
-		  return true;
-		} else {
-		  return false;
-		}
-	  },
+      if (!this.isItemInMyVoucher(item)) {
+        return true;
+      }
+      if (this.amountDetail < item.minPrice) {
+        return true
+      }
+      if (this.isDevexVoucherApplied()) {
+        return true;
+      }
+      if (this.isItemInVoucherClicked(item)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
 
     //	check hiển thị nút sử dụng voucher
     isShowApplyButtonShop(item) {
@@ -319,10 +321,10 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
 
     //check sản phẩm đó có được áp dụng voucher hay không
     isItemInProdVoucher(item) {
-		let flag = false; // Tạo một biến để lưu trạng thái kiểm tra
+      let flag = false; // Tạo một biến để lưu trạng thái kiểm tra
       this.prodVoucher[item.creator.username].forEach(function (i) {
         $cart.shopGroupsOrder[item.creator.username].forEach(function (prod) {
-          if (i.voucher.id === item.id && prod.idProduct === i.product.id && prod.price >= item.minPrice ) {
+          if (i.voucher.id === item.id && prod.idProduct === i.product.id && prod.price >= item.minPrice) {
             flag = true;
           }
         });
@@ -344,19 +346,19 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       );
     },
 
-	//check mỗi shop chỉ đc app 1 voucher
+    //check mỗi shop chỉ đc app 1 voucher
     isDevexVoucherApplied() {
-		return this.voucherApply.some(
-		  (voucher) => voucher.categoryVoucher.id === 100001
-		);
-	  },
+      return this.voucherApply.some(
+        (voucher) => voucher.categoryVoucher.id === 100001
+      );
+    },
 
-	  //check mỗi shop chỉ đc app 1 voucher
-	  isShipVoucherApplied() {
-		return this.voucherApply.some(
-		  (voucher) => voucher.categoryVoucher.id === 100002
-		);
-	  },
+    //check mỗi shop chỉ đc app 1 voucher
+    isShipVoucherApplied() {
+      return this.voucherApply.some(
+        (voucher) => voucher.categoryVoucher.id === 100002
+      );
+    },
 
     // load voucher
     loadVoucher() {
@@ -617,9 +619,9 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
     },
 
     checkPrice(item) {
-      if(item.idFlashSale !== null && item.quantity <= item.quantitySale && item.quantity <= item.quantitySaleLimit) {
+      if (item.idFlashSale !== null && item.quantity <= item.quantitySale && item.quantity <= item.quantitySaleLimit) {
         return item.price;
-      }else {
+      } else {
         item.price = item.cost;
         return item.cost;
       }
@@ -685,14 +687,14 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
       return this.shopGroupsOrder[idShop].length;
     },
 
-    
+
 
     amountItemShop(idShop) {
       // tính tiền shop
       let totalShop = this.shopGroupsOrder[idShop].map((item) => this.amt_of(item)).reduce((total, amt) => (total += amt), 0);
-      if(this.isShopVoucherApplied(idShop)) {
+      if (this.isShopVoucherApplied(idShop)) {
         var voucherProd = this.voucherApply.find((item) => item.categoryVoucher.id == 100004);
-        if(voucherProd != null) {
+        if (voucherProd != null) {
           let price = 0;
           this.prodVoucher[idShop].forEach(function (i) {
             $cart.shopGroupsOrder[idShop].forEach(function (prod) {
@@ -702,12 +704,12 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
             });
           });
           //xử lí giá giảm
-          if(voucherProd.discount < 1) {
+          if (voucherProd.discount < 1) {
             totalShop -= (price * voucherProd.discount);
-            
-          }else {
+
+          } else {
             price -= voucherProd.discount;
-            if(price <= 0) {
+            if (price <= 0) {
               price = 0;
             }
             totalShop -= price;
@@ -715,51 +717,51 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
         }
 
         var voucherShop = this.voucherApply.find((item) => item.categoryVoucher.id == 100003);
-        if(voucherShop != null) {
-          if(voucherShop.discount < 1) {
+        if (voucherShop != null) {
+          if (voucherShop.discount < 1) {
             totalShop -= (totalShop * voucherShop.discount);
-          }else {
+          } else {
             totalShop -= voucherShop.discount;
-            if(totalShop <= 0) {
+            if (totalShop <= 0) {
               totalShop = 0;
             }
           }
         }
-        
+
       }
-      
+
       return totalShop;
     },
-    
+
 
     get amountShip() {
       // tính tiền ship
       const numberOfShops = Object.keys($cart.shopGroupsOrder).length;
       this.moneyShip = 15000 * numberOfShops;
-      if(this.isShipVoucherApplied()) {
+      if (this.isShipVoucherApplied()) {
         var voucher = this.voucherApply.find((item) => item.categoryVoucher.id == 100002);
-        if(voucher.discount < 1) {
+        if (voucher.discount < 1) {
           this.moneyShip -= (this.moneyShip * voucher.discount);
-        }else {
+        } else {
           this.moneyShip -= voucher.discount;
         }
       }
-      
+
       return this.moneyShip;
     },
 
     get amountPay() {
       // tính tiền phải thanh toán
       let total = this.amountDetail;
-      if(this.isDevexVoucherApplied()) {
+      if (this.isDevexVoucherApplied()) {
         var voucher = this.voucherApply.find((item) => item.categoryVoucher.id == 100001);
-        if(voucher.discount < 1) {
+        if (voucher.discount < 1) {
           total -= (total * voucher.discount);
-        }else {
+        } else {
           total -= voucher.discount;
         }
       }
-      
+
       return this.amountShip + total;
     },
 
@@ -921,61 +923,6 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
     }
   };
 
-  $scope.payment = "cash";
-
-  //	$scope.checkPayment = function() {
-  //		var payment = document.getElementsByName("pay").value;
-  //		if(payment === "paypal") {
-  //			$scope.payment = "paypal";
-  //		}else if(payment === "vnpay") {
-  //			$scope.payment = "vnpay";
-  //		}else {
-  //			$scope.payment = "cash";
-  //		}
-  //	}
-
-  $scope.purchase = function () {
-    // Thực hiện đặt hàng
-    const requestDataDTO = {
-      itemsOrderSession: $cart.itemsOrderSession,
-
-      voucherApply: $cart.voucherApply,
-      total: $cart.amountPay(),
-    };
-    var url = `${host}/cart/order`;
-    $http
-      .post(url, requestDataDTO)
-      .then((resp) => {
-        //				alert("Đặt hàng thành công!");
-        this.message = "Đặt hàng thành công!";
-        $("#ModalOrderMessage").modal("show");
-
-        console.log(requestDataDTO);
-        $cart.selectAll = true;
-        $cart.toggleSelectAll();
-        $cart.loadProductCart();
-        //				sessionStorage.removeItem('itemsOrder');
-        var form = document.createElement("form");
-        form.method = "POST";
-        console.log($scope.payment);
-        if ($scope.payment === "paypal") {
-          form.action = "/paypal-payment"; // Thay thế bằng URL tương ứng
-        } else if ($scope.payment === "vnpay") {
-          form.action = "/submitOrder"; // Thay thế bằng URL tương ứng
-        } else {
-          form.action = "/cash-payment"; // Thay thế bằng URL tương ứng
-        }
-        // Thêm form vào trang web và gửi POST request
-        document.body.appendChild(form);
-        form.submit();
-      })
-      .catch((error) => {
-        this.message = "Lỗi khi đặt hàng!";
-        $("#ModalOrderMessage").modal("show");
-        console.log(error);
-      });
-  };
-
   //*BEGIN FLASHSALE
   $scope.dataTime = [];
   $scope.getTimeFlashSale = function () {
@@ -1038,68 +985,212 @@ app.controller("cart-ctrl", function ($scope, $http, $location, $window) {
   $scope.getTimeFlashSale();
   //!END FLASHSALE
 
-	//	$scope.checkPayment = function() {
-	//		var payment = document.getElementsByName("pay").value;
-	//		if(payment === "paypal") {
-	//			$scope.payment = "paypal";
-	//		}else if(payment === "vnpay") {
-	//			$scope.payment = "vnpay";
-	//		}else {
-	//			$scope.payment = "cash";
-	//		}
-	//	}
-  //*BEGIN THANH TOAN
-	$scope.payment = "cash";
-	$scope.purchase = function() {
-		// Thực hiện đặt hàng
-		const requestDataDTO = {
-			itemsOrderSession: $cart.itemsOrderSession,
-          voucherApply: $cart.voucherApply,
-      total: $cart.amountPay,
-		};
-		var url = `${host}/cart/order`;
-		$http
-			.post(url, requestDataDTO)
-			.then((resp) => {
-				//				alert("Đặt hàng thành công!");
-				this.message = "Đặt hàng thành công!";
-				$('#ModalOrderMessage').modal('show');
-				console.log(resp);
-				$cart.selectAll = true;
-				$cart.toggleSelectAll();
-				$cart.loadProductCart();
-//				sessionStorage.removeItem('itemsOrder');
-				var form = document.createElement("form");
-	            form.method = "POST";
-				console.log($scope.payment);
-	            if ($scope.payment === "paypal") {
-	                form.action = "/paypal-payment"; // Thay thế bằng URL tương ứng
-	            } else if ($scope.payment === "vnpay") {
-	                form.action = "/submitOrder"; // Thay thế bằng URL tương ứng
-	            } else {
-	                form.action = "/cash-payment"; // Thay thế bằng URL tương ứng
-	            }
-	            // Thêm form vào trang web và gửi POST request
-         	    document.body.appendChild(form);
-        	    form.submit();
-			})
-			.catch((error) => {
-				this.message = "Lỗi khi đặt hàng!";
-				$('#ModalOrderMessage').modal('show');
-				console.log(error);
-			});
-	};
-//!END THANH TOAN
 
-	$scope.info = [];
-	$scope.fillAmountOrderAndFollow = function(){
-		$http.get('/api/user/info').then(resp => {
-			$scope.info = resp.data;
-		  }).catch(function (err) {
-			console.error(err); 
-		  });
-	};
-	
-	$scope.fillAmountOrderAndFollow();
-	
+
+  $scope.payment = "cash";
+  $scope.publicKey_sender = ""; // public key người dùng
+  $scope.publicKey_recipient = "A5jsvxmGpe2sj3G1aBv6iiF5jNQ9nfujTJhzSuJ74ozd"; // public key người nhận
+  $scope.exchangeRateSOLUSD = 0; // giá trị hiện tại của Sol (USD)
+  $scope.exchangeRateUSDVND = 0; // giá trị hiện tại của Sol (USD)
+  $scope.amountPayBySol = 0; // số sol cần thanh toán 
+  $scope.wallet = [];
+  $scope.statusPayment = false; //
+  // AUTO Connect to Wallet Phantom //
+  (async () => {
+    await window.phantom.solana.connect();
+    $scope.publicKey_sender = await window.phantom.solana.publicKey.toBase58();
+    console.log($scope.publicKey_sender);
+  })();
+  //=== Get Price Solana =================
+  $scope.getSolanaPrice = () => {
+    $http.get('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd')
+      .then(function (response) {
+        // Xử lý phản hồi thành công
+        $scope.exchangeRateSOLUSD = response.data.solana.usd; // Lấy giá trị của SOL trong USD
+        // console.log(this.exchangeRateSOLUSD)
+        // console.log("exchangeRateSOLUSD: " + exchangeRateSOLUSD);
+      })
+      .catch(function (error) {
+        // Xử lý phản hồi lỗi
+        console.error('Đã xảy ra lỗi khi lấy giá của Solana:', error.message);
+      });
+  };
+  //=== Get Price USD to VND=================
+  $scope.getUSD_toVND = () => {
+    $http.get('https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=vnd')
+      .then(function (response) {
+        // Xử lý phản hồi thành công
+        $scope.exchangeRateUSDVND = response.data.usd.vnd;
+        // console.log("USD_toVND: " + exchangeRateUSDVND);
+      })
+      .catch(function (error) {
+        // Xử lý phản hồi lỗi
+        console.error('Đã xảy ra lỗi khi lấy giá của USD:', error.message);
+      });
+  };
+  $scope.getSolanaPrice();
+  $scope.getUSD_toVND();
+
+  // $scope.toTransactions = (encodedTransaction) =>
+  //   solanaWeb3.Transaction.from(Uint8Array.from(atob(encodedTransaction), c => c.charCodeAt(0)));
+  // console.log($scope.toTransactions());
+  // console.log(solanaWeb3)
+  // == Test end codeTransactions == 
+  // Hàm kiểm tra tính hợp lệ của chuỗi Base64
+  function isBase64(str) {
+    try {
+      return btoa(atob(str)) === str;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // // Hàm giải mã chuỗi Base64 thành đối tượng giao dịch Solana
+  // $scope.toTransactions = (encodedTransaction) => {
+  //   // Kiểm tra tính hợp lệ của chuỗi đầu vào
+  //   // if (!isBase64(encodedTransaction)) {
+  //   //   throw new Error('Invalid Base64 string');
+  //   // }
+
+  //   // Giải mã chuỗi Base64 thành mảng bytes
+  //   const decodedBytes = Uint8Array.from(atob(encodedTransaction), c => c.charCodeAt(0));
+  //   console.log("decodeTransactions: " + decodedBytes);
+  //   // Tạo đối tượng giao dịch Solana từ mảng bytes
+  //   return solanaWeb3.Transaction.from(decodedBytes);
+  // };
+  // end test 
+
+
+  // $scope.sendSol = async (amount, publicKey) => {
+
+  //   var myHeaders = new Headers();
+  //   myHeaders.append("x-api-key", "-h5nBPVh3pIsuGRE"); // lấy API bên Shyft để thực hiện viẹc mint NFT
+  //   myHeaders.append("Content-Type", "application/json");
+
+  //   var raw = JSON.stringify(
+  //     {
+  //       "network": "devnet",
+  //       "from_address": publicKey, // lấy từ windown.phantom để trả về id wallet
+  //       "to_address": $scope.publicKey_recipient, // chuyển đến mặc định là tài khoản admin
+  //       "amount": amount,
+  //     }
+  //   );
+
+  //   var requestOptions = {
+  //     method: 'POST',
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: 'follow',
+  //   };
+
+  //   fetch("https://api.shyft.to/sol/v1/wallet/send_sol", requestOptions)
+  //     .then(async response => {
+  //       // alert("Thanh toán")
+  //       let res = await response.json();
+  //       $scope.statusPayment = res.success;
+  //       console.log(res);
+  //       console.log($scope.statusPayment);
+  //       console.log("endcodeTransaction: " + res.result.encoded_transaction);
+  //       // Giải mã encoded_transaction thành mảng byte
+  //       const encodedTransaction = res.result.encoded_transaction;
+  //       if (!isBase64(encodedTransaction)) {
+  //         throw new Error('Invalid Base64 string');
+  //       }
+  //       const byteArray = Uint8Array.from(atob(encodedTransaction), c => c.charCodeAt(0));
+  //       // Tạo đối tượng giao dịch Solana từ mảng byte
+  //       const transaction = solanaWeb3.Transaction.from(byteArray);
+  //       const connection = new solanaWeb3.Connection("https://api.devnet.solana.com");
+  //       // Lấy recent blockhash từ mạng Solana
+  //       const recentBlockhash = await connection.getRecentBlockhash();
+  //       const signedTransaction = await window.phantom.solana.signTransaction(transaction);
+  //       const signature = await connection.sendRawTransaction(signedTransaction.serialize());
+  //       // const signature = await connection.getSignatureStatuses(signedTransaction);
+  //       // if ($scope.statusPayment) {
+  //       //   sessionStorage.setItem('payment', 'sol');
+  //       //   this.message = "Đặt hàng thành công!";
+  //       //   window.location.href = 'https://devex.io.vn/order/success';
+
+  //       // } else {
+  //       //   alert(" Orders failed !!!")
+  //       // }
+
+  //     })
+  //     .catch(error => console.log('error', error));
+  // };
+
+
+  //*BEGIN THANH TOAN
+  $scope.payment = "cash";
+  $scope.purchase = function () {
+    // Thực hiện đặt hàng
+    const requestDataDTO = {
+      itemsOrderSession: $cart.itemsOrderSession,
+      voucherApply: $cart.voucherApply,
+      total: $cart.amountPay,
+    };
+    var url = `${host}/cart/order`;
+    $http
+      .post(url, requestDataDTO)
+      .then((resp) => {
+        //				alert("Đặt hàng thành công!");
+        this.message = "Đặt hàng thành công!";
+        $('#ModalOrderMessage').modal('show');
+        console.log(resp);
+        $cart.selectAll = true;
+        $cart.toggleSelectAll();
+        $cart.loadProductCart();
+        //				sessionStorage.removeItem('itemsOrder');
+        var form = document.createElement("form");
+        form.method = "POST";
+        console.log($scope.payment);
+        // if ($scope.payment === "sol") {
+        //   alert("Payment by Solana")
+        //   console.log("Số tiền cần thanh toán: " + ($cart.amountPay / $scope.exchangeRateUSDVND).toFixed(2));
+        //   /** Gọi phương thức thang toán bằng SOL ở đây */
+        //   $scope.amountPayBySol = Number(($cart.amountPay / $scope.exchangeRateUSDVND / $scope.exchangeRateSOLUSD).toFixed(3));
+        //   $scope.sendSol($scope.amountPayBySol, $scope.publicKey_sender);
+        //   from.action = "#";
+
+        // } else if ($scope.payment === "paypal") {
+        //   form.action = "/paypal-payment"; // Thay thế bằng URL tương ứng
+        // } else if ($scope.payment === "vnpay") {
+        //   form.action = "/submitOrder"; // Thay thế bằng URL tương ứng
+        // } else {
+        //   form.action = "/cash-payment"; // Thay thế bằng URL tương ứng
+        // }
+        if ($scope.payment === "ACB") {
+          // alert("acb")
+          form.action = "/acb-payment";
+        } else if ($scope.payment === "paypal") {
+          form.action = "/paypal-payment"; // Thay thế bằng URL tương ứng
+        } else if ($scope.payment === "vnpay") {
+          form.action = "/submitOrder"; // Thay thế bằng URL tương ứng
+        } else {
+          form.action = "/cash-payment"; // Thay thế bằng URL tương ứng
+        }
+        // Thêm form vào trang web và gửi POST request
+        document.body.appendChild(form);
+        form.submit();
+      })
+      .catch((error) => {
+        this.message = "Lỗi khi đặt hàng!";
+        $('#ModalOrderMessage').modal('show');
+        console.log(error);
+      });
+  };
+  //!END THANH TOAN
+
+  $scope.info = [];
+  $scope.fillAmountOrderAndFollow = function () {
+    $http.get('/api/user/info').then(resp => {
+      $scope.info = resp.data;
+    }).catch(function (err) {
+      console.error(err);
+    });
+  };
+
+
+
+  $scope.fillAmountOrderAndFollow();
+
 });

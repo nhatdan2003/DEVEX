@@ -143,9 +143,6 @@ app.controller("search-ctrl", function ($scope, $http, $window, $timeout) {
         this.currentPage = 1;
         this.updatePagedItems(); // Cập nhật phân trang sau khi sắp xếp
 
-        // first.addEventListener('click', function () {
-        //   this.firstPage();
-        // });
       }
     },
 

@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # Dịch vụ SQL Server
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-container
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Ndan2910
+    ports:
+      - "1444:1433"  # ánh xạ cổng SQL Server từ container ra host
+    networks:
+      - devex-network
+
+  # Dịch vụ Spring Boot ứng dụng
+  springboot:
+    image: ndan/devex:1.0  # Tên image ứng dụng Spring Boot từ Docker Hub
+    container_name: springboot-app
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://sqlserver:1444;databaseName=DEVEX;encrypt=true;trustServerCertificate=true
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=Ndan2910
+    ports:
+      - "8080:8080"  # ánh xạ cổng của ứng dụng
+    depends_on:
+      - sqlserver
+    networks:
+      - devex-network
+
+networks:
+  devex-network:
+    driver: bridge

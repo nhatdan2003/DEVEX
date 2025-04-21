@@ -52,11 +52,10 @@ public class CartAPIController {
 
 	@Autowired
 	private SessionService sessionService;
-	
+
 	@Autowired
 	private ProductService productService;
-	
-	
+
 	@Autowired
 	private FlashSalesService flashSalesService;
 
@@ -88,55 +87,58 @@ public class CartAPIController {
 		List<CartDetailDTo> cartDetails = new ArrayList<>();
 		if (user != null) {
 			customer = customerService.findById(user.getUsername()).orElse(null);
-			if(customer != null) {
+			if (customer != null) {
 				cartDetails = cart.findAllCartDTO(customer.getUsername());
 			}
-			
+
 		}
 		List<FlashSale> fs = flashSalesService.findAll();
 		LocalDateTime currentTime = LocalDateTime.now();
-		for (CartDetailDTo cartDetailDTo : cartDetails) {	
+		for (CartDetailDTo cartDetailDTo : cartDetails) {
 			if (fs != null) {
 				for (FlashSale flashSale : fs) {
 					LocalDateTime firstTime = flashSale.getFlashSaleTime().getFirstTime();
 					LocalDateTime lastTime = flashSale.getFlashSaleTime().getLastTime();
 					if (!(currentTime.isAfter(firstTime) && currentTime.isBefore(lastTime))) {
 						cartDetailDTo.setIdFlashSale(null);
-					} 
-					
+					}
+
 				}
 			}
-			
-			
+
 		}
 
-//		Customer customer = customerService.findById(user.getUsername()).get();
-//		List<CartDetailDTo> cartDetails = cart.findAllCartDTO(customer.getUsername());
-//		Map<String, CartDetailDTo> cartDetailMap = new HashMap<>();
-//
-//		for (CartDetailDTo cartDetail : cartDetails) {
-//			String uniqueKey = cartDetail.getImg() + "-" + cartDetail.getColor() + "-" + cartDetail.getSize();
-//			if (cartDetailMap.containsKey(uniqueKey)) {
-//				CartDetailDTo existingCartDetail = cartDetailMap.get(uniqueKey);
-//				existingCartDetail.setQuantity((existingCartDetail.getQuantity() + cartDetail.getQuantity()));
-//			} else {
-//				cartDetailMap.put(uniqueKey, cartDetail);
-//			}
-//		}
-//		for (CartDetailDTo cartDetail : cartDetailMap.values()) {
-//			int totalQuantity = cartDetail.getQuantity();
-//			if (totalQuantity == 2 ||totalQuantity == 3||totalQuantity == 4 ||totalQuantity == 5  ) {
-//				int newQuantity = 1;
-//				cartDetail.setQuantity(newQuantity);
-//
-//			} else {
-//				int newQuantity = (int) Math.sqrt(totalQuantity);
-//				cartDetail.setQuantity(newQuantity);
-//			}
-//			// Lấy căn bậc hai của tổng số lượng
-//
-//		}
-//		return new ArrayList<>(cartDetailMap.values());
+		// Customer customer = customerService.findById(user.getUsername()).get();
+		// List<CartDetailDTo> cartDetails =
+		// cart.findAllCartDTO(customer.getUsername());
+		// Map<String, CartDetailDTo> cartDetailMap = new HashMap<>();
+		//
+		// for (CartDetailDTo cartDetail : cartDetails) {
+		// String uniqueKey = cartDetail.getImg() + "-" + cartDetail.getColor() + "-" +
+		// cartDetail.getSize();
+		// if (cartDetailMap.containsKey(uniqueKey)) {
+		// CartDetailDTo existingCartDetail = cartDetailMap.get(uniqueKey);
+		// existingCartDetail.setQuantity((existingCartDetail.getQuantity() +
+		// cartDetail.getQuantity()));
+		// } else {
+		// cartDetailMap.put(uniqueKey, cartDetail);
+		// }
+		// }
+		// for (CartDetailDTo cartDetail : cartDetailMap.values()) {
+		// int totalQuantity = cartDetail.getQuantity();
+		// if (totalQuantity == 2 ||totalQuantity == 3||totalQuantity == 4
+		// ||totalQuantity == 5 ) {
+		// int newQuantity = 1;
+		// cartDetail.setQuantity(newQuantity);
+		//
+		// } else {
+		// int newQuantity = (int) Math.sqrt(totalQuantity);
+		// cartDetail.setQuantity(newQuantity);
+		// }
+		// // Lấy căn bậc hai của tổng số lượng
+		//
+		// }
+		// return new ArrayList<>(cartDetailMap.values());
 
 		return cartDetails;
 	}
@@ -200,72 +202,77 @@ public class CartAPIController {
 		return ResponseEntity.ok().build();
 	}
 
-//	@PostMapping("/rest/cart/order-true")
-//	public ResponseEntity<Void> order(@RequestBody List<CartDetailDTo> listOrder) {
-////		Customer user = sessionService.get("user");
-//		User user = sessionService.get("user");
-//		Customer customer = null;
-//		if (user != null) {
-//			customer = customerService.findById(user.getUsername()).get();
-//		}
-////		Customer customer = customerService.findById(user.getUsername()).get();
-//		Order order = new Order();
-//		order.setCreatedDay(new Date());
-//		System.out.println(new Date());
-//		order.setNote("Đóng gói kĩ và giao vào giờ hành chính");
-//		order.setAddress(customer.getAddress());
-//		order.setPhone(customer.getPhoneAddress());
-//		order.setPriceDiscount(0.0);
-//		order.setCustomerOrder(customer);
-//		order.setOrderStatus(orderStatusService.findById(1001).get());
-//		order.setPayment(paymentService.findById(1001).get());
-//		order.setTotal(listOrder.stream().mapToDouble(item -> item.getQuantity() * item.getPrice()).sum());
-//		orderService.save(order);
-//
-//		for (CartDetailDTo item : listOrder) {
-//			OrderDetails orderDetails = new OrderDetails();
-//			Order orders = orderService.findLatestOrder();
-//			orderDetails.setOrder(orders);
-//			orderDetails.setPrice(item.getPrice());
-//			CartDetail cartDetail = cart.getById(item.getId());
-//			int id = cartDetail.getProductCart().getId();
-//			ProductVariant prod = productVariantService.findById(id).get();
-//			orderDetails.setProductVariant(prod);
-//			orderDetails.setQuantity(item.getQuantity());
-//			int totalquantity = prod.getQuantity();
-//			int countquantity = totalquantity - item.getQuantity();
-//			productVariantService.updateQuantity(countquantity, prod.getId());
-//			orderDetails.setStatus(orderStatusService.findById(1001).get());
-//			orderDetailService.save(orderDetails);
-//			cart.deleteById(item.getId());
-//		}
-//
-//		return ResponseEntity.ok().build();
-//	}
+	// @PostMapping("/rest/cart/order-true")
+	// public ResponseEntity<Void> order(@RequestBody List<CartDetailDTo> listOrder)
+	// {
+	//// Customer user = sessionService.get("user");
+	// User user = sessionService.get("user");
+	// Customer customer = null;
+	// if (user != null) {
+	// customer = customerService.findById(user.getUsername()).get();
+	// }
+	//// Customer customer = customerService.findById(user.getUsername()).get();
+	// Order order = new Order();
+	// order.setCreatedDay(new Date());
+	// System.out.println(new Date());
+	// order.setNote("Đóng gói kĩ và giao vào giờ hành chính");
+	// order.setAddress(customer.getAddress());
+	// order.setPhone(customer.getPhoneAddress());
+	// order.setPriceDiscount(0.0);
+	// order.setCustomerOrder(customer);
+	// order.setOrderStatus(orderStatusService.findById(1001).get());
+	// order.setPayment(paymentService.findById(1001).get());
+	// order.setTotal(listOrder.stream().mapToDouble(item -> item.getQuantity() *
+	// item.getPrice()).sum());
+	// orderService.save(order);
+	//
+	// for (CartDetailDTo item : listOrder) {
+	// OrderDetails orderDetails = new OrderDetails();
+	// Order orders = orderService.findLatestOrder();
+	// orderDetails.setOrder(orders);
+	// orderDetails.setPrice(item.getPrice());
+	// CartDetail cartDetail = cart.getById(item.getId());
+	// int id = cartDetail.getProductCart().getId();
+	// ProductVariant prod = productVariantService.findById(id).get();
+	// orderDetails.setProductVariant(prod);
+	// orderDetails.setQuantity(item.getQuantity());
+	// int totalquantity = prod.getQuantity();
+	// int countquantity = totalquantity - item.getQuantity();
+	// productVariantService.updateQuantity(countquantity, prod.getId());
+	// orderDetails.setStatus(orderStatusService.findById(1001).get());
+	// orderDetailService.save(orderDetails);
+	// cart.deleteById(item.getId());
+	// }
+	//
+	// return ResponseEntity.ok().build();
+	// }
 
-//	@PostMapping("/rest/cart")
-//	public ResponseEntity<String> createCartDetail(@RequestBody CartDetail cartDetail) {
-//	    CartDetail savedCartDetail = cart.save(cartDetail);
-//	    return ResponseEntity.ok("Cart detail created successfully with ID: " + savedCartDetail.getId());
-//	}
-//	
-//	@PutMapping("/rest/cart/{id}")
-//	public ResponseEntity<String> updateCartDetail(@PathVariable int id, @RequestBody CartDetail updatedCartDetail) {
-//	    Optional<CartDetail> optionalCartDetail = cart.findById(id);
-//
-//	    if (optionalCartDetail.isPresent()) {
-//	        CartDetail existingCartDetail = optionalCartDetail.get();
-//	        // Cập nhật thông tin của existingCartDetail từ updatedCartDetail
-//	        existingCartDetail.setProductCart(updatedCartDetail.getProductCart());
-//	        existingCartDetail.setCart(updatedCartDetail.getCart());
-//	        existingCartDetail.setQuantity(updatedCartDetail.getQuantity());
-//
-//	        cart.save(existingCartDetail);
-//	        return ResponseEntity.ok("Cart detail updated successfully.");
-//	    } else {
-//	        return ResponseEntity.notFound().build();
-//	    }
-//	}
+	// @PostMapping("/rest/cart")
+	// public ResponseEntity<String> createCartDetail(@RequestBody CartDetail
+	// cartDetail) {
+	// CartDetail savedCartDetail = cart.save(cartDetail);
+	// return ResponseEntity.ok("Cart detail created successfully with ID: " +
+	// savedCartDetail.getId());
+	// }
+	//
+	// @PutMapping("/rest/cart/{id}")
+	// public ResponseEntity<String> updateCartDetail(@PathVariable int id,
+	// @RequestBody CartDetail updatedCartDetail) {
+	// Optional<CartDetail> optionalCartDetail = cart.findById(id);
+	//
+	// if (optionalCartDetail.isPresent()) {
+	// CartDetail existingCartDetail = optionalCartDetail.get();
+	// // Cập nhật thông tin của existingCartDetail từ updatedCartDetail
+	// existingCartDetail.setProductCart(updatedCartDetail.getProductCart());
+	// existingCartDetail.setCart(updatedCartDetail.getCart());
+	// existingCartDetail.setQuantity(updatedCartDetail.getQuantity());
+	//
+	// cart.save(existingCartDetail);
+	// return ResponseEntity.ok("Cart detail updated successfully.");
+	// } else {
+	// return ResponseEntity.notFound().build();
+	// }
+	// }
 
 	@GetMapping("/rest/cart/size/{id}")
 	public List<String> size(@PathVariable("id") String id) {

@@ -34,10 +34,10 @@ public class VnpayapiController {
 	MailerServiceImpl mailer;
 	@Autowired
 	SessionService session;
-	
+
 	@Autowired
 	CustomerService customerService;
-	
+
 	@Autowired
 	TransactionService transactionService;
 
@@ -51,18 +51,16 @@ public class VnpayapiController {
 		session.set("payment", "vnpay");
 		List<CartDetailDTo> list = session.get("listItemOrder", null);
 		double total = session.get("total", 0.0);
-//		double hihi1 = 0;
-//		for (CartDetailDTo cartDetailDTo : list) {
-//			hihi1 += (cartDetailDTo.getPrice() * cartDetailDTo.getQuantity());
-//		}
+		// double hihi1 = 0;
+		// for (CartDetailDTo cartDetailDTo : list) {
+		// hihi1 += (cartDetailDTo.getPrice() * cartDetailDTo.getQuantity());
+		// }
 		int orderTotalInt = (int) total;
 
 		String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
 		System.out.println(baseUrl);
 		String vnpayUrl = vnPayService.createOrder(orderTotalInt, "Thanhtoanhoadon", baseUrl);
 		System.out.println(vnpayUrl);
-
-
 
 		return "redirect:" + vnpayUrl;
 
@@ -103,17 +101,6 @@ public class VnpayapiController {
 			product_color.add("Không có");
 		}
 
-//		 for (int i = 0; i < maxLength; i++) {
-//		     System.out.println("Sản phẩm " + (i + 1) + ":");
-//		     System.out.println("Tên sản phẩm: " + product_name.get(i));
-//		     System.out.println("Giá sản phẩm: " + product_price.get(i));
-//		     System.out.println("Số lượng: " + quantity.get(i));
-//		     System.out.println("Link ảnh: " + product_img.get(i));
-//		     System.out.println("Link ảnh: " + product_size.get(i));
-//		     System.out.println("Link ảnh: " + product_color.get(i));
-//		     System.out.println();
-//		 }
-
 		double orderTotal = Double.parseDouble(orderTotal1);
 		float orderTotalFloat = Float.parseFloat(orderTotal1);
 		int orderTotalInt = (int) orderTotal;
@@ -141,7 +128,7 @@ public class VnpayapiController {
 
 		if (orderInfo.equals("naptien")) {
 			return paymentStatus == 1 ? "redirect:/rechargeSuccess?totalPrice=" + totalPrice : "orderfail";
-		} 
+		}
 		return paymentStatus == 1 ? "redirect:order/success" : "orderfail";
 
 	}

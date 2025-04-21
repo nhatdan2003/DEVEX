@@ -1,4 +1,4 @@
-let host = "http://localhost:8888/rest/seller/voucher";
+let host = "https://devex.io.vn/rest/seller/voucher";
 const app = angular.module("app", []);
 
 

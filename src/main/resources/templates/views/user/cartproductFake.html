@@ -7,13 +7,13 @@
   <title>Chi tiết đơn hàng</title>
   <link class="devex" rel="icon" href="/img/banner/title-icon.png" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
+    integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
 
   <!--cnd fontawesome-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Theme style -->
   <link rel="stylesheet" href="/css/user/userIndex.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.6.1/font/bootstrap-icons.css" />
@@ -22,13 +22,14 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
-          integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- Thêm thư viện jQuery -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
-          integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular-route.js"></script>
+  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
   <style>
     /* tắt phím tăng giảm của input number */
     input[type="number"]::-webkit-inner-spin-button,
@@ -66,357 +67,190 @@
 </head>
 
 <body ng-app="app" ng-controller="cart-ctrl">
-<header>
-  <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
-  <div class="container mt-3">
-    <div class="row">
-      <div class="col-12">
-        <span class="content"><a class="path_content" style="font-weight: 700">Devex</a></span>
-        <span class="path_arrow">
-						<i class="fa-solid fa-chevron-right"></i></span>
-        <span class="content"><a class="path_content" style="font-weight: 700">Thanh toán</a></span>
+  <header>
+    <div th:replace="~{flagment/user/userHeader :: userHeaderFragment}"></div>
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-12">
+          <span class="content"><a class="path_content" style="font-weight: 700">Devex</a></span>
+          <span class="path_arrow">
+            <i class="fa-solid fa-chevron-right"></i></span>
+          <span class="content"><a class="path_content" style="font-weight: 700">Thanh toán</a></span>
+        </div>
       </div>
     </div>
-  </div>
-</header>
-<main>
-  <div class="container">
-    <div class="text-dark content_price" style="margin-top: 10px">
-				<span class="container_main_middle-contten"
-                      style="color: #2a62b9; margin-left: -25px; font-size: 20px">Thanh
-					toán</span>
-    </div>
-  </div>
-  <div class="container bg-white mb-4 px-5 py-3 shadow">
-    <div id="location-title"><i class="fa-solid fa-location-dot"></i><span class="container_main_middle-contten"
-                                                                           style="color: #2a62b9; font-size:1.2rem;"> Địa Chỉ Nhận Hàng: </span></div>
-    <div id="location-body" style=" font-size:1rem;" class="ps-3 row pb-2">
-      <div class=" col-12 col-xl-3"><span class="fw-bold" th:text="${session.user.fullname}"></span>
-        <span class="fw-bold" th:text="${session.user.phoneAddress}"></span>
+  </header>
+  <main>
+    <div class="container">
+      <div class="text-dark content_price" style="margin-top: 10px">
+        <span class="container_main_middle-contten" style="color: #2a62b9; margin-left: -25px; font-size: 20px">Thanh
+          toán</span>
       </div>
-      <span class="col-9 col-xl-8" th:text="${session.user.address}"></span>
-      <!-- <div class="col-3 col-xl-1"><a href="">Thay đổi</a></div> -->
     </div>
-  </div>
-  <div ng-repeat="(idShop, shopData) in cart.shopGroupsOrder"
-       class="container container_main_middle bg-white mb-4 p-0">
-    <!-- Lặp qua các shop và sản phẩm -->
-    <div style="padding: 20px">
-      <div class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
-        <button class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent"
-                type="button">
-          <div class="">
-            <img alt="Avatar Shop" src="/img/account/{{cart.shopGroupsOrder[idShop][0].avatarShop}}"
-                 class="rounded-circle img-fluid" style="width: 2.5rem" />
-          </div>
-          <!-- Tên shop -->
-          <p class="d-flex align-items-center m-0 ng-binding">
-            {{cart.shopGroupsOrder[idShop][0].nameShop}}
-          </p>
-        </button>
-        <!-- <div class="text-center d-flex align-items-center">
+    <div class="container bg-white mb-4 px-5 py-3 shadow">
+      <div id="location-title"><i class="fa-solid fa-location-dot"></i><span class="container_main_middle-contten"
+          style="color: #2a62b9; font-size:1.2rem;"> Địa Chỉ Nhận Hàng: </span></div>
+      <div id="location-body" style=" font-size:1rem;" class="ps-3 row pb-2">
+        <div class=" col-12 col-xl-3"><span class="fw-bold" th:text="${session.user.fullname}"></span>
+          <span class="fw-bold" th:text="${session.user.phoneAddress}"></span>
+        </div>
+        <span class="col-9 col-xl-8" th:text="${session.user.address}"></span>
+        <!-- <div class="col-3 col-xl-1"><a href="">Thay đổi</a></div> -->
+      </div>
+    </div>
+    <div ng-repeat="(idShop, shopData) in cart.shopGroupsOrder"
+      class="container container_main_middle bg-white mb-4 p-0">
+      <!-- Lặp qua các shop và sản phẩm -->
+      <div style="padding: 20px">
+        <div class="d-flex justify-content-between gap-3 align-items-center px-3 pt-1">
+          <button class="d-flex justify-content-start gap-3 align-items-center border-0 bg-transparent" type="button">
+            <div class="">
+              <img alt="Avatar Shop" src="/img/account/{{cart.shopGroupsOrder[idShop][0].avatarShop}}"
+                class="rounded-circle img-fluid" style="width: 2.5rem" />
+            </div>
+            <!-- Tên shop -->
+            <p class="d-flex align-items-center m-0 ng-binding">
+              {{cart.shopGroupsOrder[idShop][0].nameShop}}
+            </p>
+          </button>
+          <!-- <div class="text-center d-flex align-items-center">
           <div>Xem Shop</div>
         </div> -->
-      </div>
-      <!-- Lặp qua các sản phẩm trong cùng một shop -->
-      <div class="row px-3 pb-3 pt-2">
-        <div class="col-md-12">
-          <!--CART -->
-          <div class="border-0 border-top bg-light" ng-repeat="item in cart.shopGroupsOrder[idShop]">
-            <div class="card-body p-2 bg-white">
-              <div class="row d-flex justify-content-between align-items-center">
-                <div
-                        class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
-                  <a class="p-0 col-8" href="/details/{{item.idProduct}}">
-                    <img style="height: 8rem"
-                         src="/img/product/{{item.idShop}}/{{item.idProduct}}/{{item.img}}"
-                         class="img-fluid rounded-3" alt="Cotton T-shirt" />
-                  </a>
-                </div>
-                <div class="col-md-3 col-lg-3 col-xl-4">
-                  <p class="fw-normal mb-2 card-title tensp ng-binding">
-                    {{ item.nameProduct }}
-                  </p>
-                  <button type="button"
-                          class="btn btn-secondary p-1 mb-2 w-100 d-flex justify-content-center">
-                    <div class="m-0 px-3" ng-if="item.size != ''">
-                      Size:
-                      <span class="text-white ng-binding">{{ item.size }}
-												</span>
-                    </div>
-                    <div class="m-0 px-3">
-                      Màu sắc:
-                      <span class="text-white ng-binding">{{ item.color }}</span>
-                    </div>
-                  </button>
-                  <div class="row">
-                    <s class="col-4 ng-binding">{{formatMoney(item.cost)}} ₫</s>
-                    <p class="text-danger fw-bold col-4 ng-binding">
-                      {{formatMoney(cart.checkPrice(item))}} ₫
+        </div>
+        <!-- Lặp qua các sản phẩm trong cùng một shop -->
+        <div class="row px-3 pb-3 pt-2">
+          <div class="col-md-12">
+            <!--CART -->
+            <div class="border-0 border-top bg-light" ng-repeat="item in cart.shopGroupsOrder[idShop]">
+              <div class="card-body p-2 bg-white">
+                <div class="row d-flex justify-content-between align-items-center">
+                  <div class="col-md-2 col-lg-2 col-xl-2 row d-flex justify-content-between align-items-center">
+                    <a class="p-0 col-8" href="/details/{{item.idProduct}}">
+                      <img style="height: 8rem" src="/img/product/{{item.idShop}}/{{item.idProduct}}/{{item.img}}"
+                        class="img-fluid rounded-3" alt="Cotton T-shirt" />
+                    </a>
+                  </div>
+                  <div class="col-md-3 col-lg-3 col-xl-4">
+                    <p class="fw-normal mb-2 card-title tensp ng-binding">
+                      {{ item.nameProduct }}
                     </p>
-                  </div>
-                </div>
-                <div class="col-md-3 col-lg-3 col-xl-1 d-flex">
-                  <input id="form1" min="1" name="quantity" type="number"
-                         class="form-control form-control-sm ng-binding" style="width: 2rem"
-                         inputmode="numeric" readonly ng-model="item.quantity" />
-                </div>
-                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                  <h5 class="mb-0 ng-binding">
-                    {{formatMoney(item.price * item.quantity)}} VNĐ
-                  </h5>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--END CART -->
-        </div>
-      </div>
-    </div>
-    <div id="foot-shop-bill" class="col p-3">
-      <div id="voucher" class="row pb-2">
-        <div class="col-4">Chọn Voucher Shop <i class="bi bi-ticket-perforated"></i></div>
-        <div class="col-4 text-secondary" ng-if="!cart.isShopVoucherApplied(cart.shopGroupsOrder[idShop][0].idShop)">Chưa có Voucher</div>
-        <div class="col-4 text-secondary" ng-if="cart.isShopVoucherApplied(cart.shopGroupsOrder[idShop][0].idShop)">Đã có Voucher</div>
-        <a
-                href="#"
-                class="col-4"
-                ng-click="cart.openModalVoucherShop(cart.shopGroupsOrder[idShop][0].idShop)"
-                >Chọn Voucher</a
-              >
-      </div>
-      <div id="deli" class="py-2 row">
-        <div class="col-4 ">Đơn vị vận chuyển:</div>
-        <div class="col-4 text">Devex Deliveri</div>
-        <div class="col-4 ">15.000 VNĐ</div>
-      </div>
-      <div id="total" class="pt-2 row">
-        <div class="col-4 "></div>
-        <div class="col-4 "></div>
-        <div class="col-4 ">
-          <p class="mb-0">
-            Tổng tiền (<span >{{ cart.countItemShop(cart.shopGroupsOrder[idShop][0].idShop) }}</span> sản phẩm):
-            <span class="text-danger" style="font-weight: 700; font-size: 20px"
-                  id="total-product-price" ng-bind="formatMoney(cart.amountItemShop(cart.shopGroupsOrder[idShop][0].idShop))"></span>
-            VNĐ
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- The Modal -->
-  <div class="modal fade" id="voucherOfShop" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <!-- Modal Header -->
-        <div class="modal-header" style="background: bisque">
-          <h4 class="modal-title" style="margin: 0 auto">
-            Voucher của <span ng-bind="cart.shopSelectedOpenVoucher"></span>
-          </h4>
-        </div>
-
-        <!-- Modal body -->
-        <div
-          class="modal-body"
-          style="max-height: 450px; overflow-y: scroll"
-        >
-          <div class="w-100 d-flex align-items-stretch flex-column">
-            <div
-              class="card bg-light d-flex flex-fill mb-1"
-              ng-repeat="item in cart.voucherShop"
-              ng-if="!cart.isItemInMyVoucherApplied(item)"
-            >
-              <div class="card-body pt-0 pb-0">
-                <div class="row">
-                  <div class="col-3 text-center d-flex flex-row">
-                    <img
-                      ng-src="/img/account/{{item.creator.avatar}}"
-                      alt="user-avatar"
-                      class="rounded-circle img-fluid"
-                      style="height: auto; margin: auto 0"
-                    />
-                  </div>
-                  <div class="col-6 mt-2">
-                    <h4 class="lead">
-                      <b
-                        >Giảm
-                        <span ng-if="item.discount < 1">
-                          {{ item.discount * 100 }}%</span
-                        >
-                        <span ng-if="item.discount >= 1">
-                          {{ formatMoney(item.discount) }}<sup
-                            style="font-size: 12px"
-                            >đ</sup
-                          ></span
-                        ></b
-                      >
-                    </h4>
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 12px"
-                      >Đơn hàng tối thiểu:
-                      <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span
-                    >
-                    <br />
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 14px"
-                      ><b>HSD: </b> {{ formatDateToDDMMYYYY(item.endDate)
-                      }}</span
-                    >
-                  </div>
-
-                  <div class="col-3 text-center">
-                    <div
-                      class="d-flex flex-column h-100"
-                      style="justify-content: space-evenly"
-                    >
-                      <button
-                        class="btn btn-sm btn-warning"
-                        ng-disabled="cart.isShowApplyButtonShop(item)"
-                        ng-click="cart.applyVoucher(item)"
-                      >
-                        Áp dụng
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="!cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Lưu
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Đã Lưu
-                      </button>
+                    <button type="button" class="btn btn-secondary p-1 mb-2 w-100 d-flex justify-content-center">
+                      <div class="m-0 px-3" ng-if="item.size != ''">
+                        Size:
+                        <span class="text-white ng-binding">{{ item.size }}
+                        </span>
+                      </div>
+                      <div class="m-0 px-3">
+                        Màu sắc:
+                        <span class="text-white ng-binding">{{ item.color }}</span>
+                      </div>
+                    </button>
+                    <div class="row">
+                      <s class="col-4 ng-binding">{{formatMoney(item.cost)}} ₫</s>
+                      <p class="text-danger fw-bold col-4 ng-binding">
+                        {{formatMoney(cart.checkPrice(item))}} ₫
+                      </p>
                     </div>
                   </div>
+                  <div class="col-md-3 col-lg-3 col-xl-1 d-flex">
+                    <input id="form1" min="1" name="quantity" type="number"
+                      class="form-control form-control-sm ng-binding" style="width: 2rem" inputmode="numeric" readonly
+                      ng-model="item.quantity" />
+                  </div>
+                  <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                    <h5 class="mb-0 ng-binding">
+                      {{formatMoney(item.price * item.quantity)}} VNĐ
+                    </h5>
+                  </div>
                 </div>
               </div>
             </div>
+            <!--END CART -->
           </div>
         </div>
-
-        <div class="modal-footer">
-          <div class="text-center">
-            <button
-              class="btn btn-sm btn-light"
-              style="padding-left: 20px; padding-right: 20px"
-              ng-click="cart.cancelVoucherShop()"
-            >
-              Huỷ
-            </button>
-            <button
-              class="btn btn-sm btn-success"
-              style="padding-left: 20px; padding-right: 20px"
-              data-bs-dismiss="modal"
-            >
-              OK
-            </button>
+      </div>
+      <div id="foot-shop-bill" class="col p-3">
+        <div id="voucher" class="row pb-2">
+          <div class="col-4">Chọn Voucher Shop <i class="bi bi-ticket-perforated"></i></div>
+          <div class="col-4 text-secondary" ng-if="!cart.isShopVoucherApplied(cart.shopGroupsOrder[idShop][0].idShop)">
+            Chưa có Voucher</div>
+          <div class="col-4 text-secondary" ng-if="cart.isShopVoucherApplied(cart.shopGroupsOrder[idShop][0].idShop)">Đã
+            có Voucher</div>
+          <a href="#" class="col-4" ng-click="cart.openModalVoucherShop(cart.shopGroupsOrder[idShop][0].idShop)">Chọn
+            Voucher</a>
+        </div>
+        <div id="deli" class="py-2 row">
+          <div class="col-4 ">Đơn vị vận chuyển:</div>
+          <div class="col-4 text">Devex Deliveri</div>
+          <div class="col-4 ">15.000 VNĐ</div>
+        </div>
+        <div id="total" class="pt-2 row">
+          <div class="col-4 "></div>
+          <div class="col-4 "></div>
+          <div class="col-4 ">
+            <p class="mb-0">
+              Tổng tiền (<span>{{ cart.countItemShop(cart.shopGroupsOrder[idShop][0].idShop) }}</span> sản phẩm):
+              <span class="text-danger" style="font-weight: 700; font-size: 20px" id="total-product-price"
+                ng-bind="formatMoney(cart.amountItemShop(cart.shopGroupsOrder[idShop][0].idShop))"></span>
+              VNĐ
+            </p>
           </div>
         </div>
       </div>
     </div>
-  </div>
+    <!-- The Modal -->
+    <div class="modal fade" id="voucherOfShop" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header" style="background: bisque">
+            <h4 class="modal-title" style="margin: 0 auto">
+              Voucher của <span ng-bind="cart.shopSelectedOpenVoucher"></span>
+            </h4>
+          </div>
 
-  <!-- The Modal -->
-  <div class="modal modal-xl fade" id="voucherOfDevex" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <!-- Modal Header -->
-        <div class="modal-header" style="background: bisque">
-          <h4 class="modal-title" style="margin: 0 auto">
-            Devex Voucher
-          </h4>
-        </div>
+          <!-- Modal body -->
+          <div class="modal-body" style="max-height: 450px; overflow-y: scroll">
+            <div class="w-100 d-flex align-items-stretch flex-column">
+              <div class="card bg-light d-flex flex-fill mb-1" ng-repeat="item in cart.voucherShop"
+                ng-if="!cart.isItemInMyVoucherApplied(item)">
+                <div class="card-body pt-0 pb-0">
+                  <div class="row">
+                    <div class="col-3 text-center d-flex flex-row">
+                      <img ng-src="/img/account/{{item.creator.avatar}}" alt="user-avatar"
+                        class="rounded-circle img-fluid" style="height: auto; margin: auto 0" />
+                    </div>
+                    <div class="col-6 mt-2">
+                      <h4 class="lead">
+                        <b>Giảm
+                          <span ng-if="item.discount < 1">
+                            {{ item.discount * 100 }}%</span>
+                          <span ng-if="item.discount >= 1">
+                            {{ formatMoney(item.discount) }}<sup style="font-size: 12px">đ</sup></span></b>
+                      </h4>
+                      <span class="text-muted text-sm" style="font-size: 12px">Đơn hàng tối thiểu:
+                        <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span>
+                      <br />
+                      <span class="text-muted text-sm" style="font-size: 14px"><b>HSD: </b> {{
+                        formatDateToDDMMYYYY(item.endDate)
+                        }}</span>
+                    </div>
 
-        <!-- Modal body -->
-        <div
-          class="modal-body d-flex flex-row justify-content-around"
-          style="max-height: 450px; overflow-y: scroll"
-        >
-          <div
-            class="d-flex align-items-stretch flex-column flex-grow-1 me-4 w-100"
-          >
-            <div class="text-muted border-bottom-0">Voucher Ship</div>
-            <div
-              class="card bg-light d-flex mb-1"
-              ng-repeat="item in cart.voucherShipping"
-              ng-if="!cart.isItemInMyVoucherApplied(item)"
-            >
-              <div class="card-body pt-0 pb-0">
-                <div class="row">
-                  <div class="col-3 text-center d-flex flex-row">
-                    <img
-                      src="/img/banner/LogoDUAn.png"
-                      alt="user-avatar"
-                      class="img-fluid"
-                      style="height: auto; margin: auto 0"
-                    />
-                  </div>
-                  <div class="col-6 mt-2">
-                    <h4 class="lead">
-                      <b
-                        >Giảm
-                        <span ng-if="item.discount < 1">
-                          {{ item.discount * 100 }}%</span
-                        >
-                        <span ng-if="item.discount >= 1">
-                          {{ formatMoney(item.discount) }}<sup
-                            style="font-size: 12px"
-                            >đ</sup
-                          ></span
-                        ></b
-                      >
-                    </h4>
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 12px"
-                      >Đơn hàng tối thiểu:
-                      <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span
-                    >
-                    <br />
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 14px"
-                      ><b>HSD: </b> {{ formatDateToDDMMYYYY(item.endDate)
-                      }}</span
-                    >
-                  </div>
-
-                  <div class="col-3 text-center">
-                    <div
-                      class="d-flex flex-column h-100"
-                      style="justify-content: space-evenly"
-                    >
-                      <button
-                        class="btn btn-sm btn-warning"
-                        ng-disabled="cart.isShowApplyButtonShip(item)"
-                        ng-click="cart.applyVoucher(item)"
-                      >
-                        Áp dụng
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="!cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Lưu
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Đã Lưu
-                      </button>
+                    <div class="col-3 text-center">
+                      <div class="d-flex flex-column h-100" style="justify-content: space-evenly">
+                        <button class="btn btn-sm btn-warning" ng-disabled="cart.isShowApplyButtonShop(item)"
+                          ng-click="cart.applyVoucher(item)">
+                          Áp dụng
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="!cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Đã Lưu
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -424,194 +258,234 @@
             </div>
           </div>
 
-          <div
-            class="d-flex align-items-stretch flex-column flex-grow-1 ms-4 w-100"
-          >
-            <div class="text-muted border-bottom-0 text-end">
-              Voucher Devex
+          <div class="modal-footer">
+            <div class="text-center">
+              <button class="btn btn-sm btn-light" style="padding-left: 20px; padding-right: 20px"
+                ng-click="cart.cancelVoucherShop()">
+                Huỷ
+              </button>
+              <button class="btn btn-sm btn-success" style="padding-left: 20px; padding-right: 20px"
+                data-bs-dismiss="modal">
+                OK
+              </button>
             </div>
-            <div
-              class="card bg-light d-flex mb-1"
-              ng-repeat="item in cart.voucherDevex"
-              ng-if="!cart.isItemInMyVoucherApplied(item)"
-            >
-              <div class="card-body pt-0 pb-0">
-                <div class="row">
-                  <div class="col-3 text-center d-flex flex-row">
-                    <img
-                      src="/img/banner/LogoDUAn.png"
-                      alt="user-avatar"
-                      class="img-fluid"
-                      style="height: auto; margin: auto 0"
-                    />
-                  </div>
-                  <div class="col-6 mt-2">
-                    <h4 class="lead">
-                      <b
-                        >Giảm
-                        <span ng-if="item.discount < 1">
-                          {{ item.discount * 100 }}%</span
-                        >
-                        <span ng-if="item.discount >= 1">
-                          {{ formatMoney(item.discount) }}<sup
-                            style="font-size: 12px"
-                            >đ</sup
-                          ></span
-                        ></b
-                      >
-                    </h4>
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 12px"
-                      >Đơn hàng tối thiểu:
-                      <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span
-                    >
-                    <br />
-                    <span
-                      class="text-muted text-sm"
-                      style="font-size: 14px"
-                      ><b>HSD: </b> {{ formatDateToDDMMYYYY(item.endDate)
-                      }}</span
-                    >
-                  </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-                  <div class="col-3 text-center">
-                    <div
-                      class="d-flex flex-column h-100"
-                      style="justify-content: space-evenly"
-                    >
-                      <button
-                        class="btn btn-sm btn-warning"
-                        ng-disabled="cart.isShowApplyButtonDevex(item)"
-                        ng-click="cart.applyVoucher(item)"
-                      >
-                        Áp dụng
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="!cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Lưu
-                      </button>
-                      <button
-                        class="btn btn-sm btn-primary"
-                        ng-if="cart.isItemInMyVoucher(item)"
-                        ng-disabled="cart.isItemInMyVoucher(item)"
-                        ng-click="cart.saveVoucher(item)"
-                      >
-                        <i class="fas fa-save"></i> Đã Lưu
-                      </button>
+    <!-- The Modal -->
+    <div class="modal modal-xl fade" id="voucherOfDevex" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <!-- Modal Header -->
+          <div class="modal-header" style="background: bisque">
+            <h4 class="modal-title" style="margin: 0 auto">
+              Devex Voucher
+            </h4>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body d-flex flex-row justify-content-around" style="max-height: 450px; overflow-y: scroll">
+            <div class="d-flex align-items-stretch flex-column flex-grow-1 me-4 w-100">
+              <div class="text-muted border-bottom-0">Voucher Ship</div>
+              <div class="card bg-light d-flex mb-1" ng-repeat="item in cart.voucherShipping"
+                ng-if="!cart.isItemInMyVoucherApplied(item)">
+                <div class="card-body pt-0 pb-0">
+                  <div class="row">
+                    <div class="col-3 text-center d-flex flex-row">
+                      <img src="/img/banner/LogoDUAn.png" alt="user-avatar" class="img-fluid"
+                        style="height: auto; margin: auto 0" />
+                    </div>
+                    <div class="col-6 mt-2">
+                      <h4 class="lead">
+                        <b>Giảm
+                          <span ng-if="item.discount < 1">
+                            {{ item.discount * 100 }}%</span>
+                          <span ng-if="item.discount >= 1">
+                            {{ formatMoney(item.discount) }}<sup style="font-size: 12px">đ</sup></span></b>
+                      </h4>
+                      <span class="text-muted text-sm" style="font-size: 12px">Đơn hàng tối thiểu:
+                        <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span>
+                      <br />
+                      <span class="text-muted text-sm" style="font-size: 14px"><b>HSD: </b> {{
+                        formatDateToDDMMYYYY(item.endDate)
+                        }}</span>
+                    </div>
+
+                    <div class="col-3 text-center">
+                      <div class="d-flex flex-column h-100" style="justify-content: space-evenly">
+                        <button class="btn btn-sm btn-warning" ng-disabled="cart.isShowApplyButtonShip(item)"
+                          ng-click="cart.applyVoucher(item)">
+                          Áp dụng
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="!cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Đã Lưu
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-stretch flex-column flex-grow-1 ms-4 w-100">
+              <div class="text-muted border-bottom-0 text-end">
+                Voucher Devex
+              </div>
+              <div class="card bg-light d-flex mb-1" ng-repeat="item in cart.voucherDevex"
+                ng-if="!cart.isItemInMyVoucherApplied(item)">
+                <div class="card-body pt-0 pb-0">
+                  <div class="row">
+                    <div class="col-3 text-center d-flex flex-row">
+                      <img src="/img/banner/LogoDUAn.png" alt="user-avatar" class="img-fluid"
+                        style="height: auto; margin: auto 0" />
+                    </div>
+                    <div class="col-6 mt-2">
+                      <h4 class="lead">
+                        <b>Giảm
+                          <span ng-if="item.discount < 1">
+                            {{ item.discount * 100 }}%</span>
+                          <span ng-if="item.discount >= 1">
+                            {{ formatMoney(item.discount) }}<sup style="font-size: 12px">đ</sup></span></b>
+                      </h4>
+                      <span class="text-muted text-sm" style="font-size: 12px">Đơn hàng tối thiểu:
+                        <span style="font-size: 14px">{{ formatMoney(item.minPrice) }}đ</span></span>
+                      <br />
+                      <span class="text-muted text-sm" style="font-size: 14px"><b>HSD: </b> {{
+                        formatDateToDDMMYYYY(item.endDate)
+                        }}</span>
+                    </div>
+
+                    <div class="col-3 text-center">
+                      <div class="d-flex flex-column h-100" style="justify-content: space-evenly">
+                        <button class="btn btn-sm btn-warning" ng-disabled="cart.isShowApplyButtonDevex(item)"
+                          ng-click="cart.applyVoucher(item)">
+                          Áp dụng
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="!cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Lưu
+                        </button>
+                        <button class="btn btn-sm btn-primary" ng-if="cart.isItemInMyVoucher(item)"
+                          ng-disabled="cart.isItemInMyVoucher(item)" ng-click="cart.saveVoucher(item)">
+                          <i class="fas fa-save"></i> Đã Lưu
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="modal-footer">
-          <div class="text-center">
-            <button
-              class="btn btn-sm btn-light"
-              style="padding-left: 20px; padding-right: 20px"
-              ng-click="cart.cancelVoucherDevex()"
-            >
-              Huỷ
-            </button>
-            <button
-              class="btn btn-sm btn-success"
-              style="padding-left: 20px; padding-right: 20px"
-              data-bs-dismiss="modal"
-            >
-              OK
-            </button>
+          <div class="modal-footer">
+            <div class="text-center">
+              <button class="btn btn-sm btn-light" style="padding-left: 20px; padding-right: 20px"
+                ng-click="cart.cancelVoucherDevex()">
+                Huỷ
+              </button>
+              <button class="btn btn-sm btn-success" style="padding-left: 20px; padding-right: 20px"
+                data-bs-dismiss="modal">
+                OK
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="container shadow" id="cartOrderForm" style="
+    <div class="container shadow" id="cartOrderForm" style="
           background-color: white;
           box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
           margin-top: 20px;
           border-radius: 10px;
           padding: 10px 10px;
         ">
-    <div id="total-voucher" class="row pb-2 text-center mb-2">
-      <div class="col-2">Chọn Voucher <span class=""><i class="bi bi-ticket-perforated"></i></span></div>
-      <div class="col-8 text-secondary" ng-if="!cart.isShipVoucherApplied() && !cart.isDevexVoucherApplied()">Chưa có Voucher</div>
-      <div class="col-8 text-secondary" ng-if="cart.isShipVoucherApplied() || cart.isDevexVoucherApplied()">Đã có Voucher</div>
-      <a href="#" class="col-2" ng-click="cart.openModalVoucherDevex()"
-              >Chọn Voucher</a
-            >
-    </div>
-    <div class="row">
-      <div class="col-5 chose-all d-flex justify-content-between h-100">
-        <div class="col-12 col-lg-12 d-flex-row">
-          <p class="pe-2">Phương thức thanh toán: </p>
-          <div class="d-flex">
-            <div class="pe-2"><input type="radio" ng-model="payment"  class="btn-check" value="cash" name="pay" id="cash"
-                                     autocomplete="off" checked>
-              <label class="btn btn-outline-success" for="cash">Dwallet</label>
+      <div id="total-voucher" class="row pb-2 text-center mb-2">
+        <div class="col-2">Chọn Voucher <span class=""><i class="bi bi-ticket-perforated"></i></span></div>
+        <div class="col-8 text-secondary" ng-if="!cart.isShipVoucherApplied() && !cart.isDevexVoucherApplied()">Chưa có
+          Voucher</div>
+        <div class="col-8 text-secondary" ng-if="cart.isShipVoucherApplied() || cart.isDevexVoucherApplied()">Đã có
+          Voucher</div>
+        <a href="#" class="col-2" ng-click="cart.openModalVoucherDevex()">Chọn Voucher</a>
+      </div>
+      <div class="row">
+        <div class="col-5 chose-all d-flex justify-content-between h-100">
+          <div class="col-12 col-lg-12 d-flex-row">
+            <p class="pe-2">Phương thức thanh toán: </p>
+            <div class="d-flex">
+              <div class="pe-2"><input type="radio" ng-model="payment" class="btn-check" value="cash" name="pay"
+                  id="cash" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="cash">Dwallet</label>
+              </div>
+              <div class="pe-2"><input type="radio" ng-model="payment" class="btn-check" value="vnpay" name="pay"
+                  id="vnpay" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="vnpay">VNPay</label>
+              </div>
+              <div class="pe-2"><input type="radio" ng-model="payment" class="btn-check" value="paypal" name="pay"
+                  id="paypal" autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="paypal">Paypal</label>
+              </div>
+              <div class="pe-2"><input type="radio" ng-model="payment" class="btn-check" value="ACB" name="pay" id="ACB"
+                  autocomplete="off" checked>
+                <label class="btn btn-outline-success" for="ACB">ACB</label>
+              </div>
+
             </div>
-            <div class="pe-2"><input type="radio" ng-model="payment" class="btn-check" value="vnpay" name="pay" id="vnpay"
-                                     autocomplete="off" checked>
-              <label class="btn btn-outline-success" for="vnpay">VNPay</label>
-            </div>
-            <div class=""><input type="radio" ng-model="payment" class="btn-check" value="paypal" name="pay" id="paypal"
-                                 autocomplete="off" checked>
-              <label class="btn btn-outline-success" for="paypal">Paypal</label>
-            </div>
+            <p class="pe-2 mt-2" ng-if="payment == 'cash'" ng-controller="Dwallet_Controller">Số dư: <span
+                class="fw-semibold fs-6"><strong class="text-danger">{{wallet.loadDWallet.balance
+                  | currency: '':0}}</strong>
+                VNĐ</span></p>
           </div>
-          <p class="pe-2 mt-2" ng-if="payment == 'cash'" ng-controller="Dwallet_Controller">Số dư: <span class="fw-semibold fs-6"><strong class="text-danger">{{wallet.loadDWallet.balance
-            | currency: '':0}}</strong>
-          VNĐ</span></p>
+        </div>
+        <div class="col-4 total-all-product">
+          <p class="mb-0" style="float: right">
+            Tổng tiền hàng (<span id="count-prod-order">{{cart.countItemOrderDetail}}</span>
+            sản phẩm):
+            <span class="text-danger" style="font-weight: 700; font-size: 16px"
+              id="price">{{formatMoney(cart.amountDetail)}}</span>
+            VNĐ
+          </p>
+          <p class="mb-0" style="float: right">
+            Phí vận chuyển:
+            <span class="text-danger" style="font-weight: 700; font-size: 16px" id="total-deli"
+              ng-bind="formatMoney(cart.amountShip)"></span>
+            VNĐ
+          </p>
+          <p class="mb-0" style="float: right">
+            Tổng tiền tính luôn ship:
+            <span class="text-danger" style="font-weight: 700; font-size: 16px" id="total-sub"
+              ng-bind="formatMoney(cart.amountShip + cart.amountDetail)"></span>
+            VNĐ
+          </p>
+          <p class="mb-0" style="float: right">
+            Tổng thanh toán:
+            <span class="text-danger" style="font-weight: 700; font-size: 24px" id="total-price"
+              ng-bind="formatMoney(cart.amountPay)"></span>
+            VNĐ
+          </p>
+        </div>
+        <div class="col-3 order-product">
+          <input type="hidden" id="userAddress" th:value="${session.user.address}" />
+          <input type="hidden" id="userPhoneAddress" th:value="${session.user.phoneAddress}" />
+
+          <button class="btn btn-primary w-100 p-2" id="btn-order" ng-click="purchase()">
+            Mua Hàng
+          </button>
         </div>
       </div>
-      <div class="col-4 total-all-product">
-        <p class="mb-0" style="float: right">
-          Tổng tiền hàng (<span id="count-prod-order">{{cart.countItemOrderDetail}}</span>
-          sản phẩm):
-          <span class="text-danger" style="font-weight: 700; font-size: 16px" id="price">{{formatMoney(cart.amountDetail)}}</span>
-          VNĐ
-        </p>
-        <p class="mb-0" style="float: right">
-          Phí vận chuyển:
-          <span class="text-danger" style="font-weight: 700; font-size: 16px"
-                id="total-deli" ng-bind="formatMoney(cart.amountShip)"></span>
-          VNĐ
-        </p>
-        <p class="mb-0" style="float: right">
-          Tổng tiền tính luôn ship:
-          <span class="text-danger" style="font-weight: 700; font-size: 16px"
-                id="total-sub" ng-bind="formatMoney(cart.amountShip + cart.amountDetail)"></span>
-          VNĐ
-        </p>
-        <p class="mb-0" style="float: right">
-          Tổng thanh toán:
-          <span class="text-danger" style="font-weight: 700; font-size: 24px"
-                id="total-price" ng-bind="formatMoney(cart.amountPay)"></span>
-          VNĐ
-        </p>
-      </div>
-      <div class="col-3 order-product">
-        <input type="hidden" id="userAddress" th:value="${session.user.address}" />
-        <input type="hidden" id="userPhoneAddress" th:value="${session.user.phoneAddress}" />
-
-        <button class="btn btn-primary w-100 p-2" id="btn-order" ng-click="purchase()">
-          Mua Hàng
-        </button>
-      </div>
     </div>
-  </div>
-</main>
-<footer>
-  <!-- place footer here -->
+  </main>
+  <footer>
+    <!-- place footer here -->
 
-  <div class="container-fluid mt-3" style="
+    <div class="container-fluid mt-3" style="
           background: linear-gradient(
             90deg,
             rgba(25, 38, 186, 1) 0%,
@@ -619,123 +493,123 @@
             rgba(0, 212, 255, 1) 100%
           );
         ">
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
-          <span class="footer_title_content"> Hỗ Trợ Khách Khàng</span>
-          <ul class="list_customers" style="list-style-type: none; padding: 0">
-            <li>
-              <a href="" class="text-decoration-none text-light">Các Câu Hỏi Thường Gặp</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Gửi Yêu Cầu Hỗ Trợ</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Hướng Dẫn Đặt Hàng</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Phương thức vận chuyển</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Chính Sách Đổi Trả</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Hướng Dẫn Trả Góp</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
-          <span class="footer_title_content"> Về Chúng Tôi DEVEX</span>
-          <ul class="list_customers" style="list-style-type: none; padding: 0">
-            <li>
-              <a href="" class="text-decoration-none text-light">Giới Thiệu</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Tuyển Dụng</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Chính Sách Bảo Mật Và Thanh Toán</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Bán Hàng Doanh Nghiệp</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Điều Kiện Vận Chuyển</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
-          <span class="footer_title_content"> Hợp Tác Và Liên Kết</span>
-          <ul class="list_customers" style="list-style-type: none; padding: 0">
-            <li>
-              <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
-            </li>
-            <li>
-              <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-xs-6 col-md-4 col-lg-3 mt-2">
-						<span class="footer_title_content">
-							Giao Hàng Và Các Phương Thức Thanh Toán</span>
-          <ul class="list_customers" style="list-style-type: none; padding: 0">
-            <li>
-              <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
-            </li>
-          </ul>
-        </div>
-
-        <div class="col-xs-6 col-md-4 col-lg-3 mt-2">
-          <h3 class="footer_title_content">HOTLINE: **********</h3>
-          <ul class="list-customers" style="list-style-type: none; padding: 0"></ul>
-        </div>
-      </div>
-
-      <div class="content_footer">
+      <div class="container">
         <div class="row">
-          <div class="col-12">
-            <div class="row">
-								<span class="text-center content_footer-text">Trụ sở chính: Tòa nhà Viettel, Số 285,
-									đường Cách Mạng
-									Tháng 8, phường 12, quận 10, Thành phố Hồ Chí Minh DEVEX
-									nhận đặt hàng trực tuyến và giao hàng tận nơi, chưa hỗ trợ
-									mua và nhận hàng trực tiếp tại văn phòng hoặc trung tâm xử
-									lý đơn hàng
-								</span>
-            </div>
+          <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
+            <span class="footer_title_content"> Hỗ Trợ Khách Khàng</span>
+            <ul class="list_customers" style="list-style-type: none; padding: 0">
+              <li>
+                <a href="" class="text-decoration-none text-light">Các Câu Hỏi Thường Gặp</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Gửi Yêu Cầu Hỗ Trợ</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Hướng Dẫn Đặt Hàng</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Phương thức vận chuyển</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Chính Sách Đổi Trả</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Hướng Dẫn Trả Góp</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
+            <span class="footer_title_content"> Về Chúng Tôi DEVEX</span>
+            <ul class="list_customers" style="list-style-type: none; padding: 0">
+              <li>
+                <a href="" class="text-decoration-none text-light">Giới Thiệu</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Tuyển Dụng</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Chính Sách Bảo Mật Và Thanh Toán</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Bán Hàng Doanh Nghiệp</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Điều Kiện Vận Chuyển</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-6 col-md-4 col-lg-2 mt-2">
+            <span class="footer_title_content"> Hợp Tác Và Liên Kết</span>
+            <ul class="list_customers" style="list-style-type: none; padding: 0">
+              <li>
+                <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
+              </li>
+              <li>
+                <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-6 col-md-4 col-lg-3 mt-2">
+            <span class="footer_title_content">
+              Giao Hàng Và Các Phương Thức Thanh Toán</span>
+            <ul class="list_customers" style="list-style-type: none; padding: 0">
+              <li>
+                <a href="" class="text-decoration-none text-light">Hỗ Trợ Khách Khàng</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-xs-6 col-md-4 col-lg-3 mt-2">
+            <h3 class="footer_title_content">HOTLINE: **********</h3>
+            <ul class="list-customers" style="list-style-type: none; padding: 0"></ul>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="row">
-								<span class="text-center content_footer-text">Giấy chứng nhận Đăng ký Kinh doanh số
-									0309532909 do Sở Kế
-									hoạch và Đầu tư Thành phố Hồ Chí Minh cấp lần đầu ngày
-									06/01/2010 và sửa đổi lần thứ 23 ngày 14/02/2022
-								</span>
+
+        <div class="content_footer">
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <span class="text-center content_footer-text">Trụ sở chính: Tòa nhà Viettel, Số 285,
+                  đường Cách Mạng
+                  Tháng 8, phường 12, quận 10, Thành phố Hồ Chí Minh DEVEX
+                  nhận đặt hàng trực tuyến và giao hàng tận nơi, chưa hỗ trợ
+                  mua và nhận hàng trực tiếp tại văn phòng hoặc trung tâm xử
+                  lý đơn hàng
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="row">
-								<span class="text-center content_footer-text">
-									© 2022 - Bản quyền của Công ty TNHH DEVEX</span>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <span class="text-center content_footer-text">Giấy chứng nhận Đăng ký Kinh doanh số
+                  0309532909 do Sở Kế
+                  hoạch và Đầu tư Thành phố Hồ Chí Minh cấp lần đầu ngày
+                  06/01/2010 và sửa đổi lần thứ 23 ngày 14/02/2022
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <span class="text-center content_footer-text">
+                  © 2022 - Bản quyền của Công ty TNHH DEVEX</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
-<!-- <script>
+  <!-- <script>
   function updateTotalPrice(selectElement) {
     const productContainer = selectElement.closest(".product-container");
     const quantity = parseInt(selectElement.value, 10);
@@ -752,22 +626,23 @@
   }
 </script> -->
 
-<script th:src="@{/js/cart-ctrl.js}"></script>
-<script th:src="@{/js/user/DwalletCustomer.js}"></script>
-<script th:src="@{/js/user/autocomplete.js}"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
-        crossorigin="anonymous"></script>
+  <script th:src="@{/js/cart-ctrl.js}"></script>
+  <script th:src="@{/js/user/DwalletCustomer.js}"></script>
+  <script th:src="@{/js/user/autocomplete.js}"></script>
+  <!-- <script th:src="@{/js/user/PaymentSol.js}"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+    crossorigin="anonymous"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
-        crossorigin="anonymous"></script>
-<!--slick slide-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+    integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+    crossorigin="anonymous"></script>
+  <!--slick slide-->
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-<!-- <script src="/static/admin/dist/js/user/userIndex.js"></script> -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <!-- <script src="/static/admin/dist/js/user/userIndex.js"></script> -->
 </body>
 
 </html>

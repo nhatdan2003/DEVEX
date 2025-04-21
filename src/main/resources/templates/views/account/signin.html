@@ -85,8 +85,8 @@ form {
 							Me</label>
 					</div> -->
 	
-					<div class="g-recaptcha w-100"
-						data-sitekey="6Ldqv3QlAAAAADvajQMpdcsGFDvklhGu72z9mLTC"></div>
+					<!-- <div class="g-recaptcha w-100"
+						data-sitekey="6Ldqv3QlAAAAADvajQMpdcsGFDvklhGu72z9mLTC"></div> -->
 					
 					<div class="error-message"  style="width: 100%" ><mark th:text="${param.error}"></mark></div>
 					<div class="error-message"  style="width: 100%" ><mark th:text="${param.success}" style="color: green;"></mark></div>
@@ -136,20 +136,20 @@ form {
 
 	<script type="text/javascript">
 		//<![CDATA[
-		$('form[name="login-form"]')
-				.on(
-						'submit',
-						function() {
-							var captcha_response = grecaptcha.getResponse()
-							if (captcha_response.length == 0) {
-								$('.error-message')
-										.html(
-												'<p style="margin-bottom:1.3rem;color:#d93025;">Vui lòng chọn hộp kiểm này nếu bạn muốn tiếp tục.</p>')
-								return false
-							}
-							return true
-						})
-		//]]>
+		// $('form[name="login-form"]')
+		// 		.on(
+		// 				'submit',
+		// 				function() {
+		// 					var captcha_response = grecaptcha.getResponse()
+		// 					if (captcha_response.length == 0) {
+		// 						$('.error-message')
+		// 								.html(
+		// 										'<p style="margin-bottom:1.3rem;color:#d93025;">Vui lòng chọn hộp kiểm này nếu bạn muốn tiếp tục.</p>')
+		// 						return false
+		// 					}
+		// 					return true
+		// 				})
+		// //]]>
 		$(document)
 				.ready(
 						function() {
